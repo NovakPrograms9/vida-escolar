@@ -848,18 +848,18 @@ async function copiar(txt, btn){
 }
 
 /* ---------- Perfiles con PIN (como Convivencia) ---------- */
-const ROLES_PERFIL = { admin:{l:"Administración", d:"Todo: registros, Estadísticas, Ajustes, perfiles y eliminar registros."}, inspector:{l:"Inspector/a", d:"Registra y edita atrasos, anotaciones, dispositivos, medidas y citaciones."} };
+const ROLES_PERFIL = { admin:{l:"Administración", d:"Todo: registros, Estadísticas, Informe, Ajustes, perfiles y eliminar registros."}, inspector:{l:"Inspector/a", d:"Registra y edita atrasos, anotaciones, dispositivos, medidas y citaciones."} };
 let PERFIL=null;
 const perfilesLista = () => Array.isArray(state.config.perfiles) ? state.config.perfiles : [];
 const hayPerfiles = () => state.mode==="fb" && perfilesLista().length>0;
-function can(accion){ if(!hayPerfiles() || state.demo) return true; if(!PERFIL) return false; if(accion==="ajustes"||accion==="eliminar"||accion==="stats") return PERFIL.rol==="admin"; return true; }
+function can(accion){ if(!hayPerfiles() || state.demo) return true; if(!PERFIL) return false; if(accion==="ajustes"||accion==="eliminar"||accion==="stats"||accion==="informe") return PERFIL.rol==="admin"; return true; }
 async function hashClave(v){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode("vida-escolar-lcg|"+String(v))); return Array.from(new Uint8Array(buf),x=>x.toString(16).padStart(2,"0")).join(""); }
 const hashPin = (id,pin) => hashClave("pin|"+id+"|"+pin);
 async function checkClave(v){ const c=state.config; if(c.claveHash){ try{ return (await hashClave(v))===c.claveHash; }catch(e){ return false; } } return String(v)===String(c.claveEliminar||"0000"); }
 function pinAzar(){ const a=new Uint32Array(1); crypto.getRandomValues(a); return String(1000+(a[0]%9000)); }
 function iniciarPerfil(p, recordar){ PERFIL=p; ME=p.nombre+(p.cargo?", "+p.cargo:""); if(recordar) lsSet("ve-perfil",p.id); aplicarPermisos(); renderAll(); if(state.tab==="ajustes") renderAjustes(); }
 function cerrarSesion(){ PERFIL=null; ME=null; try{ localStorage.removeItem("ve-perfil"); }catch(e){} closeDrawer(); aplicarPermisos(); renderHeader(); elegirPerfil(); }
-function aplicarPermisos(){ const ta=$("#tab-ajustes"), ts=$("#tab-stats"); ta.hidden = hayPerfiles() && !can("ajustes"); ts.hidden = hayPerfiles() && !can("stats"); if((state.tab==="ajustes" && ta.hidden)||(state.tab==="stats" && ts.hidden)) setTab("hoy"); }
+function aplicarPermisos(){ const ta=$("#tab-ajustes"), ts=$("#tab-stats"), ti=$("#tab-informe"); ta.hidden = hayPerfiles() && !can("ajustes"); ts.hidden = hayPerfiles() && !can("stats"); ti.hidden = hayPerfiles() && !can("informe"); if((state.tab==="ajustes" && ta.hidden)||(state.tab==="stats" && ts.hidden)||(state.tab==="informe" && ti.hidden)) setTab("hoy"); }
 function syncSesion(){
   if(state.mode!=="fb" || !$("#gate").hidden) return;
   if(hayPerfiles()){
@@ -975,7 +975,7 @@ async function importarRespaldo(file){
 /* =================== Pestañas y cabecera =================== */
 const TABS=["hoy","cal","registrar","estudiantes","registros","stats","informe","ajustes"];
 function setTab(t){
-  if(hayPerfiles() && ((t==="stats"&&!can("stats"))||(t==="ajustes"&&!can("ajustes")))) t="hoy";
+  if(hayPerfiles() && ((t==="stats"&&!can("stats"))||(t==="ajustes"&&!can("ajustes"))||(t==="informe"&&!can("informe")))) t="hoy";
   state.tab=t;
   $$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===t)));
   TABS.forEach(k=>{ $("#view-"+k).hidden = k!==t; });
@@ -1537,7 +1537,7 @@ function renderEstudiantes(){
   rows.sort(ord==="lista"?(cur&&!q?byLista:(a,b)=>byCurso(a,b)||byLista(a,b)):ord==="atr"?(a,b)=>b.c.atr-a.c.atr||b.c.an-a.c.an||byCurso(a,b):ord==="an"?(a,b)=>b.c.an-a.c.an||b.c.atr-a.c.atr||byCurso(a,b):ord==="curso"?byCurso:(a,b)=>a.e.nombre.localeCompare(b.e.nombre,"es"));
   if(!E().length){ host.innerHTML='<div class="emptybox"><h3>Todavía no hay estudiantes</h3><p>Se agregan solos la primera vez que registra un atraso, una anotación o una medida.</p><button class="btn primary" type="button" onclick="document.getElementById(\'tab-registrar\').click()">Registrar el primero</button></div>'; return; }
   const cl=(v,a,g)=>v>=g?"b":v>=a?"w":"";
-  const pdfB = cur&&!q ? '<button class="btn sm" id="pdfBtn" type="button" style="margin-left:auto">Informe del curso</button>' : '';
+  const pdfB = cur&&!q&&can("informe") ? '<button class="btn sm" id="pdfBtn" type="button" style="margin-left:auto">Informe del curso</button>' : '';
   const head = q ? '<div class="curso-h"><h2>Búsqueda en todos los cursos</h2><span class="muted">'+rows.length+' estudiantes</span></div>' : cur ? '<div class="curso-h"><h2>'+esc(cursoLabel(cur.nivel,cur.letra))+'</h2><span class="muted">'+(cur.pj?'Profesor/a jefe: '+esc(cur.pj)+' · ':'')+'Inspector/a: '+esc(inspectorDe(cur.nivel)||"—")+' · '+cur.n+' estudiantes</span>'+pdfB+'</div>' : '<div class="curso-h"><h2>Todos los cursos</h2><span class="muted">'+rows.length+' estudiantes</span>'+pdfB+'</div>';
   host.innerHTML=head+'<p class="ref" style="margin:0 0 8px">Conteo del '+esc(periodLabel(p))+'. Anotaciones incluye dispositivos requisados.</p><div class="list"><div class="est-li li-head"><span>Estudiante</span><span>Curso</span><span style="text-align:center">Atrasos</span><span style="text-align:center">Anot.</span><span style="text-align:center">Disp.</span><span>Carta</span></div>'+
     rows.map(x=>'<button type="button" class="est-li" data-est="'+esc(x.e.id)+'"><span class="c-n">'+(cur&&!q&&x.e.nListaCurso?'<span class="nlista">'+esc(x.e.nListaCurso)+'</span>':'')+'<strong>'+esc(x.e.nombre)+'</strong></span><span class="c-c muted">'+esc(cursoLabel(x.e.nivel,x.e.letra))+'</span><span class="cnt '+cl(x.c.atr,C.atrAviso,C.atrGrave)+'" data-l="Atrasos">'+x.c.atr+'</span><span class="cnt '+cl(x.c.an,C.anAviso,C.anCita)+'" data-l="Anot.">'+x.c.an+'</span><span class="cnt '+cl(x.c.cel,2,3)+'" data-l="Disp.">'+x.c.cel+'</span><span class="c-carta">'+(x.carta?'<span class="chip bad">'+esc(x.carta)+'</span>':'')+'</span></button>').join("")+'</div>';
@@ -1590,7 +1590,7 @@ function drawerEst(id){
   const e=EST.get(id); if(!e) return null; const p=curPeriod(), c=cuenta(id,p), C=state.config, av=e.avisos||{}, carta=cartaDe(id), rs=regsDe(id);
   const avTxt=(k,lbl)=>av[k]?'<span style="color:var(--ok)">✓ '+esc(lbl)+' '+esc(fechaCorta(av[k].fecha))+'</span>':'';
   let h='<div class="d-head"><div><div class="eyebrow">'+esc(cursoLabel(e.nivel,e.letra))+' · Inspector/a: '+esc(inspectorDe(e.nivel)||"—")+'</div><h2 id="dTitle">'+esc(e.nombre)+'</h2>'+(carta?'<span class="chip bad" style="margin-top:6px">'+esc(carta)+' vigente</span>':'')+'</div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
-  h+='<div class="row"><button class="btn primary" id="dReg" type="button">Registrar para este estudiante</button><button class="btn" id="dPdf" type="button">Informe del estudiante</button></div>';
+  h+='<div class="row"><button class="btn primary" id="dReg" type="button">Registrar para este estudiante</button>'+(can("informe")?'<button class="btn" id="dPdf" type="button">Informe del estudiante</button>':'')+'</div>';
   h+='<div class="eyebrow">'+esc(periodLabel(p))+'</div><div class="meters">'+
     meter(c.atr,"Atrasos sin justificar"+(c.atrJ?" · "+c.atrJ+" justificados":""),C.atrAviso,C.atrGrave,(avTxt("atrA_"+p,"avisado")||"Aviso al "+C.atrAviso+"°")+" · falta grave al "+C.atrGrave+"° "+(avTxt("atrG_"+p,"")||""))+
     meter(c.an,"Anotaciones ("+c.anG+" graves, "+c.anE+" ext. graves)",C.anAviso,C.anCita,(avTxt("anA_"+p,"notificado")||"Correo a las "+C.anAviso)+" · citación a las "+C.anCita)+
@@ -1644,7 +1644,7 @@ function bindDrawer(){
   if(d.k==="est"){
     const e=EST.get(d.id);
     $("#dReg").onclick=()=>{ prefill={estId:d.id}; closeDrawer(); setTab("registrar"); };
-    $("#dPdf").onclick=()=>irInforme("estudiante",d.id);
+    if($("#dPdf")) $("#dPdf").onclick=()=>irInforme("estudiante",d.id);
     $("#deSave").onclick=async()=>{ if(!(await needAutor())) return; const n=clone(e); n.apoderado=$("#deAp").value.trim(); n.correoApoderado=$("#deApM").value.trim(); n.profesorJefe=$("#dePJ").value.trim(); n.correoPJ=$("#dePJM").value.trim(); n.nivel=$("#deNivel").value; n.letra=$("#deLetra").value;
       if(remote()&&!state.demo){ try{ const up=clone(n); delete up.id; delete up.avisos; up.actualizado=new Date().toISOString(); await dref("estudiantes/"+e.id).update(up); toast("Datos guardados"); }catch(err){ toast("No se pudieron guardar los datos."); } }
       else if(await saveEst(n)) toast("Datos guardados"); };
