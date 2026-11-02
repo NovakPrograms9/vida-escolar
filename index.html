@@ -74,7 +74,8 @@ nav.tabs button:hover{color:var(--head-ink)}
 nav.tabs button:focus-visible,.autor-btn:focus-visible{outline-color:var(--head-tab)}
 .tabs .count{font-size:11px;background:#e5484d;color:#fff;border-radius:999px;padding:1px 7px;margin-left:4px;vertical-align:1px}
 
-main{padding-block:22px 70px}
+main{padding-block:22px 40px}
+.pie{text-align:center;font-size:12.5px;color:var(--muted);padding:18px 16px 28px;border-top:1px solid var(--line);margin-top:10px}
 .banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--accent-soft);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:14px}
 .banner.warnb{background:var(--warn-soft)}
 
@@ -400,6 +401,7 @@ button.kpi{cursor:pointer} button.kpi:hover{border-color:var(--muted)}
   <section id="view-stats" role="tabpanel" hidden></section>
   <section id="view-ajustes" role="tabpanel" hidden></section>
 </main>
+<footer class="pie" id="pie">Sistema programado por Nicolás Novakovic</footer>
 
 <div id="drawerHost"></div>
 <div id="gate" class="gate" hidden></div>
@@ -821,18 +823,18 @@ async function copiar(txt, btn){
 }
 
 /* ---------- Perfiles con PIN (como Convivencia) ---------- */
-const ROLES_PERFIL = { admin:{l:"Administración", d:"Todo: registros, Ajustes, perfiles y eliminar registros."}, inspector:{l:"Inspector/a", d:"Registra y edita atrasos, anotaciones, dispositivos, medidas y citaciones."} };
+const ROLES_PERFIL = { admin:{l:"Administración", d:"Todo: registros, Estadísticas, Ajustes, perfiles y eliminar registros."}, inspector:{l:"Inspector/a", d:"Registra y edita atrasos, anotaciones, dispositivos, medidas y citaciones."} };
 let PERFIL=null;
 const perfilesLista = () => Array.isArray(state.config.perfiles) ? state.config.perfiles : [];
 const hayPerfiles = () => state.mode==="fb" && perfilesLista().length>0;
-function can(accion){ if(!hayPerfiles() || state.demo) return true; if(!PERFIL) return false; if(accion==="ajustes"||accion==="eliminar") return PERFIL.rol==="admin"; return true; }
+function can(accion){ if(!hayPerfiles() || state.demo) return true; if(!PERFIL) return false; if(accion==="ajustes"||accion==="eliminar"||accion==="stats") return PERFIL.rol==="admin"; return true; }
 async function hashClave(v){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode("vida-escolar-lcg|"+String(v))); return Array.from(new Uint8Array(buf),x=>x.toString(16).padStart(2,"0")).join(""); }
 const hashPin = (id,pin) => hashClave("pin|"+id+"|"+pin);
 async function checkClave(v){ const c=state.config; if(c.claveHash){ try{ return (await hashClave(v))===c.claveHash; }catch(e){ return false; } } return String(v)===String(c.claveEliminar||"0000"); }
 function pinAzar(){ const a=new Uint32Array(1); crypto.getRandomValues(a); return String(1000+(a[0]%9000)); }
 function iniciarPerfil(p, recordar){ PERFIL=p; ME=p.nombre+(p.cargo?", "+p.cargo:""); if(recordar) lsSet("ve-perfil",p.id); aplicarPermisos(); renderAll(); if(state.tab==="ajustes") renderAjustes(); }
 function cerrarSesion(){ PERFIL=null; ME=null; try{ localStorage.removeItem("ve-perfil"); }catch(e){} closeDrawer(); aplicarPermisos(); renderHeader(); elegirPerfil(); }
-function aplicarPermisos(){ const ta=$("#tab-ajustes"); ta.hidden = hayPerfiles() && !can("ajustes"); if(state.tab==="ajustes" && ta.hidden) setTab("hoy"); }
+function aplicarPermisos(){ const ta=$("#tab-ajustes"), ts=$("#tab-stats"); ta.hidden = hayPerfiles() && !can("ajustes"); ts.hidden = hayPerfiles() && !can("stats"); if((state.tab==="ajustes" && ta.hidden)||(state.tab==="stats" && ts.hidden)) setTab("hoy"); }
 function syncSesion(){
   if(state.mode!=="fb" || !$("#gate").hidden) return;
   if(hayPerfiles()){
@@ -924,7 +926,7 @@ async function abrirAdjunto(id, nombre){
 
 /* =================== Respaldo: exportar e importar =================== */
 async function exportarRespaldo(){
-  const data={app:"vida-escolar-lcg", version:1, exportado:new Date().toISOString(), anio:state.year, config:state.config, estudiantes:E(), registros:R()};
+  const data={app:"vida-escolar-lcg", version:1, programadoPor:"Nicolás Novakovic", exportado:new Date().toISOString(), anio:state.year, config:state.config, estudiantes:E(), registros:R()};
   try{ await saveFile("vida-escolar-respaldo-"+today()+".json", JSON.stringify(data,null,1), "application/json"); }catch(e){ toast("No se descargó el archivo."); }
 }
 async function importarRespaldo(file){
@@ -948,6 +950,7 @@ async function importarRespaldo(file){
 /* =================== Pestañas y cabecera =================== */
 const TABS=["hoy","cal","registrar","estudiantes","registros","stats","ajustes"];
 function setTab(t){
+  if(hayPerfiles() && ((t==="stats"&&!can("stats"))||(t==="ajustes"&&!can("ajustes")))) t="hoy";
   state.tab=t;
   $$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===t)));
   TABS.forEach(k=>{ $("#view-"+k).hidden = k!==t; });
@@ -1527,6 +1530,7 @@ function renderRegistros(){
   $("#rCsv").hidden=!canDL();
   host.innerHTML = list.length ? '<p class="ref" style="margin:0 0 8px">'+list.length+' registros'+(list.length>300?' (se muestran los 300 más recientes)':'')+'.</p>'+regList(list.slice(0,300),true) : '<div class="emptybox"><h3>Sin registros con estos filtros</h3><p>Pruebe con otro rango de fechas o borre la búsqueda.</p></div>';
 }
+const CREDITO = "Sistema programado por Nicolás Novakovic";
 let DL=null;
 const canDL = () => !!DL || !IN_CLAUDE;
 async function initDownloads(){ try{ if(IN_CLAUDE) DL=await window.claude.use("downloads"); }catch(e){ DL=null; } if(state.tab==="registros") renderRegistros(); }
@@ -1535,7 +1539,7 @@ $("#rCsv").onclick=async()=>{
   const list=regFiltrados(), q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
   const head=["Fecha","Hora","Tipo","Estudiante","Curso","Detalle","Gravedad","Registró"];
   const rows=list.map(r=>[r.fecha,r.hora||r.sesHora||"",TIPOS[r.tipo],r.nombre,cursoLabel(r.nivel,r.letra),detalle(r),r.tipo==="anotacion"?GRAV[r.gravedad]:"",r.por||""]);
-  const csv="\uFEFF"+[head].concat(rows).map(r=>r.map(q).join(";")).join("\r\n");
+  const csv="\uFEFF"+[head].concat(rows,[[""],[CREDITO]]).map(r=>r.map(q).join(";")).join("\r\n");
   try{ await saveFile("vida-escolar-"+today()+".csv",csv,"text/csv;charset=utf-8"); }catch(e){ toast("No se descargó el archivo."); }
 };
 
