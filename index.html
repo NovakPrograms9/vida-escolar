@@ -752,6 +752,15 @@ async function initStore(){
   }
   renderAll();
 }
+// Corrección única: nombres completos de profesores jefe que venían incompletos en las listas.
+const PJ_FIX = [["6B","A","Broussaingaray","Barbara Broussaingaray"],["3M","B","Lizama","Rodolfo Lizama"]];
+let pjFixing=false;
+async function corregirPJ(){
+  if(pjFixing || state.demo || !remote()) return;
+  const xs=[]; E().forEach(e=>PJ_FIX.forEach(([n,l,a,b])=>{ if(e.nivel===n && (e.letra||"")===l && (e.profesorJefe||"").trim()===a) xs.push([e.id,b]); }));
+  if(!xs.length) return; pjFixing=true;
+  try{ for(const [id,pj] of xs) await dref("estudiantes/"+id).update({profesorJefe:pj}); }catch(err){} pjFixing=false;
+}
 let autoDemoDone=false;
 function afterLoad(){
   if(state.gotR && state.gotE && !state.loaded){
@@ -759,6 +768,7 @@ function afterLoad(){
     let off=false; try{ off=localStorage.getItem("ve-demo-off")==="1"; }catch(e){}
     if(!autoDemoDone && !off && state.mode!=="fb" && !state.registros.length && !state.estudiantes.length){ autoDemoDone=true; startDemo(); return; }
   }
+  if(state.loaded) corregirPJ();
   if(state.demo && (state.registros.length || state.estudiantes.length) && state.demoAuto){ state.demo=false; state.demoData=null; toast("Ya hay registros reales: se cerró la demostración."); }
   renderAll();
 }
