@@ -900,12 +900,22 @@ function renderPerfiles(){
   $("#eqLink").textContent=enlaceEquipo();
   const ps=perfilesLista().slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
   $("#pfIntro").textContent = ps.length ? "Cada persona entra eligiendo su nombre y escribiendo su PIN. Lo que registre queda con su nombre." : "Aún no hay perfiles: cualquiera con el enlace entra escribiendo su nombre. Cree primero su propio perfil de Administración.";
-  $("#pfList").innerHTML = ps.length ? ps.map(p=>'<li><span><strong>'+esc(p.nombre)+'</strong>'+(p.cargo?' · '+esc(p.cargo):'')+'<span class="sub">'+esc((ROLES_PERFIL[p.rol]||{}).l||p.rol)+(PERFIL&&PERFIL.id===p.id?' · (usted)':'')+'</span></span><span class="row" style="gap:6px"><button class="btn sm" data-pfpin="'+esc(p.id)+'" type="button">Cambiar PIN</button><button class="btn sm ghost" style="color:var(--danger)" data-pfdel="'+esc(p.id)+'" type="button">Quitar</button></span></li>').join("") : '<li class="muted">Sin perfiles todavía.</li>';
+  $("#pfList").innerHTML = ps.length ? ps.map(p=>'<li><span><strong>'+esc(p.nombre)+'</strong>'+(p.cargo?' · '+esc(p.cargo):'')+'<span class="sub">'+esc((ROLES_PERFIL[p.rol]||{}).l||p.rol)+(PERFIL&&PERFIL.id===p.id?' · (usted)':'')+'</span></span><span class="row" style="gap:6px"><button class="btn sm" data-pfedit="'+esc(p.id)+'" type="button">Editar</button><button class="btn sm" data-pfpin="'+esc(p.id)+'" type="button">Cambiar PIN</button><button class="btn sm ghost" style="color:var(--danger)" data-pfdel="'+esc(p.id)+'" type="button">Quitar</button></span></li>').join("") : '<li class="muted">Sin perfiles todavía.</li>';
   if(!ps.length) $("#pfRol").value="admin";
   $$("[data-pfdel]").forEach(b=>b.onclick=async()=>{ const id=b.dataset.pfdel, lista=perfilesLista().filter(x=>x.id!==id);
     if(lista.length && !lista.some(x=>x.rol==="admin")){ toast("Debe quedar al menos un perfil de Administración."); return; }
     if(b.dataset.confirm!=="1"){ b.dataset.confirm="1"; b.textContent="¿Quitar? Toque de nuevo"; return; }
     if(await guardarPerfiles(lista)){ toast("Perfil quitado"); if(PERFIL&&PERFIL.id===id) cerrarSesion(); else renderPerfiles(); } });
+  $$("[data-pfedit]").forEach(b=>b.onclick=()=>{ const id=b.dataset.pfedit, p=perfilesLista().find(x=>x.id===id); if(!p) return; const li=b.closest("li");
+    li.innerHTML='<div class="grid g4" style="flex:1;align-items:end;gap:8px"><label class="f">Nombre<input type="text" id="pfeN" value="'+esc(p.nombre)+'"></label><label class="f">Cargo<input type="text" id="pfeC" value="'+esc(p.cargo||"")+'" placeholder="Ej.: Inspectora 6° a 8°"></label><label class="f">Perfil<select id="pfeR">'+Object.entries(ROLES_PERFIL).map(([k,v])=>'<option value="'+k+'"'+(p.rol===k?" selected":"")+'>'+esc(v.l)+'</option>').join("")+'</select></label><span class="row" style="gap:6px"><button class="btn sm primary" type="button" id="pfeSave">Guardar</button><button class="btn sm" type="button" id="pfeNo">Cancelar</button></span></div>';
+    $("#pfeN").focus(); $("#pfeNo").onclick=renderPerfiles;
+    $("#pfeSave").onclick=async()=>{ const nombre=$("#pfeN").value.trim().replace(/\s+/g," "), cargo=$("#pfeC").value.trim(), rol=$("#pfeR").value;
+      if(nombre.length<2){ toast("Escriba el nombre."); $("#pfeN").focus(); return; }
+      if(perfilesLista().some(x=>x.id!==id && nkey(x.nombre)===nkey(nombre))){ toast("Ya hay un perfil con ese nombre."); return; }
+      const lista=perfilesLista().map(x=>x.id===id?Object.assign({},x,{nombre,cargo,rol}):x);
+      if(!lista.some(x=>x.rol==="admin")){ toast("Debe quedar al menos un perfil de Administración."); return; }
+      if(await guardarPerfiles(lista)){ toast("Perfil actualizado"); if(PERFIL&&PERFIL.id===id){ PERFIL=lista.find(x=>x.id===id); ME=PERFIL.nombre+(PERFIL.cargo?", "+PERFIL.cargo:""); aplicarPermisos(); renderHeader(); } renderPerfiles(); } else toast("No se pudo guardar el perfil."); };
+    li.querySelectorAll("input").forEach(i=>i.onkeydown=ev=>{ if(ev.key==="Enter"){ ev.preventDefault(); $("#pfeSave").click(); } }); });
   $$("[data-pfpin]").forEach(b=>b.onclick=()=>{ const id=b.dataset.pfpin, act=b.parentElement;
     act.innerHTML='<input type="password" inputmode="numeric" maxlength="8" placeholder="Nuevo PIN (4 a 8 números)" style="width:190px;min-height:32px;padding:4px 8px" id="pfNewPin"><button class="btn sm primary" type="button" id="pfPinSave">Guardar</button><button class="btn sm" type="button" id="pfPinRand">Al azar</button>';
     const inp=$("#pfNewPin"); inp.focus();
