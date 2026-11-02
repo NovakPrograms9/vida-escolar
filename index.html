@@ -12,7 +12,7 @@
   --head-bg:#0f3f7a; --head-ink:#ffffff; --head-muted:#b9c9e6; --head-line:#2a5692; --head-tab:#ff6b7d; --brand-red:#e4152f;
   --danger:#b3261e; --danger-soft:#fbe3e0; --warn:#8f5a00; --warn-soft:#fbeed2; --ok:#2c6a3d; --ok-soft:#dff0e3;
   --scrim:rgba(10,15,20,.45);
-  --t-atr:#1d5fbf; --t-atr-soft:#e1ebfa; --t-an:#9a5500; --t-an-soft:#fcecd4; --t-dis:#b4233c; --t-dis-soft:#fbe1e5; --t-med:#2a7442; --t-med-soft:#ddf1e3; --t-cit:#6a3fb5; --t-cit-soft:#ece4f9; --t-pos:#0b7a7e; --t-pos-soft:#d9f1f1;
+  --t-atr:#1d5fbf; --t-atr-soft:#e1ebfa; --t-an:#9a5500; --t-an-soft:#fcecd4; --t-dis:#b4233c; --t-dis-soft:#fbe1e5; --t-med:#2a7442; --t-med-soft:#ddf1e3; --t-cit:#6a3fb5; --t-cit-soft:#ece4f9; --t-pos:#0b7a7e; --t-pos-soft:#d9f1f1; --t-ret:#4d5b70; --t-ret-soft:#e5e9ef;
   --shadow:0 10px 40px rgba(20,30,40,.18);
   --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --f-body:"Public Sans","Segoe UI",system-ui,-apple-system,sans-serif;
@@ -23,14 +23,14 @@
   --accent:#8fb0f0; --accent-ink:#0b1630; --accent-soft:#1b2944; --bar2:#34507f;
   --head-bg:#0b1733; --head-ink:#eef2fb; --head-muted:#98a8cc; --head-line:#1f2e52; --head-tab:#ff8a98; --brand-red:#e4152f;
   --danger:#f08c84; --danger-soft:#3b1d1a; --warn:#e9b658; --warn-soft:#382b12; --ok:#81cd96; --ok-soft:#16301f;
-  --t-atr:#8db8f5; --t-atr-soft:#1a2b47; --t-an:#f0b860; --t-an-soft:#3a2a10; --t-dis:#f28da0; --t-dis-soft:#3d1a23; --t-med:#86d29c; --t-med-soft:#16321f; --t-cit:#c4a6f5; --t-cit-soft:#2b2143; --t-pos:#6fd6d9; --t-pos-soft:#11343a;
+  --t-atr:#8db8f5; --t-atr-soft:#1a2b47; --t-an:#f0b860; --t-an-soft:#3a2a10; --t-dis:#f28da0; --t-dis-soft:#3d1a23; --t-med:#86d29c; --t-med-soft:#16321f; --t-cit:#c4a6f5; --t-cit-soft:#2b2143; --t-pos:#6fd6d9; --t-pos-soft:#11343a; --t-ret:#b9c4d4; --t-ret-soft:#262e3a;
   --scrim:rgba(0,0,0,.6); --shadow:0 10px 40px rgba(0,0,0,.5); color-scheme:dark; } }
 :root[data-theme="dark"]{
   --bg:#0f1422; --surface:#161d2e; --surface-2:#1f2839; --ink:#e4e9f4; --muted:#98a3ba; --line:#2a3448;
   --accent:#8fb0f0; --accent-ink:#0b1630; --accent-soft:#1b2944; --bar2:#34507f;
   --head-bg:#0b1733; --head-ink:#eef2fb; --head-muted:#98a8cc; --head-line:#1f2e52; --head-tab:#ff8a98; --brand-red:#e4152f;
   --danger:#f08c84; --danger-soft:#3b1d1a; --warn:#e9b658; --warn-soft:#382b12; --ok:#81cd96; --ok-soft:#16301f;
-  --t-atr:#8db8f5; --t-atr-soft:#1a2b47; --t-an:#f0b860; --t-an-soft:#3a2a10; --t-dis:#f28da0; --t-dis-soft:#3d1a23; --t-med:#86d29c; --t-med-soft:#16321f; --t-cit:#c4a6f5; --t-cit-soft:#2b2143; --t-pos:#6fd6d9; --t-pos-soft:#11343a;
+  --t-atr:#8db8f5; --t-atr-soft:#1a2b47; --t-an:#f0b860; --t-an-soft:#3a2a10; --t-dis:#f28da0; --t-dis-soft:#3d1a23; --t-med:#86d29c; --t-med-soft:#16321f; --t-cit:#c4a6f5; --t-cit-soft:#2b2143; --t-pos:#6fd6d9; --t-pos-soft:#11343a; --t-ret:#b9c4d4; --t-ret-soft:#262e3a;
   --scrim:rgba(0,0,0,.6); --shadow:0 10px 40px rgba(0,0,0,.5); color-scheme:dark; }
 
 *{box-sizing:border-box}
@@ -118,7 +118,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .chip.extrema,.chip.bad{background:var(--danger-soft);color:var(--danger)}
 .chip.ok{background:var(--ok-soft);color:var(--ok)}
 .tchip{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
-.t-atraso{--tc:var(--t-atr);--ts:var(--t-atr-soft)} .t-positiva{--tc:var(--t-pos);--ts:var(--t-pos-soft)} .t-anotacion{--tc:var(--t-an);--ts:var(--t-an-soft)} .t-dispositivo{--tc:var(--t-dis);--ts:var(--t-dis-soft)} .t-medida{--tc:var(--t-med);--ts:var(--t-med-soft)} .t-citacion{--tc:var(--t-cit);--ts:var(--t-cit-soft)}
+.t-atraso{--tc:var(--t-atr);--ts:var(--t-atr-soft)} .t-positiva{--tc:var(--t-pos);--ts:var(--t-pos-soft)} .t-anotacion{--tc:var(--t-an);--ts:var(--t-an-soft)} .t-dispositivo{--tc:var(--t-dis);--ts:var(--t-dis-soft)} .t-medida{--tc:var(--t-med);--ts:var(--t-med-soft)} .t-citacion{--tc:var(--t-cit);--ts:var(--t-cit-soft)} .t-retiro{--tc:var(--t-ret);--ts:var(--t-ret-soft)}
 .tchip{background:var(--ts,var(--surface-2));color:var(--tc,var(--muted))}
 .legend{display:flex;gap:6px;flex-wrap:wrap}
 .hoy-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,390px);gap:20px;align-items:start}
@@ -229,7 +229,8 @@ button.kpi{cursor:pointer} button.kpi:hover{border-color:var(--muted)}
 .calm{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--muted);font-size:14px}
 
 /* Registrar */
-.types{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.types{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:16px}
+@media (max-width:900px){.types{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:640px){.types{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .types button{border:1.5px solid var(--line);background:var(--surface);border-radius:11px;padding:11px 8px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
 .types button small{font-weight:400;font-size:11.5px;color:var(--muted)}
@@ -546,7 +547,9 @@ const CITA_MOTIVOS = ["Aviso por atrasos reiterados","Constancia por más de 5 a
 const CITA_EST = {pendiente:"Pendiente", asistio:"Asistió", no_asistio:"No asistió", reagendada:"Reagendada"};
 const DISPOSITIVOS = ["Celular","Smartwatch","Audífonos","Tablet","Parlante","Otro"];
 const LUGARES = ["Sala de clases","Patio / recreo","Pasillo","Casino","Gimnasio","Baños","Biblioteca","Ingreso / portería","Salida pedagógica","Otro"];
-const TIPOS = {atraso:"Atraso", anotacion:"Anotación", positiva:"Anotación positiva", dispositivo:"Dispositivo", medida:"Medida", citacion:"Citación apoderado"};
+// Motivos de retiro, igual que en el sistema del colegio.
+const RETIRO_MOTIVOS = ["Viaje Familiar","Control Médico","Asunto Familiar","Inconveniente de Salud","Accidente Escolar","Viaje por Competencia Deportiva","Salida Pedagógica","Actividad Extraprogramática"];
+const TIPOS = {atraso:"Atraso", retiro:"Retiro", anotacion:"Anotación", positiva:"Anotación positiva", dispositivo:"Dispositivo", medida:"Medida", citacion:"Citación apoderado"};
 // Comportamientos destacados según los valores del PEI — RICE pág. 112–113.
 const POSITIVAS = ["Liderazgo positivo para una convivencia pacífica","Liderazgo positivo en actividades curriculares y extracurriculares","Proactividad en el cuidado del medio y espacio educativo","Interactúa de manera armónica con sus compañeros/as","Reconoce y valora opiniones distintas a las propias","Usa un vocabulario adecuado y cortés","Resuelve sus diferencias de manera pacífica","Participa en instancias de formación valórica, ciudadana y DDHH","Asistencia, puntualidad y presentación personal constantes","Uso correcto y oportuno del uniforme","Valora y protege las dependencias, el aseo y el ornato","Representa al colegio en actividades extraescolares","Actúa de manera solidaria con quien lo necesita","Cumple con tareas, deberes y compromisos adquiridos"];
 const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
@@ -641,6 +644,7 @@ function motivoTexto(m){ if(m.motivoId){ const a=R().find(r=>r.id===m.motivoId);
 function detalle(r){
   if(r.tipo==="atraso") return (r.hora||"")+(r.min>0?" · "+r.min+" min":"")+(r.justificado?" · justificado":"")+(r.motivo?" · "+r.motivo:"");
   if(r.tipo==="positiva") return r.conducta;
+  if(r.tipo==="retiro") return r.motivo||"";
   if(r.tipo==="anotacion") return (r.anulada?(r.anulada.tipo==="cert"?"(Certificado médico) ":r.anulada.tipo==="otra"?"(Justificada) ":"(Anulada) "):"")+r.conducta+(r.descripcion?" — "+r.descripcion:"");
   if(r.tipo==="dispositivo") return (r.dispositivo||"Dispositivo")+" · "+ordinal(r.infraccion)+" infracción · "+(r.estado==="devuelto"?"devuelto "+fechaCorta(r.devolucion&&r.devolucion.fecha):"en custodia");
   if(r.tipo==="medida"){ const m=MMAP[r.medida]; let t=m?m.l:r.medida; if(m&&m.s) t+=" · "+fechaCorta(r.sesFecha)+" "+(r.sesHora||"")+" · "+SES_EST[r.estado||"programada"]; if(r.medida==="suspension") t+=" · "+r.dias+" día(s), hasta "+fechaCorta(r.hasta); if(m&&m.c) t+=" · "+(r.cartaEstado==="levantada"?"levantada":"vigente"); return t; }
@@ -973,11 +977,11 @@ document.addEventListener("click",ev=>{
 const estLink = (id,nombre) => '<button type="button" class="linkname" data-est="'+esc(id)+'">'+esc(nombre)+'</button>';
 
 /* ---- Eventos por día (Hoy y Calendario) ---- */
-const TLABEL = {atraso:"Atrasos", anotacion:"Anotaciones negativas", positiva:"Anotaciones positivas", dispositivo:"Dispositivos requisados", medida:"Medidas", citacion:"Citaciones"};
+const TLABEL = {atraso:"Atrasos", retiro:"Retiros", anotacion:"Anotaciones negativas", positiva:"Anotaciones positivas", dispositivo:"Dispositivos requisados", medida:"Medidas", citacion:"Citaciones"};
 function eventosDia(f){
   const out=[], work=isWork(parse(f));
   R().forEach(r=>{
-    if((r.tipo==="atraso"||r.tipo==="anotacion"||r.tipo==="positiva"||r.tipo==="dispositivo") && r.fecha===f) out.push({k:"reg",t:r.tipo,r,h:r.hora||"",f});
+    if((r.tipo==="atraso"||r.tipo==="retiro"||r.tipo==="anotacion"||r.tipo==="positiva"||r.tipo==="dispositivo") && r.fecha===f) out.push({k:"reg",t:r.tipo,r,h:r.hora||"",f});
     if(r.tipo==="medida"){ const m=MMAP[r.medida]||{};
       if(m.s){ if(r.sesFecha===f) out.push({k:"ses",t:"medida",r,h:r.sesHora||"",f}); }
       else if(r.medida==="suspension"){ if(r.desde<=f && r.hasta>=f && work) out.push({k:"susp",t:"medida",r,h:"",f}); }
@@ -1213,7 +1217,7 @@ let PK={sel:null, q:"", act:0}, prefill=null;
 function renderRegistrar(){
   const host=$("#view-registrar");
   if(prefill){ const e=EST.get(prefill.estId); if(e) PK.sel={id:e.id,nombre:e.nombre,nivel:e.nivel,letra:e.letra}; if(prefill.tipo) state.regTipo=prefill.tipo; }
-  const T=[["atraso","Atraso","en la puerta"],["anotacion","Anotación negativa","solo el motivo"],["positiva","Anotación positiva","reconocimiento"],["dispositivo","Dispositivo","celular requisado"],["medida","Medida","castigo o sanción"],["citacion","Citación","al apoderado"]];
+  const T=[["atraso","Atraso","en la puerta"],["retiro","Retiro","salida anticipada"],["anotacion","Anotación negativa","solo el motivo"],["positiva","Anotación positiva","reconocimiento"],["dispositivo","Dispositivo","celular requisado"],["medida","Medida","castigo o sanción"],["citacion","Citación","al apoderado"]];
   host.innerHTML='<div class="types" role="group" aria-label="Qué registrar">'+T.map(([k,l,s])=>'<button type="button" data-tipo="'+k+'" aria-pressed="'+(state.regTipo===k)+'">'+l+'<small>'+s+'</small></button>').join("")+'</div>'+
     '<div id="resHost"></div><div class="panel"><div class="grid" style="gap:16px"><div id="pkHost"></div><div id="fHost" class="grid" style="gap:14px"></div></div>'+
     '<div class="form-actions"><span class="err" id="fErr" role="alert"></span><button class="btn primary" id="fSave" type="button">Guardar</button></div></div>'+
@@ -1327,6 +1331,15 @@ function renderFields(){
       $("#mHint").innerHTML=h; };
     $("#mTipo").onchange=upd; $("#mMot").onchange=upd; $("#mCom").oninput=hint; upd();
   }
+  if(t==="retiro"){
+    host.innerHTML='<div class="grid g2"><label class="f">Fecha<input type="date" id="fFecha" value="'+d+'"></label><label class="f">Hora de salida<input type="time" id="fHora" value="'+hm+'"></label></div>'+
+      '<label class="f">Motivo<select id="rMot">'+RETIRO_MOTIVOS.map(x=>'<option>'+esc(x)+'</option>').join("")+'</select></label><div id="rHint"></div>';
+    const upd=()=>{ const m=$("#rMot").value, h=$("#fHora").value||"";
+      let x='<div class="hintbox">Retira solo el apoderado o la persona autorizada en Schoolnet, por recepción, firmando el registro (RICE pág. 38).'+(h>="12:50"&&h<"14:10"?' Si el estudiante se queda a almorzar en el colegio (12:50 a 14:10), debe permanecer hasta el término de la jornada de la tarde.':'')+'</div>';
+      if(m==="Viaje por Competencia Deportiva"||m==="Actividad Extraprogramática") x+='<div class="hintbox" style="margin-top:8px">En actividades en representación del colegio se necesita la autorización firmada del apoderado o un correo, y queda registrada en Schooltrack.</div>';
+      $("#rHint").innerHTML=x; };
+    $("#rMot").onchange=upd; $("#fHora").oninput=upd; upd();
+  }
   if(t==="positiva"){
     host.innerHTML='<div class="grid g2"><label class="f">Fecha<input type="date" id="fFecha" value="'+d+'"></label></div>'+
       '<label class="f">Motivo <span class="hint">Comportamientos destacados según los valores del PEI, RICE pág. 112</span><select id="pMot">'+POSITIVAS.map(x=>'<option>'+esc(x)+'</option>').join("")+'<option value="__otro">Otro motivo…</option></select></label>'+
@@ -1386,6 +1399,11 @@ async function guardar(){
       if(m.c) r.cartaEstado="vigente";
       if(!(await saveReg(r))) return;
       res={html:esc(m.l)+' registrada para <strong>'+esc(e.nombre)+'</strong>.'+(m.s?' Aparecerá en el <strong>Calendario</strong> y en <strong>Hoy</strong> el '+esc(fechaLarga(r.sesFecha))+' para pasar asistencia.':'')};
+    }
+    if(t==="retiro"){
+      Object.assign(r,{fecha:f,hora:h,motivo:$("#rMot").value});
+      if(!(await saveReg(r))) return;
+      res={html:'Retiro registrado: <strong>'+esc(e.nombre)+'</strong>, '+esc(fechaLarga(f))+(h?' a las '+esc(h):'')+' · '+esc(r.motivo)+'.'};
     }
     if(t==="positiva"){
       const v=$("#pMot").value, cond=v==="__otro"?$("#pOtro").value.trim():v;
@@ -1524,9 +1542,10 @@ function drawerReg(id){
     acts+= !ap ? '<button class="btn" data-x="apelar">Registrar apelación</button>' : ap.estado==="pendiente" ? '<button class="btn" data-x="apelOk">Apelación acogida</button><button class="btn" data-x="apelNo">Apelación rechazada</button>' : '';
   }
   if(r.tipo==="positiva"){ add("Motivo",esc(r.conducta)); }
+  if(r.tipo==="retiro"){ add("Motivo",esc(r.motivo)); }
   if(r.tipo==="citacion"){ add("Con",esc(r.con)); add("Motivo",esc(r.motivo)); add("Estado",esc(CITA_EST[r.estado||"pendiente"])+(r.asistencia?" · registrado por "+esc(r.asistencia.por):"")); add("Observaciones",esc(r.obs)); acts='<button class="btn" data-cit="'+esc(r.id)+'" data-v="asistio">Asistió</button><button class="btn" data-cit="'+esc(r.id)+'" data-v="no_asistio">No asistió</button><button class="btn" data-cit="'+esc(r.id)+'" data-v="reagendada">Reagendada</button>'; }
   add("Registró",esc(r.por||"—")+(r.auto?" · automático":""));
-  let h='<div class="d-head"><div><div class="eyebrow"><span class="tchip t-'+r.tipo+'">'+esc(TIPOS[r.tipo])+'</span></div><h2 id="dTitle">'+esc(r.tipo==="anotacion"||r.tipo==="positiva"?r.conducta:r.tipo==="medida"?(MMAP[r.medida]||{}).l:r.tipo==="citacion"?"Citación: "+r.motivo:r.tipo==="dispositivo"?(r.dispositivo||"Dispositivo")+" requisado":"Atraso de "+r.nombre)+'</h2></div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
+  let h='<div class="d-head"><div><div class="eyebrow"><span class="tchip t-'+r.tipo+'">'+esc(TIPOS[r.tipo])+'</span></div><h2 id="dTitle">'+esc(r.tipo==="anotacion"||r.tipo==="positiva"?r.conducta:r.tipo==="medida"?(MMAP[r.medida]||{}).l:r.tipo==="citacion"?"Citación: "+r.motivo:r.tipo==="dispositivo"?(r.dispositivo||"Dispositivo")+" requisado":r.tipo==="retiro"?"Retiro de "+r.nombre:"Atraso de "+r.nombre)+'</h2></div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
   h+='<div class="panel"><dl class="kv">'+kv.join("")+'</dl>'+(acts?'<div class="row" style="margin-top:14px">'+acts+'</div>':'')+'</div>';
   h+='<div id="apHost">'+(d.justify && r.tipo==="anotacion" && !r.anulada ? justifPanel(r) : '')+'</div>';
   h+= d.confirm ? '<div class="confirm"><label class="f" style="flex:1 1 160px">Clave para eliminar<input type="password" id="delKey" autocomplete="off"></label><button class="btn" id="delNo" type="button">Cancelar</button><button class="btn danger" id="delSi" type="button">Eliminar registro</button></div>' : '<div class="row"><button class="btn ghost" style="color:var(--danger)" id="delAsk" type="button">Eliminar registro…</button></div>';
@@ -1638,7 +1657,7 @@ function renderStats(){
   const opts=[["actual",periodLabel(cp)],[y+"-S1","1er semestre "+y],[y+"-S2","2° semestre "+y],["anio","Año "+y]];
   const inP = f => sel==="anio" ? String(f).startsWith(y) : (sel==="actual" ? (state.config.periodo==="anio"?String(f).startsWith(y):periodOf(f)===cp) : (String(f).startsWith(y) && (String(f).slice(5)>=(state.config.s2Inicio||"08-01")?"S2":"S1")===sel.slice(-2)));
   const L=R().filter(r=>inP(r.fecha));
-  const atr=L.filter(r=>r.tipo==="atraso"&&!r.justificado), an=L.filter(r=>r.tipo==="anotacion"&&!r.anulada), dis=L.filter(r=>r.tipo==="dispositivo"), med=L.filter(r=>r.tipo==="medida");
+  const atr=L.filter(r=>r.tipo==="atraso"&&!r.justificado), an=L.filter(r=>r.tipo==="anotacion"&&!r.anulada), dis=L.filter(r=>r.tipo==="dispositivo"), med=L.filter(r=>r.tipo==="medida"), ret=L.filter(r=>r.tipo==="retiro");
   const ses=med.filter(r=>MMAP[r.medida]&&MMAP[r.medida].s);
   const tally=(list,fn)=>{ const m=new Map(); list.forEach(r=>{ const k=fn(r); if(!k) return; m.set(k,(m.get(k)||0)+1); }); return [...m.entries()].map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v); };
   const porCurso=tally(atr,r=>cursoLabel(r.nivel,r.letra));
@@ -1648,13 +1667,14 @@ function renderStats(){
   const conds=tally(an,r=>r.conducta).slice(0,8);
   const cumpl={c:ses.filter(r=>r.estado==="cumplida").length,n:ses.filter(r=>r.estado==="no_asistio").length,p:ses.filter(r=>(r.estado||"programada")==="programada").length};
   host.innerHTML='<div class="section-h"><div><div class="eyebrow">Estadísticas</div><h2>Vida Escolar en cifras</h2></div><label class="f">Periodo<select id="stP">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+esc(l)+'</option>').join("")+'</select></label></div>'+
-    '<div class="kpis">'+kpiStat(atr.length,"Atrasos sin justificar")+kpiStat(an.length,"Anotaciones negativas")+kpiStat(L.filter(r=>r.tipo==="positiva").length,"Anotaciones positivas")+kpiStat(dis.length,"Dispositivos requisados")+kpiStat(med.length,"Medidas aplicadas")+'</div>'+
+    '<div class="kpis">'+kpiStat(atr.length,"Atrasos sin justificar")+kpiStat(an.length,"Anotaciones negativas")+kpiStat(L.filter(r=>r.tipo==="positiva").length,"Anotaciones positivas")+kpiStat(dis.length,"Dispositivos requisados")+kpiStat(med.length,"Medidas aplicadas")+kpiStat(ret.length,"Retiros")+'</div>'+
     '<div class="charts">'+
     '<div class="card wide"><h3>Atrasos por mes</h3><p class="sub">Sin justificar · marzo a diciembre</p><div class="months">'+mc.map(v=>'<div class="mcol"><div class="top">'+(v||"")+'</div><div class="b" style="height:'+(v/mmax*100*0.85)+'%"></div></div>').join("")+'</div><div class="mlabels">'+months.map(m=>'<span>'+MESES[m]+'</span>').join("")+'</div></div>'+
     '<div class="card"><h3>Atrasos por curso</h3><p class="sub">Cursos con más atrasos</p>'+hbars(porCurso.slice(0,12))+'</div>'+
     '<div class="card"><h3>Estudiantes con más atrasos</h3><p class="sub">Los 10 primeros</p>'+hbars(topEst.map(i=>Object.assign(i,{c:i.v>=state.config.atrGrave?"b":i.v>=state.config.atrAviso?"w":""})))+'</div>'+
     '<div class="card"><h3>Anotaciones por gravedad</h3><p class="sub">Según tipificación del RICE</p>'+hbars([{l:"Leves",v:g.leve},{l:"Graves",v:g.grave,c:"w"},{l:"Extremadamente graves",v:g.extrema,c:"b"}])+'</div>'+
     '<div class="card"><h3>Motivos más frecuentes</h3><p class="sub">Anotaciones del periodo</p>'+hbars(conds)+'</div>'+
+    '<div class="card"><h3>Retiros por motivo</h3><p class="sub">Salidas anticipadas del periodo</p>'+hbars(tally(ret,r=>r.motivo))+'</div>'+
     '<div class="card"><h3>Cumplimiento de medidas fuera de jornada</h3><p class="sub">Trabajo especial, reflexión y servicios</p>'+hbars([{l:"Cumplidas",v:cumpl.c},{l:"No se presentó",v:cumpl.n,c:"b"},{l:"Programadas",v:cumpl.p,c:"w"}])+'</div>'+
     '</div>';
   $("#stP").onchange=ev=>{ state.statsP=ev.target.value; renderStats(); };
