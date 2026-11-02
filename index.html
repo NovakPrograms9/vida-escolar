@@ -1,0 +1,1723 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Registro de Vida Escolar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@500&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: misma familia que Convivencia Escolar — barra institucional con pestañas; "Hoy" como tablero de turno del inspector; registro rápido pensado para el celular en la puerta. */
+:root{
+  --bg:#e6f0fa; --surface:#ffffff; --surface-2:#edf3fa; --ink:#16203a; --muted:#52607a; --line:#cddbeb;
+  --accent:#0f3f7a; --accent-ink:#ffffff; --accent-soft:#e1e7f3; --bar2:#9fb1d6;
+  --head-bg:#0f3f7a; --head-ink:#ffffff; --head-muted:#b9c9e6; --head-line:#2a5692; --head-tab:#ff6b7d; --brand-red:#e4152f;
+  --danger:#b3261e; --danger-soft:#fbe3e0; --warn:#8f5a00; --warn-soft:#fbeed2; --ok:#2c6a3d; --ok-soft:#dff0e3;
+  --scrim:rgba(10,15,20,.45);
+  --t-atr:#1d5fbf; --t-atr-soft:#e1ebfa; --t-an:#9a5500; --t-an-soft:#fcecd4; --t-dis:#b4233c; --t-dis-soft:#fbe1e5; --t-med:#2a7442; --t-med-soft:#ddf1e3; --t-cit:#6a3fb5; --t-cit-soft:#ece4f9; --t-pos:#0b7a7e; --t-pos-soft:#d9f1f1;
+  --shadow:0 10px 40px rgba(20,30,40,.18);
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Public Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1422; --surface:#161d2e; --surface-2:#1f2839; --ink:#e4e9f4; --muted:#98a3ba; --line:#2a3448;
+  --accent:#8fb0f0; --accent-ink:#0b1630; --accent-soft:#1b2944; --bar2:#34507f;
+  --head-bg:#0b1733; --head-ink:#eef2fb; --head-muted:#98a8cc; --head-line:#1f2e52; --head-tab:#ff8a98; --brand-red:#e4152f;
+  --danger:#f08c84; --danger-soft:#3b1d1a; --warn:#e9b658; --warn-soft:#382b12; --ok:#81cd96; --ok-soft:#16301f;
+  --t-atr:#8db8f5; --t-atr-soft:#1a2b47; --t-an:#f0b860; --t-an-soft:#3a2a10; --t-dis:#f28da0; --t-dis-soft:#3d1a23; --t-med:#86d29c; --t-med-soft:#16321f; --t-cit:#c4a6f5; --t-cit-soft:#2b2143; --t-pos:#6fd6d9; --t-pos-soft:#11343a;
+  --scrim:rgba(0,0,0,.6); --shadow:0 10px 40px rgba(0,0,0,.5); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0f1422; --surface:#161d2e; --surface-2:#1f2839; --ink:#e4e9f4; --muted:#98a3ba; --line:#2a3448;
+  --accent:#8fb0f0; --accent-ink:#0b1630; --accent-soft:#1b2944; --bar2:#34507f;
+  --head-bg:#0b1733; --head-ink:#eef2fb; --head-muted:#98a8cc; --head-line:#1f2e52; --head-tab:#ff8a98; --brand-red:#e4152f;
+  --danger:#f08c84; --danger-soft:#3b1d1a; --warn:#e9b658; --warn-soft:#382b12; --ok:#81cd96; --ok-soft:#16301f;
+  --t-atr:#8db8f5; --t-atr-soft:#1a2b47; --t-an:#f0b860; --t-an-soft:#3a2a10; --t-dis:#f28da0; --t-dis-soft:#3d1a23; --t-med:#86d29c; --t-med-soft:#16321f; --t-cit:#c4a6f5; --t-cit-soft:#2b2143; --t-pos:#6fd6d9; --t-pos-soft:#11343a;
+  --scrim:rgba(0,0,0,.6); --shadow:0 10px 40px rgba(0,0,0,.5); color-scheme:dark; }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--head-bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--f-mono);font-size:.86em}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ref{font-size:12px;color:var(--muted)}
+
+/* Header */
+header.top{background:var(--head-bg);color:var(--head-ink);border-bottom:3px solid var(--brand-red);position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px 8px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo-plate{background:#fff;border-radius:10px;padding:5px 10px;display:flex;align-items:center;flex:none}
+.logo-plate img{height:40px;width:auto;display:block}
+@media (max-width:520px){.logo-plate img{height:30px}}
+.brand-sep{width:1px;align-self:stretch;background:var(--head-line)}
+.brand h1{font-size:19px}
+.brand p{margin:0;font-size:13px;color:var(--head-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mode{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--head-line);color:var(--head-muted)}
+.autor-btn{border:1px solid var(--head-line);background:transparent;color:var(--head-ink);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.autor-btn .al{font-weight:400;color:var(--head-muted)}
+.autor-btn.empty{background:var(--brand-red);border-color:var(--brand-red)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs button{background:none;border:0;padding:10px 14px 12px;border-bottom:2.5px solid transparent;color:var(--head-muted);font-weight:600;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--head-ink);border-bottom-color:var(--head-tab)}
+nav.tabs button:hover{color:var(--head-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+nav.tabs button:focus-visible,.autor-btn:focus-visible{outline-color:var(--head-tab)}
+.tabs .count{font-size:11px;background:#e5484d;color:#fff;border-radius:999px;padding:1px 7px;margin-left:4px;vertical-align:1px}
+
+main{padding-block:22px 70px}
+.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--accent-soft);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:14px}
+.banner.warnb{background:var(--warn-soft)}
+
+/* Buttons & fields */
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:9px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;text-align:center}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.sm{min-height:32px;padding:5px 10px;font-size:13px}
+.btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.btn.on-ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.btn.on-bad{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.btn.on-warn{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;min-width:0}
+label.f .hint{font-weight:400;color:var(--muted);font-size:12px}
+input[type=text],input[type=date],input[type=time],input[type=number],input[type=search],input[type=email],input[type=password],select,textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-weight:400;min-height:42px}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.check{display:flex;gap:9px;align-items:flex-start;font-size:14px;font-weight:500;cursor:pointer}
+.check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:none}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:720px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.g2,.g3{grid-template-columns:1fr}}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.row > .f{flex:1 1 150px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.panel + .panel{margin-top:16px}
+.panel h2{font-size:20px;margin-bottom:4px}
+.panel .lead{margin:0 0 16px;color:var(--muted);font-size:14px}
+.section-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin:26px 0 10px}
+.section-h:first-child{margin-top:0}
+.section-h h2{font-size:19px}
+.section-h .n{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+
+/* Chips */
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--surface-2);color:var(--muted)}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.leve{background:var(--accent-soft);color:var(--accent)}
+.chip.grave,.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.extrema,.chip.bad{background:var(--danger-soft);color:var(--danger)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.tchip{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.t-atraso{--tc:var(--t-atr);--ts:var(--t-atr-soft)} .t-positiva{--tc:var(--t-pos);--ts:var(--t-pos-soft)} .t-anotacion{--tc:var(--t-an);--ts:var(--t-an-soft)} .t-dispositivo{--tc:var(--t-dis);--ts:var(--t-dis-soft)} .t-medida{--tc:var(--t-med);--ts:var(--t-med-soft)} .t-citacion{--tc:var(--t-cit);--ts:var(--t-cit-soft)}
+.tchip{background:var(--ts,var(--surface-2));color:var(--tc,var(--muted))}
+.legend{display:flex;gap:6px;flex-wrap:wrap}
+.hoy-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,390px);gap:20px;align-items:start}
+.hoy-main{min-width:0}
+@media (max-width:920px){.hoy-grid{grid-template-columns:1fr}.pend{order:-1}}
+.pend{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pend-h{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 2px 4px}
+.pend-h h2{font-size:18px}
+.pi{border:1px solid var(--line);border-radius:10px;padding:10px 12px 10px 15px;box-shadow:inset 4px 0 0 var(--bar2);display:flex;flex-direction:column;gap:4px;font-size:14px}
+.pi.grave{box-shadow:inset 4px 0 0 var(--danger)} .pi.aviso{box-shadow:inset 4px 0 0 var(--warn)}
+.pi-n .linkname{font-weight:700}
+.pi-s{line-height:1.4}
+.pi-a{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:6px}
+.tile{background:var(--ts);color:var(--tc);border-radius:12px;padding:12px 15px}
+.tile .v{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.1}
+.tile .l{font-size:13px;font-weight:600}
+.evs{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.ev{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:10px 15px 10px 19px;border-top:1px solid var(--line);box-shadow:inset 5px 0 0 var(--tc,var(--line))}
+.ev:first-child{border-top:0}
+.ev .hr{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.ev .sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.ev .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+@media (max-width:640px){.ev{grid-template-columns:46px minmax(0,1fr)}.ev .acts{grid-column:2;justify-content:flex-start}}
+.li{box-shadow:inset 4px 0 0 var(--tc,transparent)}
+.cal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.cal-head h2{font-size:21px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .wd{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;padding:4px 0}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:9px;min-height:86px;padding:6px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:5px;min-width:0}
+.day:hover{border-color:var(--muted)}
+.day.off{background:transparent;border:0;cursor:default}
+.day.we{background:var(--surface-2)}
+.day.past .dn{color:var(--muted)}
+.day.today .dn{background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:0 7px}
+.day[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:1px}
+.dn{font-weight:700;font-size:13px;align-self:flex-start;font-variant-numeric:tabular-nums}
+.cdots{display:flex;flex-wrap:wrap;gap:3px}
+.cdot{font-size:11px;font-weight:700;padding:0 6px;border-radius:999px;background:var(--ts);color:var(--tc);font-variant-numeric:tabular-nums;line-height:17px}
+@media (max-width:600px){.day{min-height:56px;padding:4px}.cdot{font-size:0;width:8px;height:8px;padding:0;background:var(--tc)}}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:6px}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;min-width:0}
+button.kpi{cursor:pointer} button.kpi:hover{border-color:var(--muted)}
+.kpi .v{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:12.5px;color:var(--muted);margin-top:3px}
+.kpi.danger .v{color:var(--danger)} .kpi.warn .v{color:var(--warn)}
+
+/* Alert cards */
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:13px 15px 13px 19px;position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center}
+.alert::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--bar2)}
+.alert.grave::before{background:var(--danger)} .alert.aviso::before{background:var(--warn)}
+.alert .who{font-weight:700}
+.alert .t{font-weight:600;font-size:14.5px}
+.alert .d{font-size:13.5px;color:var(--muted);margin:2px 0 0}
+.alert .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:720px){.alert{grid-template-columns:1fr}.alert .acts{justify-content:flex-start}}
+.linkname{background:none;border:0;padding:0;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.linkname:hover{text-decoration-color:var(--accent)}
+
+/* Session roll call */
+.sess{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sess + .sess{margin-top:10px}
+.sess-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;padding:10px 15px;background:var(--surface-2);font-weight:600}
+.sess-h .when{font-family:var(--f-display);font-size:16px}
+.sess-h.late{background:var(--danger-soft);color:var(--danger)}
+.roll{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:10px 15px;border-top:1px solid var(--line)}
+.roll .sub{display:block;font-size:12.5px;color:var(--muted)}
+.roll .acts{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:600px){.roll{grid-template-columns:1fr}}
+
+/* Lists */
+.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.li{display:grid;grid-template-columns:96px 108px minmax(0,1.3fr) minmax(0,1.6fr) minmax(0,.9fr);gap:12px;align-items:center;padding:11px 15px;border:0;border-top:1px solid var(--line);background:var(--surface);text-align:left;width:100%;font-size:14px;cursor:pointer}
+.li:first-child{border-top:0}
+.li:hover{background:var(--accent-soft)}
+.li .sub{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li > span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.li-head{cursor:default;background:var(--surface-2);font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.li-head:hover{background:var(--surface-2)}
+@media (max-width:820px){.li{grid-template-columns:auto minmax(0,1fr);gap:4px 12px}.li-head{display:none}.li .c-det,.li .c-por{grid-column:1 / -1}.li .c-est{grid-column:2;grid-row:1}.li .c-fecha{grid-row:2;grid-column:1}.li .c-tipo{grid-row:2;grid-column:2;justify-self:start}}
+.est-li{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,.8fr) repeat(3,78px) minmax(0,1fr);gap:12px;align-items:center;padding:11px 15px;border:0;border-top:1px solid var(--line);background:var(--surface);text-align:left;width:100%;font-size:14px;cursor:pointer}
+.est-li:first-child{border-top:0}
+.est-li:hover{background:var(--accent-soft)}
+.est-li.li-head{cursor:default;background:var(--surface-2)}
+.cnt{font-family:var(--f-mono);font-weight:500;text-align:center;padding:2px 0;border-radius:6px}
+.cnt.w{background:var(--warn-soft);color:var(--warn)} .cnt.b{background:var(--danger-soft);color:var(--danger)}
+@media (max-width:820px){.est-li.li-head{display:none}.est-li{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px}.est-li .c-n{grid-column:1 / -1}.est-li .c-c{grid-column:1 / -1;margin-top:-4px}.est-li .c-carta{grid-column:1 / -1}.est-li .cnt::before{content:attr(data-l)" ";font-family:var(--f-body);font-size:12px;color:var(--muted)}}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:14px}
+.toolbar .q{flex:1 1 220px}
+.toolbar select,.toolbar input[type=date]{width:auto;min-width:0}
+.emptybox{background:var(--surface);border:1.5px dashed var(--line);border-radius:14px;padding:30px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.emptybox h3{font-size:18px}
+.emptybox p{margin:0;max-width:56ch;color:var(--muted);font-size:14px}
+.calm{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--muted);font-size:14px}
+
+/* Registrar */
+.types{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:16px}
+@media (max-width:640px){.types{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.types button{border:1.5px solid var(--line);background:var(--surface);border-radius:11px;padding:11px 8px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.types button small{font-weight:400;font-size:11.5px;color:var(--muted)}
+.types button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.picker{position:relative}
+.sugs{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);z-index:15;max-height:320px;overflow-y:auto;list-style:none;margin:0;padding:4px}
+.sugs button{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;border:0;background:none;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:14px}
+.sugs button:hover,.sugs button.act{background:var(--accent-soft)}
+.sugs .sub{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.selcard{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;background:var(--surface-2);border-radius:11px;padding:11px 14px}
+.selcard .nm{font-weight:700;font-size:16px}
+.selcard .meta{font-size:13px;color:var(--muted);display:flex;gap:6px 12px;flex-wrap:wrap;margin-top:2px}
+.hintbox{background:var(--accent-soft);border-radius:10px;padding:11px 14px;font-size:14px}
+.hintbox.warn{background:var(--warn-soft)} .hintbox.bad{background:var(--danger-soft)}
+.hintbox ul{margin:4px 0 0;padding-left:18px}
+.hintbox strong{font-weight:700}
+.result{border:1.5px solid var(--ok);background:var(--ok-soft);border-radius:12px;padding:12px 15px;margin-bottom:14px;font-size:14px}
+.result.warn{border-color:var(--warn);background:var(--warn-soft)} .result.bad{border-color:var(--danger);background:var(--danger-soft)}
+.result strong{font-weight:700}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:16px;margin-top:6px}
+.err{color:var(--danger);font-size:13px;font-weight:600;margin-right:auto}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:3px;flex-wrap:wrap}
+.seg button{border:0;background:none;padding:7px 13px;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg button[data-g="grave"][aria-pressed="true"]{color:var(--warn)} .seg button[data-g="extrema"][aria-pressed="true"]{color:var(--danger)}
+.today-list{margin-top:14px}
+
+/* Drawer & modal */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(620px,100%);background:var(--bg);z-index:41;box-shadow:var(--shadow);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.d-head{background:var(--surface);border-bottom:1px solid var(--line);padding:16px 18px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.d-head h2{font-size:21px;margin-top:3px}
+.d-body{overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;flex:1}
+.d-body .panel{padding:16px}
+.d-body .panel h3{font-size:16px;margin-bottom:10px}
+.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:7px 16px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+@media (max-width:520px){.meters{grid-template-columns:1fr}}
+.meter{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.meter .v{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1}
+.meter .l{font-size:12.5px;color:var(--muted);margin-top:4px}
+.ticks{display:flex;gap:3px;margin-top:9px}
+.ticks i{flex:1;height:7px;border-radius:3px;background:var(--surface-2)}
+.ticks i.on{background:var(--accent)} .ticks i.on.w{background:var(--warn)} .ticks i.on.b{background:var(--danger)}
+.meter .s{font-size:12px;color:var(--muted);margin-top:7px}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{border-top:1px solid var(--line)}
+.tl li:first-child{border-top:0}
+.tl button{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;width:100%;text-align:left;border:0;background:none;padding:10px 4px;cursor:pointer;font-size:14px}
+.tl button:hover{background:var(--accent-soft)}
+.tl time{font-size:12.5px;color:var(--muted);padding-top:2px}
+.tl .sub{display:block;font-size:12.5px;color:var(--muted)}
+.confirm{background:var(--danger-soft);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:end;flex-wrap:wrap;font-size:14px}
+.modal{position:fixed;inset:0;z-index:80;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));overflow-y:auto}
+.modal-card{background:var(--surface);color:var(--ink);border-radius:16px;padding:22px;width:min(560px,100%);display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow);border-top:4px solid var(--brand-red);max-height:calc(100vh - 48px);overflow-y:auto}
+.modal-card h2{font-size:20px}
+.modal-card p{margin:0}
+.mailbox{background:var(--surface-2);border-radius:10px;padding:12px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
+.mailbox .k{color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.mailbox textarea{min-height:220px;font-size:13.5px;background:var(--surface)}
+.gate{position:fixed;inset:0;z-index:85;background:var(--head-bg);display:flex;align-items:center;justify-content:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));overflow-y:auto}
+.gate-card{background:var(--surface);color:var(--ink);border-radius:16px;padding:28px 24px;width:min(420px,100%);display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow);border-top:4px solid var(--brand-red)}
+.gate-card h1{font-size:22px} .gate-card p{margin:0}
+.gate-logo{height:44px;width:auto;align-self:flex-start}
+.gate-btn{width:100%}
+.gate-or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.gate-or::before,.gate-or::after{content:"";flex:1;height:1px;background:var(--line)}
+.gate-err{color:var(--danger);font-weight:600} .gate-msg{font-size:14px;color:var(--ok)}
+.linkbtn{background:none;border:0;color:var(--head-ink);text-decoration:underline;cursor:pointer;padding:0;font-size:12px}
+.linkbox{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:10px 12px}
+.linkbox code{font-family:var(--f-mono);font-size:12.5px;overflow-wrap:anywhere;flex:1 1 200px;min-width:0}
+.gate-first summary{cursor:pointer;color:var(--muted);font-size:13.5px}
+.gate-first p{margin:8px 0}
+.plist{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto}
+.pitem{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:14px}
+.pitem:hover{border-color:var(--accent);background:var(--accent-soft)}
+.pitem span{font-size:12.5px;color:var(--muted)}
+.eqlist{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.eqlist li{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:8px 12px;font-size:14px}
+.eqlist .sub{display:block;font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:14px;font-weight:600;z-index:90;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+
+/* Stats */
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.charts .wide{grid-column:1 / -1}
+@media (max-width:820px){.charts{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.card h3{font-size:16px;margin-bottom:2px}
+.card .sub{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+.hbars{display:flex;flex-direction:column;gap:9px}
+.hb{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr) 40px;gap:10px;align-items:center;font-size:13.5px}
+.hb .lab{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb .track{height:14px;background:var(--surface-2);border-radius:4px;overflow:hidden;display:flex}
+.hb .bar{background:var(--accent);height:100%}
+.hb .bar.w{background:var(--warn)} .hb .bar.b{background:var(--danger)}
+.hb .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.months{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:180px;border-bottom:1px solid var(--line);padding-top:18px;background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% 25%;background-position:0 18px}
+.mcol{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.mcol .b{background:var(--accent);border-radius:4px 4px 0 0}
+.mcol .top{font-size:12px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;margin-bottom:3px}
+.mlabels{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px}
+.nodata{color:var(--muted);font-size:14px;padding:8px 0}
+.cfg-row{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:12px;align-items:center;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.cfg-row .ref{display:block}
+@media (prefers-reduced-motion: no-preference){.drawer{animation:slide .2s ease-out}@keyframes slide{from{transform:translateX(30px);opacity:.6}}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="brand">
+        <span class="logo-plate"><img src="data:image/webp;base64,UklGRswhAABXRUJQVlA4IMAhAADwcACdASq8AXAAPj0ai0QiIaETulYAIAPEsTdwt+hzZW/rvZpSd7H/Vf3g/unui1t+uf139c/3D2y9J/Tf+x88LzL84/6P9h/MP5lf2f/O/0j3Efn3/Wfz79//oA/Uv/nf4X/P+0z+2/uI/cj1Afz7/H/sf7wv9y/7v9V9x39W/3n+59wL+ef5X/2dgp6BH7a/+z1zP3L/8fye/17/hfth/4fkV/Yb/0f8r3AP/z6gH/w62/pt/RO0r+z/2P9mf3d9dfxv57+4fjx+8H+j+NnIf1Zf4foZ/JPq597/sX+C/2P5Y/In+C/Jj+ofrp7R+rj1Avxv+U/3b+zfsr/gP3L4+bTfMF9g/m/+J/vH7bf3f0oP4P8ovcj69f6H3AP5Z/V/9r+b39++e/8h/wPGn9K9gH+Z/3P/cf478kPpl/nv+f/gv9J+3/to/O/79/1/8r8BX8p/pn+y/vP+W/9v+i/////+7b2C/uL///cp/Yj/0HcnStmGTvP6pthMKy+M0nWCyX5x8lWnRy9y249y249y1u/V90gkchxnaw7z8YKrX/KwZ4DfSh7bjZYpmI1fA3yU2y2IoJe/6VpeTFWlGDHsbq6ilVchibTDpYzxbj12HHTjz0sN7Tb+z+5qjfQEeKYl5d8Z+joBBjVUVA8hmeTUmVOZAd8AjozuiGvm+dlN2w5QPKw3nwErt8WCoffj6bch55S0WT5BbF/x66pLaXDuIR1ChqFy5Nj3fknA47q9q/OEv8oN0yzynQSTVAtLmOZSYIvxmT65tcs6zCE2TyOB5sCV3oDlTsp1EoBDfiMpWguVop1I71qlV/sb2UQUgPpnItvmVByGyCw4FsW5/nHcdkEmT7Kdwqy2y4RXM8BRvOKPjTCyWlG3mqnaauVxNodVVLMS78zlPh8GZ8T9uMI+/5VagJqyFkeZAJjgkN93gr/Rd9PrE4UIPAIR8gnS0ujLnWlSYaohgGiGjT2N3ggeuGPRr7qjIfJ2w9oS0cOH1xhjjo2UruTFwxJAGqGO5PPee/u6i52djILIcfE0lOLTrIp2ZtZ1sJEu5LUULrfhC78IUX6icVrZpoe0Hcde+Q/FovbcJouw+4Z3eXWdop7QyYIZbIS0emMOmEZSrI540j9DoZ2D6ndc7iTpPDMMbQGDk4T9GYcfs9/iqs3QnTxuIC61bbP5DvJE0/d87n453BoHAoiH2FUG9iQ9oZcQ0nAA/v+qDgQFdnNg06L7Ohyizf5mSa0tlg62Ifpr1Vdo5Owx7MFFCLRKGsJgGAXBlJerdA2lLjPWP8V31PUfdYaMBwDP29u0xYfTG6nb9CCGHBFNHvodm7w0deAOFZsI0yoci0G6Eu+0mNFcSjfcBx9s/b++wYeRwbGxpsRdNcHDY6ZMzHh/EUdMjdPc2U1+GFF9NCf5yo/jDj4W6TBUT0x8SqPYme7L2YGAb3M+ZUC9FiL418Jrqvm7GLFEr+DHbi6L/chUdMFaspdgAAAOYD2o24/zqlaSHzFZNeyoOC7tCalitnwspmEbqbBxxWhdwLABYnilEDimxrc7xrwjwMdlaV5ros6lNHKmNVSbAsqaf+2M7uuc1cNOPBGKOb4W5pbcIsUIf89rZSmtcbixGMlDBietUIz8+AM8PQ/7ofJKV5l4+CNxvG6E9yJTa5vky/lN5RKNWHzOdsZ57huCwfZsGe0lOJFwzPMfoNjTtsI7GRkrX8kYiZuJg7BfTFaTORundwUkwBI8L7OUu1jR0mUXyhHoparEF8X5OI3RBwTGHjYdpelng/+llfOrX2dphgu9xv+MHRi9avUUrS5GQ2ksS7W7eFDensyBQjVZvSUys5aKeH68uXYxbcXvQ8s+63WGjtvyOKzmkxFTWuxJ4MyLCdIdsK0krtjbBX1veampEuYZ/4I0Yka2HWn2gMh87XFf4dCf9+LK+HqsitsYhMbM4M1w6RKJ515R6zWKS1TTK91YQO6H1kQk1ifKuVBG+uTtX0Hg64t/Uk6qqYAWtdnstJHD335Nrpxrwi575k/XpH4nRnR6vW7fPNJLROA1/2jkODhz871HpbHkhkffyNUoEvsJ+AHomD9L9Pt7uNRivxCfmu4gfqSswi5NeUpqeMZqamKkm+3vgjNs5VYbmsuoCrveg/PvHQKp803EMU0LL3xY+iCZA2ziGX3pmea/gz4Dd9prdHnEyXpkORmcUubuCv4Qw3mQhrXEamy7qoxqLqMJ8UEQIXh8MIqygceesM8qHqV1pgix49wYott34bFaiC52Ie6omdpPlBPD3yZJK4uWHybe0lYBVMHTCvmeJaEUbjbk0yB8s/1H0GXFaFbhyO8WvX6xRQPxm76TmNdwvpTb0Sso7LbSMEZAbY54/tEs2+pH8k/F6EX6bJMVlljGVpLM+dVQ/1aVTvhFBMk6KShPzkmeVneU7cQumfTmYPKpJn+qBxZ5TACOS3hrb4FTGPubO5PXnLaJr2Vh/3jXWcLKt+zI4kF0l9awIoWTu+z64wE9tRTckCV+nFAc9E43nTkHTBzHoiEYKOApy9/X7LreDrRsq0zhojvFr0Nec68b8Os6Tve5A6b3cNIjLngzMDYIoiWMNz1iBREMYJ/muSRYQF2uXE6Rhet1r93I1dzAPwDjWGV1pTxTQ/VQUAiMQ5ENJjvm9n8+iUI4Scm6XlWOtLkOVOvtpCh1hHbpqUwA25xPnUjjDIxxIYTYRRu8pzwSX3yi0xSUF63818zRQoEM0m1pLBLqMrHKehHiEEvVQkEX1HB4ktTMAvFkJ8pBR0TapuCUqJ1rx7LgypvN4Phm4v4Ahd7yIigtpn1sG8wfBPcX+IjQVRhx+QB+4FnBG08c+NnjsPlGZbSmztGe01t9J3jCYGDX8H5ws+a+wVtc8QXyudZDjQW8aw0j5KhEyXlh2e88ueGtIIXIxO1seQr7gh1z/gQSYUWw8lM3qxvtJB74m0mL+k9G7mT4WpFbRemkUDbKq97EKNridHdJqR7J9POLPSzN9FaFzNbUHC1gwGng/+llfOpa3o6cboD8M1gzJhLWMq8fDUGE7mqOS16T7cKByhom4BmsV9uHZw38gP6A0343komT37banLoD4CKYj9D/vSDezUUIgxxApJTuNiTwo4001ETVAQe+W5i6R1h0Bgfx609gi3waEw0AsaA75FRU5cC8iq3HWxlgpb9m/s4MD6da4hRqzgy0OhxvwZk9/zN5nkBrXtUHaNQyR1JPNyFCVqKpeyt97ZLlaEUTPDBnlaL/XKfw1QnWU85K77c48Rz/Vden2vsDRVvLUcuEsSjw8UGLDbvXN8XjfqtP8V4AKlCNRt8kpUqHciUxuBYmKY2ic1CB9n7Gx6+I0Wom6/oF973mXuegAOTVd4Te2gGXpw/ng8w7PZXRV04AnNWqIO319JQ5EU5ucGO4GFoGk9vH3n+rjCHvyXN37urCt90V+8oYJEoLB3gZH866Z81Ukz5yceCBSe/aaipe+LofQujDsTf8ja2+6HlnZ+Wbhyq5VSa7C7keESC2hwn9609aYvVz1buC8bAlz3j5H5dYpvEdow1bOPSnJhj92tCzVdseNBLDGdQglKTTR1ccmA4HvYN7Gw1Iogzctr5b015ylh23fvBeybKpCjPHS8iPECV5CTgQubLCMrkBhN6ai/1TuUhqNVRJFIDt7QbCYhNwvoiyO1zOtkqfl2tq+ja8xnObgU5x3HLboismEXFi2EFYu6gbDTffx70FVs5maHgrHgBx+HqtzmmPIkKj6H8IKaTvuDhfInJ7muppPviPVvu3MXob56VlurGKsG/f5q59C3x2eQE8d8iwVwcDlg2RzJORdM+3U9FTrC7O6XW5qtmrZmhh4QP2dqylG2sSxV+ZgQCwzKyNiM35itQFC+qFH44sMbZ2FwDa75U19l/qyi76tmpSGMioa74sPuwq9j0zDqkQbm9VhhkflpCxiHd2Hn+25rdHYXIWBPsoSBKVgNtXn8RnY+YB7w+BZgssC4AjfN5bulSOuuO/L+J+KpR4F0+LDaiRQi1E5tJ4iTmaicssMdgPpFb1CN2IfBGcTvaBgdKuF3wwfLfTwkYg14FvLvU7x+0QDtTlPGjA96TXYiZxBs12comw+v/E8JDx2Oxz0faJoOIOKoyTTBah12AAmuYObSqNx1vEOhLu7K648Xmo2f2rifbTwPNvdoJ8cxslCUZ9cszUU5eN8vcmv1bft0MYQYJvk3Bf7hWE4xtrVs6x+dWXK5eeqH+yRvAoAGk9yDXdq7DM9iY1cnfz1hsA4YRF562gGDpXFXYAOW76o9JEKlVJq5jIyejtAeqKhyu2QwUym38iXnM8nNFGqqnwEWgKIORprTrfCdNgFWbIiwhqN8hAb/16FYaceoONUUY362wKaprJEZoH7JWy0M/9Kq+/879UEYx5FaQOZY6BhopyjViaZg9RsR2/Jmm0eWFjbMNmnbzEs+Pit6Bggx3eTnYVNLXLDQNmtrEjvy0oADzP5mS72n0og/oZePZhiXN7IOPP4K4B/Wj442cULrPQ2M/0Ydvkaf5YTp6pfMKtKEPYPrnqdPQkoQ6cMeGpenX4zdKvc1ane8742MN7GzaBgj7qI/C3Jr9+kMIb2y1auC5OU49D0ebfRI2yi/R4eHZyPeJ+X7H/jFAWPQr8nsaLZbxK4CT/X5caIXf4GyNPXUUvvcHioc1qgyssCUgtpRv2hiJMYjNxDF+efiKKLWOTtZOBGaKfc8yaGqgSkjUXaVrC6aB3qbOPhfwt7OLfQ0e7Tqlnq8Y+rOwajCvo3Ar/e+m4Ei0T3GhLvZ5qXQ5YKup9IJhHa/LL+x0rtH0j8ldXplA9dpThhtEPefMG/tKOKDU6V6IaiYjVr2H+/gnJWL25Oq/ZwHXVjsaK/jqiuyD55fr8NO1IbWN8VlKcCn4AROVLyecKY52JeR21/EIzi27vYNL6IwDvtY1g4x9fESfnTrdTseRGqp8PHoQZzTWE844uYuMbKbliVUsAeb4UH+0KusNgVf6dTbfgqn3GVM7N+ifqB4xPAeewdIaGREs5sbLyNQFFX0kSZKLSd0/7uOyrOhodYAAULRau1RU9BF2fy2wqvmcs/4s+gfJB5YXx+BRnqZ3z4TQNNDYBtq2HJQzl5cFHzSuTUbVAHbzzc/DF0Iv6E5z03kqmoSz9KmwT3QC1rDGa1Xe88k7BdSaY0J/al3OvZ1yN2sX6J/3KCJFGBoJU/nbRqAWvfbTqHK71ZSCzWeYzDG1ysS+JztKBUqYs2lQn47eAiP3WijCGJh5IYMeNaB6523P3GGv/RjO6Lr9wi0dD+ypTs6XvpSDZmU7fM50ObkaOaSXx1DgPxJgbJn5YAo31ivg1c579uh3Sr6e4v7uXUGEbffv2zVBHeUfc2zplXRObjH8PBQHxeNMFy+UsryxOq/6LYaKVg1OScP//0N6GB3wfrpZIzxgTFwCQ+xT0jEtWJTjfpvVM979W6nQr+hivGK7X6AYPKfnKxDuwKGc9xSgBiSHXC1+hYsgP5p/x5ngumEkpsNh7+JxuaSQdxifPUYuKXPmkGS+BKP4OkmO50VS0miuyjVhahz+/oRJZO0ZFRL/+xcJKrgrMfF55AQf7f1jFo/67WP7CJC+Vh/xbABeOGOtuQhF+45+9FMVMIMnPWsp7jOoz93kORwSL3VrIp4OAS3jIh1nieq2Z+U2Fn+PMxad3BzRLqXqhdPZQClctdnlBcVHRCt1c3CE1NiDJWXqGBZPYVzUGLBE9Ichj0xWYBLI21PMwZjnbt1T8a32ArBDN/h0wtiqv8mdugzHTqTJQuhVXsGc5Bvmtaszml85NqYphLduvi4UYcgmWsUMLo4gEXo+Qh1kLPwk1vYoKffjZO+gxqqapmiVHyxByNvat+X2R/WhUNWQvti5K+LgdiuTgwBNY1XOvE4kT2xphf6YM7z1lwp7rD5hFXM40+a7+mM3PNzDk6BnkA58pPohV+Nuv/Je/4j8GEYPCa0w8AXYYH/vy3A8MPMxssMut3NeuwknqSf4xHhXdghHTF0ZU91tWmA8EY5A4+Jj2efzN/4UbuT9oslUObYfpKVpHaGh0qoeHAT7/y+rxSewUxkh/9e22jzUjC+341xyYhtZzILfXF2IFG6dbrK5YWGOEbpU8nj0WIIFMhFPq9ACIFgPciXK+3sjQfNy7yd/lHurR7gcw3b6lk4IpOiaUX4NZMYJ2qXhkeq6SsrCO7cOi1uW7gNqTS/FwS6Rf/P4AX0kn0sm2x0ESYB+/Au0Jk9wpzLMgZgh3xUUByUhTbWGB0eScTlWJu+SuFgt99+e4KeMH7LcZXdfJV4kGSWI0MUQ3kln9ytqdFyOIOzyeXNFdlGDs+w5Yx7C41cGzeiPfDKRRcI8946iOICROBbsBwWKy6w+lh2AJiW7UPDX0eQOa0jriqJkWX/PgB8UAkF7El5Q+BoPDWImjpWAHu4kUH38X2GCq3ldCzfjeB6a1MpJcgmzdoSy2QRjmznEAiLZFm0pp9qQG+CHf7EdQeyRGkjb+13eszruvmMpOnYP/1vYrmxlL0y2Gquk8Jlw5La+e6UphG+cVzrvKaj6gZYm3DGw6teM09lOh1bz2hvGBDr/8aDMltz20Qrae9RObLktiGrwFh5qMqVn8gHndXV2sC/dUlEyFQS/53dtTR8TAW7yksmwWrXGop9sZWaH6R/QC2WeWI/ePltYGY2L5FnzIc93sLr3z/5P2wnQlQ4nhhKmrdm9S4eoftRPmkteItjb3dza1XQ9BZYeQ31iijp4ocqdIlNdS4PM3xSDAGJO/eY5xP/JKaOX4C1njc+l5V/GScfxfDxC7e7snKY46vwTBE1ZCMxpJAuJN/y4oxkRyKz3uGgi/yZDJlOzjSwy8aDIPMYGjcrYQZwL6NgSk3/FZDkCvXgh7Wl2J9UdvYxZagzmesbZmmTaIOAZtKGnBBB2VBGIlpoanJC5jFdr8d3l6/uao4xWWJodlkDmmXaz7R+VyiObuMZVJpfCofDYLIv8Km2jWa8ozaFoJ6z/ef7JBdSCQLWnrQuOIm308qZ78lMfg77QfYkgfnOkSenMBuAdDN2mvHXCbS4sH6pMsGB9JFk3FMQ0RpOUuaj0EmPe3m7dQT6EoOE1zm0yT2dgqnhjnR/8RCaRFcPxTeEdJE1ivccocNswiVE337iwo0R/uchNmtfq0YgUgGIv85t8c338wHxoDruAJlm+T3pFxrqVJeYL+WCn1NEKjRuaPY0qs31Pe5kN1D8cI4t6HQwGmfOK0gD44AiodbOrcOyiA7DqIirzOMRt/RkwCaJPSoUyG0NnpenVtuhhOY4ytK/YtTvbjWp/1MW1wLKOT9z+6BQYvyWPcDzJRal/IXwmNqOR74Z1Tt7Z82BUf5tguEGJtbIw2E6p5Ccj/AiOXGDYoH/SIuXoxMo6QqZJ7tKK7FYUD1uvMeaD8NL6IKSEudaEN3rVABRzocvPjoL+ynjuYIkbba54fp3bDstBOBp2Paqhp979IWiodw2A839HxicvFENd/mSKcTnIyJytyMww09J8Z+oKUyi2+UcNSsWu4IznuuD6pNQeA7xLekwyukrMyEhUhBdyzNFYV3c7ly4aH73z9Qfr0cPA6uS4YkNfWIybpYAT8d4kpDTCQzMChuFnwpmd8IChdQ06khbiPqAHqRyq1goTmBh3ZmTS9UCZdvU+6Kp/41ynvIE+hN2vx2QkL8gYDlka+2HSGAoMGNNFenM7epEdD9AsfS9wfRBiD8bbjadL2aOkkAaKKbXP582HavHhjHEW9TIJKPR6PTO0+mNPyeesHkCgYSxNHOMH7SsyIklkm+rI4woVlM35qfQJQ6LP3IFpiDi01RoZVFlf3HTCqqq/iv038r+TcswB/IuRCz234NjsrtLlpsQu1Uq4Y96+vbRkceuPdJ5iJZqsLCcU4ebMpRI7SVrYuv8PJs1bslRnPKoCxtqthmKoslCebqeJcbGv1qvvWN0Dr8SFgTd9oHZhz91rqVSOCBkbsQpAnjFWgrdRAObZZh+jpRJSByxWxtNs3HkjM5oUc0Eme1iWVYHaLc1KvmAsTQ75OSjcGooB3gTIqfNKMBNZrrR6gjJbsWMJgVzin6alAnxEvNj7rWWgj50E/8Q3tvu76IYb4Ps2DjPOt3EpP4kHaNRNu7GhprAYforrRYHlmUq/H52gbMN4OrjGL/5gX4ZJ7MC1eJQ45iA/cH0DK4sE64gk2UjttZLIqsos+pMJBtbuNToOzXIyR6bvqMcuipUTm8bMOvzuN9XzOX8dojU+s+aBK/509l8Ep+CLo4Hem4QunQDI8ucxI/OmSOyzPLj5hD3zSzQAkUnqAMpyf6Gjjg1TEjGI0Kdfruyn03bLpZBJCTkPpkmCLd/D4wQamsg6eckd1st5x2lztUEw4HCudE211GiRqRh1mEU83b7ObQ2Otvx73snpk60g4ntDI1i1uZITqG22Lz4MBkBYyF6HjhxH8Ae5YvbHV1UPqai2wE+W9zWkTJEU+2mJaq+RDDxrVs1pO3FJPL9kaX6/ESf9Ncf+MaWYXgvTaN8HWbBg5zgj+Ot/HgKnWsbk/A6mwqv7C0bF4HZHrzQoXQCX3qb6WP1HZqc1o+ssKyJGuI03f8Ff7k/JmJ2haVyqE8qu8y0qbCCPForjdp3VunNF8phI29p8b/2UTLKVyArMwlWfvogGpn9HRYJlGjRo5+9f3l/BIaqGCKI4ZuKV+lCCsqLG5EHGMXdRr8owqjol3YvwWR6BcZ7OD3iXZQgpWQDUXzyQ3ssKX2lLwmGzRq6+Og6B9vVEPDv3/epOmnWpV4vhgEwOxhUjB+4f83nCneZAxeTGwcASZNjkNBIQwcb41xOEHhgh4kad8FwHlnxFMI8KDBGSIohLbTAdExGWONMnuWs+VcwaNoVD7lA8a7WU/ZYCqfQiCd5iXt3wpLrn5EwsxpINsrn/H1LZvzti8g1fC7rqkCBWv4a1GljIa36d445hffNGoAj9YZI4x1arTqR7zkesYgWdZ1Jpiz29eq1zmkMV9bA6hSDD15WWUtXLHNVfWqlqCErqCRc3J16gvY27D1ArIl+jfE5UMj/eIzgqueZdGX5vLiiPfqnrdFs3yHZFJEd2kf172yr6++NE4ugyM0ssS6AX7OJZupoWlP5mLGL3QlrvFnpHbLTeahgQh8lQ4UvXuH5Gv/WOOo8bMUcoeoqZS9VaPn7PD05vIk4ZaD8xRn+M6JWONP5f8cTDWcm2h38rt/vQe2DYoEnmiHiYiz4OtvQ05pdMzg4z4Q2KyybJrFPdsG7N1htOq/McpszSoEE9TBbHuz/pOuIk2rWKX9bSbvmKiWa9i4UyaNqsyDkrgAQt2M+MKtk8Ghq1rBnyBhoYvc3YVBvepVg5NMawjIrGF406eixlQ6W3+LLZvYIo81T/Isd4+/n/CZWbe9OSGaXZvux+7rZT+L9E4cZ0DNZNapIdPVL8Ahlss98j4/eoF8ZnZ38EE15bKu6jBOOcocfld3QHRwf4naYzOxBwT2f6GqU3MQpAOYqIro8Ufg2S1BYTxhcrgZbFLZGCN/rEz6bPKhSrXQmasOzW+Gc+kvdTrNZWu8fX/rknFFJY7paW6ryN4O+9QWNIxacFXtxLfqLJHltiU4Qo3XHXAlnMUzl1NF5xChkHF+FLuvSwy+6yTN5bHgL18gLnEiHjfXzpx/Pil8jV2NswK+oImSkORA3JQBDBKvb2YwU+Xi84uL+NbSxTze09ePZgyQX/7VRI8ES3rH1Z0F4D2GvcN3AMlkulrIJMbTHiMVj9RNnvUE9q/Hex4qG1YkHOyXZHX7CnqM/o9DJKZF2B0tKlT0JxuRIWgLQj0axHXqyQY1tHguARBOSKwFRL00Uigdcuu7UP960hUSyI4afgYxXZ7RJ4+WH35dgMOkPS+W3kxsm2V10Dm9YnVjETI5DeOcGV2AJYwYJsI69T0YD51fhWQJIEWCIOtC9fF6Rx4AALD6BIeOEEdi0PmgsjZ+r5mmkltSHXAoO56W9WY0C9+rlDhuHFS7zy5UkltYIgcHms/9flHBEQ9VYT58kvSZb81761EzSJqb9TC+jNJX+yJoVwlXhTjhs4p2qYMnfD/X+59dm91IejIy8G5XMBmu0HDmiv045nNaJrI8i2gPF+UpKhC/LuQzzfi8JIaEzt9Wi7mnFSwPcv+33T//mbAlhoA4IEoj9zK8GoC3Ub/LnmTNr3iifedtl+JvGcxho/80AM6VyY9dLteiSB+DYls8Dwaj/0jdnH8SdDUlasPPB54ym3srr68OZaSwNVd1kjk3ksqLDSzbmoZC/nEnWkPHpUtWbTk+KHXa+dBhQlBZcYmRcpf1qNWTHSSqb/SVQuUzvMohqEkH3pFILoWjJfxSWQHQXsoyjSFhxtRAEemRsNhrMcGoF5lNqKSUUAc2Ud1hdqY/qI+X6wsdmXjvB2UOrLV/Km+GI7lm/Vp2hOq4PSuGSRu80N2/edjnnpfjgvv+NNErZWMetkTtPInHppBhUYu6n7jszkx5cq4MEruNHbOh5C0j9+rxxCkYz67BJ33AexKC+waMrnejM7Iv52DwX0FhHNXQLuVDt/mXJcyUwzZ2wYKx/l4sUYesj8HyUBizO30LKekCgXjgmbI2/gHghDbJatKVgn9doUASPHa7eEcxkC4+q6XX4PQ6n3C8VHHA95IzjdiXzx5zfvtQljZOSXlw8AyOBYLso5pb67yq6L7uXn0dvEg0ihUvWUnEHVnXbI6OuX7hIq9BtO5yFTeRWvSXoTfDO2trzTrz6JyAvxh3pu7SG1ljeiY8vFEblkVei2grzi7qvWSu8ACRoiJsEimmoR+Uyy4bsrlZH75GQfYdW2z7ZE1yg1QHTkI02MMFOOQFRgtDY5IvT+g+pCNNqxOKs0HFFtwAeXsfCEittq3fX2rxjuEpUwWldxEBsPDng9V4qUE0s67riHOocvPWCoFzmbOEWn2TwzRLELF2FP5hdIybVBDBIQ2VmQVXqTkVWxdofOxOHN/PFD1MCrCr6ghaZRa81V0mVjGOXEhRNr2JGoWCbW8nGz1ZsqR8//byWmU4pwKGpVS+yYxvBxKYG1N8DDgsnJJRy2sQDd93OKDsCWe8pQ9YgHCfVSBEWATzaBHHpI4qviuyjCr5ae4xIAzybD/Fhr3bYHlmvu2t1Q0lXFRTXZqvAEFQtzJkRJaf1EjJJcLQG9hne503hv/8Dzd1LmjHhXAEA5yf8DDIvSnHW/1KniXwKWZxxhiMc/lBvw/0kBov9hBkAfaF5QxnLG3eGNbpoGKZjmdyYxwyS3POOkZUGHccZVR9nAbnArq3fakmaxpQ8ojA3yulvEhF7mGtpCUjwU9QflEtdnhVvaVsdaolXXZvGSloF6ZdoiNxLhLxPPWGVJcLvINEcaKL2EQOUDWznC9BWzzcIdK/GwNMespjgwYqI1H6Y7h90o0r7pz7WoGbZH2U8HJzT9QI5m58AHnJNZ3jBZaakFPiX3xme5cLMKQ01Vwt3dHVtKbiwAAAAAAAAA=" alt="Lycée Claude Gay Osorno" width="444" height="112"></span>
+        <span class="brand-sep" aria-hidden="true"></span>
+        <div style="min-width:0">
+          <h1>Vida Escolar</h1>
+          <p>Inspectoría · atrasos, faltas y medidas</p>
+        </div>
+      </div>
+      <div class="top-actions"><button class="autor-btn" id="autorBtn" type="button"></button><span class="mode" id="modeTag">Conectando…</span></div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Secciones">
+      <button role="tab" data-tab="hoy" aria-selected="true" id="tab-hoy">Hoy <span class="count" id="alertCount" hidden></span></button>
+      <button role="tab" data-tab="cal" aria-selected="false" id="tab-cal">Calendario</button>
+      <button role="tab" data-tab="registrar" aria-selected="false" id="tab-registrar">Registrar</button>
+      <button role="tab" data-tab="estudiantes" aria-selected="false" id="tab-estudiantes">Estudiantes</button>
+      <button role="tab" data-tab="registros" aria-selected="false" id="tab-registros">Registros</button>
+      <button role="tab" data-tab="stats" aria-selected="false" id="tab-stats">Estadísticas</button>
+      <button role="tab" data-tab="ajustes" aria-selected="false" id="tab-ajustes">Ajustes</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="localBanner" class="banner warnb" hidden><span><strong>Modo de prueba.</strong> Los registros se guardan solo en este navegador.</span></div>
+  <div id="demoBanner" class="banner" hidden>
+    <span><strong>Vista de demostración.</strong> Estudiantes y registros inventados para mostrar cómo funciona. Nada de esto se guarda.</span>
+    <button class="btn sm" id="exitDemo" type="button">Salir de la demostración</button>
+  </div>
+
+  <section id="view-hoy" role="tabpanel"></section>
+  <section id="view-cal" role="tabpanel" hidden></section>
+  <section id="view-registrar" role="tabpanel" hidden></section>
+  <section id="view-estudiantes" role="tabpanel" hidden>
+    <div class="toolbar">
+      <label class="f q">Buscar estudiante <input type="search" id="eQ" placeholder="Nombre o curso"></label>
+      <label class="f">Curso <select id="eNivel"></select></label>
+      <label class="f">Ordenar por <select id="eOrden"><option value="atr">Más atrasos</option><option value="an">Más anotaciones</option><option value="nom">Nombre</option><option value="curso">Curso</option></select></label>
+    </div>
+    <div id="estHost"></div>
+  </section>
+  <section id="view-registros" role="tabpanel" hidden>
+    <div class="toolbar">
+      <label class="f q">Buscar <input type="search" id="rQ" placeholder="Nombre, conducta, observación…"></label>
+      <label class="f">Tipo <select id="rTipo"></select></label>
+      <label class="f">Curso <select id="rNivel"></select></label>
+      <label class="f">Desde <input type="date" id="rDesde"></label>
+      <label class="f">Hasta <input type="date" id="rHasta"></label>
+      <button class="btn" id="rCsv" type="button" hidden>Exportar CSV</button>
+    </div>
+    <div id="regHost"></div>
+  </section>
+  <section id="view-stats" role="tabpanel" hidden></section>
+  <section id="view-ajustes" role="tabpanel" hidden></section>
+</main>
+
+<div id="drawerHost"></div>
+<div id="gate" class="gate" hidden></div>
+<div id="pickHost" class="gate" hidden></div>
+<div id="modalHost"></div>
+<div id="toastHost"></div>
+
+<script>
+(function(){
+"use strict";
+/* =====================================================================
+   VERSIÓN PARA GITHUB PAGES (igual que Convivencia Escolar)
+   Pegue aquí la configuración de su proyecto de Firebase (paso 5 de la guía).
+   Dentro de Claude no se usa: allí la página guarda los datos sola.
+   ===================================================================== */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC73qpoY3Fct2znSXBZNjKZZyvSIcr6cmo",
+  authDomain: "vida-escolar-lcg.firebaseapp.com",
+  projectId: "vida-escolar-lcg",
+  storageBucket: "vida-escolar-lcg.firebasestorage.app",
+  messagingSenderId: "236194149575",
+  appId: "1:236194149575:web:7bf71998874572c7543ae2"
+};
+/* Ejemplo:
+const FIREBASE_CONFIG = {
+  apiKey: "AIza...",
+  authDomain: "vida-escolar-lcg.firebaseapp.com",
+  projectId: "vida-escolar-lcg",
+  storageBucket: "vida-escolar-lcg.firebasestorage.app",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:abc123"
+};
+*/
+const IN_CLAUDE = !!(window.claude && typeof window.claude.use==="function");
+
+/* =================== Catálogos según RICE Lycée Claude Gay 2025 (rev. 04/08/2025) =================== */
+const NIVELES = [
+  {c:"TPS",l:"TPS · Medio menor",ci:"mat"},{c:"PS",l:"PS · Medio mayor",ci:"mat"},{c:"MS",l:"MS · Pre-kínder",ci:"mat"},{c:"GS",l:"GS · Kínder",ci:"mat"},
+  {c:"1B",l:"1° Básico",ci:"bas"},{c:"2B",l:"2° Básico",ci:"bas"},{c:"3B",l:"3° Básico",ci:"bas"},{c:"4B",l:"4° Básico",ci:"bas"},{c:"5B",l:"5° Básico",ci:"bas"},
+  {c:"6B",l:"6° Básico",ci:"sec"},{c:"7B",l:"7° Básico",ci:"sec"},{c:"8B",l:"8° Básico",ci:"sec"},
+  {c:"1M",l:"I Medio",ci:"sec"},{c:"2M",l:"II Medio",ci:"sec"},{c:"3M",l:"III Medio",ci:"sec"},{c:"4M",l:"IV Medio",ci:"sec"}
+];
+const NMAP = Object.fromEntries(NIVELES.map((n,i)=>[n.c,Object.assign({i},n)]));
+const LETRAS = ["A","B","C","D"];
+const GRAV = {leve:"Leve", grave:"Grave", extrema:"Extremadamente grave"};
+const AMBITOS = {ped:"Pedagógico", conv:"Relaciones de convivencia", auto:"Autocuidado", medio:"Cuidado del medio y espacio educativo"};
+// Secundaria (6° Básico a IV Medio) — RICE pág. 98–112. g = gravedad sugerida (el inspector la puede cambiar). p = activa protocolo de Convivencia.
+const CONDUCTAS_SEC = [
+  {a:"ped",g:"leve",t:"Interrumpir la clase o distraer (ruidos, comentarios, levantarse sin permiso)"},
+  {a:"ped",g:"leve",t:"Ingresar o salir de la sala sin autorización"},
+  {a:"ped",g:"leve",t:"No traer el material de trabajo de manera reiterada"},
+  {a:"ped",g:"leve",t:"Llegar sistemáticamente tarde a clases (atrasos intermedios)"},
+  {a:"ped",g:"leve",t:"Consumir alimentos o chicle durante la clase sin autorización"},
+  {a:"ped",g:"leve",t:"Negarse a participar o a trabajar en clases"},
+  {a:"ped",g:"leve",t:"Inasistencia a medida disciplinaria o formativa sin justificación"},
+  {a:"ped",g:"grave",t:"Ignorar reiteradamente las indicaciones del docente"},
+  {a:"ped",g:"grave",t:"Actitud de confrontación o desafío hacia el docente"},
+  {a:"ped",g:"grave",t:"Copiar o intentar copiar en una evaluación"},
+  {a:"ped",g:"grave",t:"Plagio o presentar trabajos ajenos como propios"},
+  {a:"ped",g:"grave",t:"Dañar o sabotear el trabajo de un compañero/a"},
+  {a:"ped",g:"extrema",t:"Suplantación en una evaluación"},
+  {a:"ped",g:"extrema",t:"Alterar calificaciones o sustraer/fotografiar pruebas"},
+  {a:"conv",g:"grave",t:"Lenguaje inapropiado, grosero u ofensivo"},
+  {a:"conv",g:"grave",t:"Burlas, insultos o humillación a un compañero/a"},
+  {a:"conv",g:"grave",t:"Agresión física (empujar, golpear, patear, escupir)"},
+  {a:"conv",g:"grave",t:"Participar en peleas o riñas"},
+  {a:"conv",g:"grave",t:"Amenazas o intimidación"},
+  {a:"conv",g:"grave",t:"Difundir rumores o información falsa sobre otros"},
+  {a:"conv",g:"grave",t:"Comentarios discriminatorios (raza, género, orientación, religión, condición)"},
+  {a:"conv",g:"grave",t:"Mentir u ocultar información a un adulto"},
+  {a:"conv",g:"grave",t:"Expresiones sexistas, misóginas u homofóbicas"},
+  {a:"conv",g:"extrema",t:"Falsificar firmas, documentos o registros"},
+  {a:"conv",g:"extrema",t:"Acoso escolar (bullying) o ciberacoso",p:"Acoso escolar"},
+  {a:"conv",g:"extrema",t:"Agresión con lesiones o con uso de objetos o armas",p:"Violencia o agresión"},
+  {a:"conv",g:"extrema",t:"Agresión a un docente o funcionario/a",p:"Violencia o agresión"},
+  {a:"auto",g:"leve",t:"Uniforme incompleto o prendas no permitidas",u:true},
+  {a:"auto",g:"leve",t:"Accesorios no permitidos (piercing, gorro o jockey en sala, maquillaje de fantasía)",u:true},
+  {a:"auto",g:"leve",t:"Correr o juegos peligrosos en zonas no habilitadas"},
+  {a:"auto",g:"leve",t:"Permanecer en zonas no permitidas (estacionamiento, sala en recreo)"},
+  {a:"auto",g:"grave",t:"Salir de la sala, del patio o del colegio sin autorización"},
+  {a:"auto",g:"grave",t:"Consumo o porte de tabaco o cigarrillo electrónico"},
+  {a:"auto",g:"grave",t:"Transgredir normas de seguridad (laboratorio, extintores, vías de evacuación)"},
+  {a:"auto",g:"grave",t:"Publicar fotos o videos de espacios íntimos"},
+  {a:"auto",g:"extrema",t:"Consumo, porte o venta de alcohol o drogas",p:"Alcohol y drogas"},
+  {a:"medio",g:"leve",t:"Arrojar basura o ensuciar espacios comunes"},
+  {a:"medio",g:"leve",t:"No cumplir el rol de semanero / orden de la sala"},
+  {a:"medio",g:"leve",t:"Uso inadecuado del mobiliario o malgastar materiales"},
+  {a:"medio",g:"grave",t:"Rayados o graffiti en paredes, puertas o mobiliario"},
+  {a:"medio",g:"grave",t:"Dañar equipos, libros o material del colegio"},
+  {a:"medio",g:"grave",t:"Daños o mal comportamiento en bus o lugar visitado (salida pedagógica)"},
+  {a:"medio",g:"extrema",t:"Destrucción de mobiliario o infraestructura"}
+];
+// Básica 1° a 5° — Tipificación de faltas, RICE pág. 85–86.
+const CONDUCTAS_BAS = [
+  {g:"leve",t:"Llegar atrasado a clases sin justificación"},
+  {g:"leve",t:"No traer el material de trabajo solicitado"},
+  {g:"leve",t:"Conversar o distraerse durante la clase sin permiso"},
+  {g:"leve",t:"Interrumpir la clase constantemente"},
+  {g:"leve",t:"Ausentarse de la sala sin justificación durante la actividad pedagógica"},
+  {g:"leve",t:"No mantener el orden y la limpieza del puesto de trabajo"},
+  {g:"leve",t:"Correr o hacer ruido excesivo en pasillos o zonas no permitidas"},
+  {g:"leve",t:"Incumplir normas de vestimenta menores",u:true},
+  {g:"leve",t:"Inasistencia a medida disciplinaria o formativa sin justificación"},
+  {g:"grave",t:"Agresión verbal (insultos, burlas hirientes)"},
+  {g:"grave",t:"Lenguaje inapropiado, grosero u ofensivo"},
+  {g:"grave",t:"Agresión física leve (empujones, zamarrones sin lesión)"},
+  {g:"grave",t:"Deterioro intencional de material escolar propio o ajeno"},
+  {g:"grave",t:"Mentiras reiteradas o engaño con consecuencias para otros"},
+  {g:"grave",t:"No acatar reiteradamente las indicaciones del profesor/a"},
+  {g:"grave",t:"Actitudes de confrontación o desafío hacia el docente"},
+  {g:"grave",t:"Acciones que intimidan o generan temor en otros estudiantes"},
+  {g:"grave",t:"Sustracción menor de objetos"},
+  {g:"grave",t:"Discriminación o exclusión de compañeros/as"},
+  {g:"grave",t:"Copia o conducta deshonesta en una evaluación"},
+  {g:"extrema",t:"Agresión física grave que cause lesiones",p:"Violencia o agresión"},
+  {g:"extrema",t:"Robo o hurto significativo"},
+  {g:"extrema",t:"Amenazas graves o acoso escolar sostenido",p:"Acoso escolar"},
+  {g:"extrema",t:"Portar o utilizar objetos peligrosos o prohibidos"},
+  {g:"extrema",t:"Falsificación de documentos o firmas"},
+  {g:"extrema",t:"Discriminación grave (raza, religión, género, condición social)"},
+  {g:"extrema",t:"Daño grave e intencional a las instalaciones"},
+  {g:"extrema",t:"Conductas que ponen en riesgo la seguridad de la comunidad"},
+  {g:"extrema",t:"Conductas deshonestas reiteradas en evaluaciones"}
+];
+const MEDIDAS_GRAV = {
+  leve:"Diálogo pedagógico y reflexión, consecuencia lógica (ordenar, limpiar), registro en Schooltrack y comunicación a la familia por correo.",
+  grave:"Amonestación verbal formal o escrita, reflexión escrita, disculpa formal, reparación, pérdida de privilegios, citación al apoderado o medida de Vida Escolar fuera del horario. Suspensión: 1 a 5 días.",
+  extrema:"Suspensión de 3 a 7 días, derivación a especialistas, reparación significativa, medida de Vida Escolar fuera del horario, compromiso formal, suspensión de salidas y actividades, condicionalidad. Si corresponde, comunicación a las autoridades."
+};
+const MEDIDAS = [
+  {k:"amon_verbal",l:"Amonestación verbal"},
+  {k:"amon_escrita",l:"Amonestación escrita"},
+  {k:"trabajo",l:"Trabajo especial fuera de jornada",s:true},
+  {k:"reflexion",l:"Momento de reflexión (después de clases, con pauta)",s:true},
+  {k:"serv_com",l:"Servicio comunitario",s:true},
+  {k:"serv_ped",l:"Servicio pedagógico",s:true},
+  {k:"reparacion",l:"Reparación del daño o disculpa formal"},
+  {k:"privilegios",l:"Pérdida temporal de privilegios"},
+  {k:"suspension",l:"Suspensión de clases"},
+  {k:"carta_comp",l:"Carta de compromiso",c:true},
+  {k:"carta_cond",l:"Carta de condicionalidad",c:true},
+  {k:"derivacion",l:"Derivación (Convivencia, psicóloga, especialista)"},
+  {k:"otra",l:"Otra medida"}
+];
+const MMAP = Object.fromEntries(MEDIDAS.map(m=>[m.k,m]));
+const SES_EST = {programada:"Programada", cumplida:"Cumplida", no_asistio:"No se presentó", justifico:"No asistió (justificó)"};
+const CITA_CON = ["CPE (Inspector/a General)","Profesor/a jefe","Inspector/a de nivel","Dirección","Convivencia Escolar"];
+const CITA_MOTIVOS = ["Aviso por atrasos reiterados","Constancia por más de 5 atrasos","Anotaciones acumuladas","Devolución de dispositivo","Firma de carta de compromiso","Firma de carta de condicionalidad","Falta grave o extremadamente grave","Otro motivo"];
+const CITA_EST = {pendiente:"Pendiente", asistio:"Asistió", no_asistio:"No asistió", reagendada:"Reagendada"};
+const DISPOSITIVOS = ["Celular","Smartwatch","Audífonos","Tablet","Parlante","Otro"];
+const LUGARES = ["Sala de clases","Patio / recreo","Pasillo","Casino","Gimnasio","Baños","Biblioteca","Ingreso / portería","Salida pedagógica","Otro"];
+const TIPOS = {atraso:"Atraso", anotacion:"Anotación", positiva:"Anotación positiva", dispositivo:"Dispositivo", medida:"Medida", citacion:"Citación apoderado"};
+// Comportamientos destacados según los valores del PEI — RICE pág. 112–113.
+const POSITIVAS = ["Liderazgo positivo para una convivencia pacífica","Liderazgo positivo en actividades curriculares y extracurriculares","Proactividad en el cuidado del medio y espacio educativo","Interactúa de manera armónica con sus compañeros/as","Reconoce y valora opiniones distintas a las propias","Usa un vocabulario adecuado y cortés","Resuelve sus diferencias de manera pacífica","Participa en instancias de formación valórica, ciudadana y DDHH","Asistencia, puntualidad y presentación personal constantes","Uso correcto y oportuno del uniforme","Valora y protege las dependencias, el aseo y el ornato","Representa al colegio en actividades extraescolares","Actúa de manera solidaria con quien lo necesita","Cumple con tareas, deberes y compromisos adquiridos"];
+const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const DIAS = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+const INSP_GRUPOS = [{k:"b13",l:"1° a 3° Básico",d:"Silvia Bavestrello"},{k:"b45",l:"4° y 5° Básico",d:"Francisco Villanueva"},{k:"b68",l:"6° a 8° Básico",d:"Roxana Barría"},{k:"m14",l:"I a IV Medio",d:"Mabel Burgos"}];
+const FERIADOS_DEF = ["2026-01-01","2026-04-03","2026-04-04","2026-05-01","2026-05-21","2026-06-21","2026-06-29","2026-07-16","2026-08-15","2026-09-18","2026-09-19","2026-10-12","2026-10-31","2026-11-01","2026-12-08","2026-12-25"];
+const CFG_DEF = () => ({periodo:"semestre", s2Inicio:"08-01", atrAviso:3, atrGrave:6, anAviso:3, anCita:5, retencion:5, diaMedida:3, horaMedida:"14:30", contarJustificados:false, claveEliminar:"0000", inspectores:Object.fromEntries(INSP_GRUPOS.map(g=>[g.k,g.d])), feriados:FERIADOS_DEF.slice()});
+
+/* =================== Estado =================== */
+const state = { registros:[], estudiantes:[], config:CFG_DEF(), demo:false, demoData:null, loaded:false, gotR:false, gotE:false, mode:"loading", tab:"hoy", year:String(new Date().getFullYear()), drawer:null, regTipo:"atraso", lastResult:null, modal:null };
+let DB=null;
+
+/* =================== Utilidades =================== */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const fmt = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse = s => { const [y,m,d]=String(s).split("-").map(Number); return new Date(y,(m||1)-1,d||1); };
+const today = () => fmt(new Date());
+const nowHM = () => { const d=new Date(); return pad(d.getHours())+":"+pad(d.getMinutes()); };
+const toMin = h => { const [a,b]=String(h||"0:0").split(":").map(Number); return (a||0)*60+(b||0); };
+const fechaCorta = s => { if(!s) return "—"; const d=parse(s); return d.getDate()+" "+MESES[d.getMonth()].toLowerCase(); };
+const fechaLarga = s => { if(!s) return "—"; const d=parse(s); return DIAS[d.getDay()]+" "+d.getDate()+" de "+["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][d.getMonth()]; };
+const clone = o => JSON.parse(JSON.stringify(o));
+const nkey = s => String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const uid = p => (p||"r")+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+let FERIADOS = new Set(FERIADOS_DEF);
+const isWork = d => { const w=d.getDay(); return w!==0 && w!==6 && !FERIADOS.has(fmt(d)); };
+function addBusinessDays(s,n){ const d=parse(s); let k=Math.max(0,Number(n)||0); while(k>0){ d.setDate(d.getDate()+1); if(isWork(d)) k--; } return fmt(d); }
+function busDiff(a,b){ if(a===b) return 0; let from=parse(a), to=parse(b), sign=1; if(to<from){ [from,to]=[to,from]; sign=-1; } let n=0; const d=new Date(from); while(d<to){ d.setDate(d.getDate()+1); if(isWork(d)) n++; } return n*sign; }
+function addDays(s,n){ const d=parse(s); d.setDate(d.getDate()+n); return fmt(d); }
+function nextBusiness(s){ return addBusinessDays(s,1); }
+function nextWeekday(from, wd){ const d=parse(from); for(let i=0;i<30;i++){ d.setDate(d.getDate()+1); if(d.getDay()===wd && !FERIADOS.has(fmt(d))) return fmt(d); } return fmt(d); }
+function toast(msg){ const h=$("#toastHost"); h.innerHTML='<div class="toast" role="status">'+esc(msg)+'</div>'; clearTimeout(toast.t); toast.t=setTimeout(()=>{h.innerHTML="";},3000); }
+const cicloDe = n => NMAP[n] ? NMAP[n].ci : "";
+const cursoLabel = (n,l) => NMAP[n] ? NMAP[n].l+(l?" "+l:"") : "Sin curso";
+function grupoInsp(n){ const i=NMAP[n]?NMAP[n].i:-1; if(i<4) return ""; if(i<=6) return "b13"; if(i<=8) return "b45"; if(i<=11) return "b68"; return "m14"; }
+const inspectorDe = n => { const g=grupoInsp(n); return g ? ((state.config.inspectores||{})[g]||"") : "Encargada de Maternelle"; };
+function periodOf(f){ const y=String(f).slice(0,4); if(state.config.periodo==="anio") return y; return y+(String(f).slice(5)>=(state.config.s2Inicio||"08-01")?"-S2":"-S1"); }
+const curPeriod = () => periodOf(today());
+function periodLabel(p){ if(!String(p).includes("-S")) return "año "+p; return (p.endsWith("S1")?"1er semestre ":"2° semestre ")+p.slice(0,4); }
+const ordinal = n => n+"°";
+
+/* =================== Datos e índices =================== */
+const E = () => state.demo ? state.demoData.estudiantes : state.estudiantes;
+const R = () => state.demo ? state.demoData.registros : state.registros;
+let EST = new Map(), BYEST = new Map();
+function rebuild(){
+  EST = new Map(E().map(e=>[e.id,e]));
+  BYEST = new Map();
+  R().forEach(r=>{ if(!BYEST.has(r.estId)) BYEST.set(r.estId,[]); BYEST.get(r.estId).push(r); });
+  BYEST.forEach(a=>a.sort(cmpDesc));
+}
+const cmpDesc = (a,b) => ((b.fecha||"")+(b.hora||"")).localeCompare((a.fecha||"")+(a.hora||"")) || (b.ts||"").localeCompare(a.ts||"");
+const regsDe = id => BYEST.get(id)||[];
+function cuenta(estId, p){
+  p = p || curPeriod(); const y=p.slice(0,4); const C=state.config;
+  const o={atr:0, atrJ:0, an:0, anG:0, anE:0, cel:0, atrList:[], anList:[]};
+  regsDe(estId).forEach(r=>{ if(r.anulada) return;
+    if(r.tipo==="atraso" && periodOf(r.fecha)===p){ if(r.justificado && !C.contarJustificados) o.atrJ++; else { o.atr++; o.atrList.push(r); } }
+    if((r.tipo==="anotacion"||r.tipo==="dispositivo") && periodOf(r.fecha)===p){ o.an++; o.anList.push(r); const g=r.tipo==="dispositivo"?celGrav(r.infraccion):r.gravedad; if(g==="grave") o.anG++; if(g==="extrema") o.anE++; }
+    if(r.tipo==="dispositivo" && String(r.fecha).startsWith(y)) o.cel++;
+  });
+  return o;
+}
+function cartaDe(estId){
+  const c = regsDe(estId).find(r=>r.tipo==="medida" && MMAP[r.medida] && MMAP[r.medida].c && (r.cartaEstado||"vigente")==="vigente");
+  return c ? (c.medida==="carta_cond"?"Condicionalidad":"Carta de compromiso") : "";
+}
+const celGrav = n => n>=3 ? "extrema" : n===2 ? "grave" : "leve";
+function celConsecuencia(n){
+  const ret = state.config.retencion||5;
+  if(n>=3) return {g:"extrema", t:ordinal(n)+" infracción · falta extremadamente grave", pasos:["Requisar el dispositivo y registrar la falta en la hoja de vida.","Dirección cita al estudiante y su apoderado junto a CPE para firmar carta de compromiso."]};
+  if(n===2) return {g:"grave", t:"2ª infracción · falta grave", pasos:["Requisar el dispositivo y registrar la falta en la hoja de vida.","Retención por "+ret+" días hábiles desde la requisa, con citación del apoderado por CPE.","El estudiante asiste un miércoles en la tarde a una medida formativa sobre la normativa."]};
+  return {g:"leve", t:"1ª infracción", pasos:["Requisar el dispositivo y registrar la falta en la hoja de vida.","CPE cita al apoderado y le entrega el dispositivo; el apoderado firma el «Registro de entrega de dispositivo»."]};
+}
+function atrasoInfo(nivel, hora){
+  if(!hora) return null;
+  const ci=cicloDe(nivel)||"sec", tarde=hora>="12:00";
+  const entrada = tarde ? (ci==="sec"?"14:10":"14:00") : (ci==="sec"?"08:00":"08:10");
+  const min = toMin(hora)-toMin(entrada), pasos=[];
+  if(!tarde){
+    pasos.push(hora<="08:30" ? "Ingresa por el gimnasio; el representante de Vida Escolar entrega la autorización de ingreso a sala." : "Ingresa por recepción y pide la autorización de acceso al aula en la oficina central de Vida Escolar.");
+    if(ci==="sec") pasos.push(hora<="08:15" ? "Espera en el hall hasta las 8:10 y luego pasa a su sala." : "Permanece fuera, en Vida Escolar, hasta el cambio de hora (8:45).");
+  } else pasos.push(hora<="14:30" ? "Ingresa por el hall trasero (abierto hasta las 14:30)." : "Ingresa por recepción y pide la autorización en la oficina central de Vida Escolar.");
+  return {jornada:tarde?"tarde":"mañana", entrada, min, pasos};
+}
+const apelInstancia = g => g==="extrema" ? "Director/a" : g==="grave" ? "CPE" : "Profesor/a jefe";
+function gravMedida(m){ const a=m.motivoId && R().find(r=>r.id===m.motivoId); if(!a) return m.gravedadRef||""; return a.tipo==="dispositivo"?celGrav(a.infraccion):(a.gravedad||""); }
+function motivoTexto(m){ if(m.motivoId){ const a=R().find(r=>r.id===m.motivoId); if(a) return a.tipo==="dispositivo" ? "Dispositivo requisado ("+ordinal(a.infraccion)+" infracción)" : a.conducta; } return m.motivo||""; }
+function detalle(r){
+  if(r.tipo==="atraso") return (r.hora||"")+(r.min>0?" · "+r.min+" min":"")+(r.justificado?" · justificado":"")+(r.motivo?" · "+r.motivo:"");
+  if(r.tipo==="positiva") return r.conducta;
+  if(r.tipo==="anotacion") return (r.anulada?(r.anulada.tipo==="cert"?"(Certificado médico) ":r.anulada.tipo==="otra"?"(Justificada) ":"(Anulada) "):"")+r.conducta+(r.descripcion?" — "+r.descripcion:"");
+  if(r.tipo==="dispositivo") return (r.dispositivo||"Dispositivo")+" · "+ordinal(r.infraccion)+" infracción · "+(r.estado==="devuelto"?"devuelto "+fechaCorta(r.devolucion&&r.devolucion.fecha):"en custodia");
+  if(r.tipo==="medida"){ const m=MMAP[r.medida]; let t=m?m.l:r.medida; if(m&&m.s) t+=" · "+fechaCorta(r.sesFecha)+" "+(r.sesHora||"")+" · "+SES_EST[r.estado||"programada"]; if(r.medida==="suspension") t+=" · "+r.dias+" día(s), hasta "+fechaCorta(r.hasta); if(m&&m.c) t+=" · "+(r.cartaEstado==="levantada"?"levantada":"vigente"); return t; }
+  if(r.tipo==="citacion") return r.motivo+" · con "+r.con+" · "+fechaCorta(r.fecha)+" "+(r.hora||"")+" · "+CITA_EST[r.estado||"pendiente"];
+  return "";
+}
+
+/* =================== Avisos según el RICE =================== */
+function alertas(){
+  const p=curPeriod(), y=p.slice(0,4), C=state.config, out=[];
+  E().forEach(e=>{
+    const c=cuenta(e.id,p), av=e.avisos||{}, cur=cursoLabel(e.nivel,e.letra);
+    if(c.atr>=C.atrGrave && !av["atrG_"+p]) out.push({k:"atrG_"+p, est:e, sev:"grave", t:"Más de "+(C.atrGrave-1)+" atrasos: falta grave", s:c.atr+" atrasos (falta grave): falta citar al apoderado a firmar constancia y asignar trabajo especial.", d:c.atr+" atrasos sin justificar en el "+periodLabel(p)+". El apoderado asiste al ingreso de la mañana con su pupilo/a para firmar una constancia, y el estudiante realiza trabajo especial fuera del horario (miércoles, sábado u otro día). Cita Inspectoría del nivel.", ref:"RICE pág. 39", acc:"programar", plan:"atr"});
+    else if(c.atr>=C.atrAviso && !av["atrA_"+p]) out.push({k:"atrA_"+p, est:e, sev:"aviso", t:ordinal(c.atr)+" atraso: avisar al apoderado y al profesor/a jefe", s:c.atr+" atrasos: falta avisar por correo al apoderado y al profesor/a jefe.", d:"Vida Escolar informa por correo electrónico al apoderado y al profesor/a jefe.", ref:"RICE pág. 39", acc:"correo", mail:"atr"});
+    if(c.an>=C.anCita && !av["anC_"+p]) out.push({k:"anC_"+p, est:e, sev:"grave", t:c.an+" anotaciones: citar a estudiante y apoderado", s:c.an+" anotaciones negativas: falta citar al estudiante y su apoderado (CPE o profesor/a jefe) y asignar trabajo especial.", d:"CPE y/o profesor/a jefe citan al estudiante y su apoderado, dejan constancia escrita de la entrevista y el estudiante realiza trabajo académico especial fuera de la jornada.", ref:"RICE pág. 114", acc:"programar", plan:"an"});
+    else if(c.an>=C.anAviso && !av["anA_"+p]) out.push({k:"anA_"+p, est:e, sev:"aviso", t:c.an+" anotaciones: notificar al apoderado", s:c.an+" anotaciones negativas: falta notificar al apoderado por correo.", d:"Vida Escolar envía al apoderado un correo con el detalle de las anotaciones.", ref:"RICE pág. 114", acc:"correo", mail:"an"});
+    if(c.cel>=3 && !av["cel3_"+y]) out.push({k:"cel3_"+y, est:e, sev:"grave", t:ordinal(c.cel)+" infracción con dispositivo: carta de compromiso", s:c.cel+" infracciones con dispositivo: falta citar con Dirección para firmar carta de compromiso.", d:"Falta extremadamente grave. Dirección cita al estudiante y su apoderado junto a CPE para firmar una carta de compromiso sobre el uso de dispositivos.", ref:"Protocolo de dispositivos, pág. 213", acc:"programar", plan:"cel"});
+  });
+  const conMedida=new Set(R().filter(m=>m.tipo==="medida"&&m.motivoId).map(m=>m.motivoId));
+  R().forEach(r=>{
+    if(r.tipo!=="anotacion" || r.gravedad==="leve" || !r.gravedad || r.sinMedida) return;
+    if(conMedida.has(r.id)) return;
+    const e=EST.get(r.estId); if(!e) return;
+    out.push({k:"med_"+r.id, est:e, reg:r, sev:r.gravedad==="extrema"?"grave":"info", t:"Falta "+GRAV[r.gravedad].toLowerCase()+" sin medida definida", s:"Falta "+GRAV[r.gravedad].toLowerCase()+" del "+fechaCorta(r.fecha)+" ("+r.conducta+"): falta definir la medida.", d:fechaCorta(r.fecha)+" · "+r.conducta+". Vida Escolar orienta, aplica y registra la medida."+(r.gravedad==="extrema"?" Requiere procedimiento con debido proceso (indagación de hasta 10 días hábiles).":""), ref:"RICE pág. 94–95", acc:"medida"});
+  });
+  const order={grave:0,aviso:1,info:2};
+  return out.sort((a,b)=>order[a.sev]-order[b.sev] || a.est.nombre.localeCompare(b.est.nombre,"es"));
+}
+
+/* =================== Autoría =================== */
+let ME=null;
+try{ ME=(JSON.parse(localStorage.getItem("ve-autor")||'""')||"").trim()||null; }catch(e){ ME=null; }
+function setAutor(n){ ME=(n||"").trim()||null; try{ localStorage.setItem("ve-autor",JSON.stringify(ME||"")); }catch(e){} renderHeader(); }
+function pedirAutor(){
+  return new Promise(res=>{
+    openModal('<h2 id="mTitle">¿Quién está registrando?</h2><p>Escriba su nombre y cargo. Quedará anotado en cada atraso, anotación o medida que guarde. Este dispositivo lo recordará.</p>'+
+      '<form id="aForm" class="grid"><label class="f">Nombre y cargo<input type="text" id="aNombre" autocomplete="name" required placeholder="Ej.: Roxana Barría, Inspectora 6° a 8°" value="'+esc(ME||"")+'"></label>'+
+      '<div class="row" style="justify-content:flex-end"><button type="button" class="btn" id="aSkip">Ahora no</button><button type="submit" class="btn primary">Continuar</button></div></form>');
+    const inp=$("#aNombre"); setTimeout(()=>inp.focus(),30);
+    $("#aSkip").onclick=()=>{ closeModal(); res(!!ME); };
+    $("#aForm").onsubmit=ev=>{ ev.preventDefault(); const v=inp.value.trim(); if(v.length<3){ inp.focus(); return; } setAutor(v); closeModal(); toast("Registrando como "+v); res(true); };
+  });
+}
+async function needAutor(){ if(ME||state.demo) return true; if(hayPerfiles()){ elegirPerfil(); return false; } await pedirAutor(); if(!ME){ toast("Escriba su nombre para poder guardar."); return false; } return true; }
+
+/* =================== Almacenamiento =================== */
+const LS_R="ve-registros-v1", LS_E="ve-estudiantes-v1", LS_C="ve-config-v1";
+function lsGet(k,f){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):f; }catch(e){ return f; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function applyConfig(o){ const d=CFG_DEF(); state.config=Object.assign(d,o||{}); state.config.inspectores=Object.assign(d.inspectores,(o&&o.inspectores)||{}); if(!Array.isArray(state.config.feriados)) state.config.feriados=FERIADOS_DEF.slice(); FERIADOS=new Set(state.config.feriados); }
+const regCol = () => "anios/"+state.year+"/registros";
+let FS=null, CLAVE=null, unsubs=[];
+const remote = () => state.mode==="db" || state.mode==="fb";
+const PFX = () => state.mode==="fb" ? "espacios/"+CLAVE+"/" : "";
+const dref = path => (state.mode==="fb"?FS:DB).doc(PFX()+path);
+const cref = path => (state.mode==="fb"?FS:DB).collection(PFX()+path);
+function subscribe(){
+  unsubs.forEach(u=>{ try{ u(); }catch(e){} }); unsubs=[]; state.gotR=state.gotE=false; state.loaded=false;
+  unsubs.push(cref(regCol()).onSnapshot(s=>{ state.registros=s.docs.map(d=>Object.assign(clone(d.data()),{id:d.id})); state.gotR=true; afterLoad(); }, e=>{ state.gotR=true; if(state.mode==="fb" && e && e.code==="permission-denied") showGate("error","La base de datos rechazó la conexión. Revise que las reglas de Firestore estén publicadas."); else toast("No se pudieron leer los registros. Recargue la página."); afterLoad(); }));
+  unsubs.push(cref("estudiantes").onSnapshot(s=>{ state.estudiantes=s.docs.map(d=>Object.assign(clone(d.data()),{id:d.id})); state.gotE=true; afterLoad(); }, ()=>{ state.gotE=true; afterLoad(); }));
+  unsubs.push(dref("config/general").onSnapshot(s=>{ if(s.exists) applyConfig(clone(s.data())); state.cfgLoaded=true; syncSesion(); renderAll(); if(state.tab==="ajustes" && !(state.mode==="fb" && document.activeElement && document.activeElement.closest && document.activeElement.closest("#view-ajustes"))) renderAjustes(); }, ()=>{ state.cfgLoaded=true; syncSesion(); }));
+}
+async function initStore(){
+  if(!IN_CLAUDE && FIREBASE_CONFIG) return initFirebase();
+  let db=null;
+  try{ if(IN_CLAUDE) db=await window.claude.use("db"); }catch(e){ db=null; }
+  if(db){
+    DB=db; state.mode="db"; subscribe();
+  } else {
+    state.mode="local"; state.registros=lsGet(LS_R,[]); state.estudiantes=lsGet(LS_E,[]); applyConfig(lsGet(LS_C,{})); state.gotR=state.gotE=true; afterLoad();
+  }
+  renderAll();
+}
+let autoDemoDone=false;
+function afterLoad(){
+  if(state.gotR && state.gotE && !state.loaded){
+    state.loaded=true;
+    let off=false; try{ off=localStorage.getItem("ve-demo-off")==="1"; }catch(e){}
+    if(!autoDemoDone && !off && state.mode!=="fb" && !state.registros.length && !state.estudiantes.length){ autoDemoDone=true; startDemo(); return; }
+  }
+  if(state.demo && (state.registros.length || state.estudiantes.length) && state.demoAuto){ state.demo=false; state.demoData=null; toast("Ya hay registros reales: se cerró la demostración."); }
+  renderAll();
+}
+async function saveReg(r){
+  const data=clone(r); delete data.id; data.actualizado=new Date().toISOString(); data.actualizadoPor=ME||"";
+  if(state.demo){ const a=state.demoData.registros, i=a.findIndex(x=>x.id===r.id); const rec=Object.assign(data,{id:r.id}); if(i>=0) a[i]=rec; else a.push(rec); renderAll(); return true; }
+  if(remote()){ try{ await dref(regCol()+"/"+r.id).set(data); return true; }catch(e){ toast(e&&(e.code==="invalid_argument"||e.code==="permission-denied")?"Su acceso es de solo lectura; no puede guardar.":e&&(e.code==="quota_exceeded"||e.code==="resource-exhausted")?"Se superó la cuota de la base de datos.":"No se pudo guardar. Intente de nuevo."); return false; } }
+  const i=state.registros.findIndex(x=>x.id===r.id); const rec=Object.assign(data,{id:r.id}); if(i>=0) state.registros[i]=rec; else state.registros.push(rec); lsSet(LS_R,state.registros); renderAll(); return true;
+}
+async function delReg(id){
+  if(state.demo){ state.demoData.registros=state.demoData.registros.filter(r=>r.id!==id); renderAll(); return true; }
+  if(remote()){ try{ await dref(regCol()+"/"+id).delete(); return true; }catch(e){ toast("No se pudo eliminar."); return false; } }
+  state.registros=state.registros.filter(r=>r.id!==id); lsSet(LS_R,state.registros); renderAll(); return true;
+}
+async function saveEst(e){
+  const data=clone(e); delete data.id; data.actualizado=new Date().toISOString();
+  if(state.demo){ const a=state.demoData.estudiantes, i=a.findIndex(x=>x.id===e.id); const rec=Object.assign(data,{id:e.id}); if(i>=0) a[i]=rec; else a.push(rec); renderAll(); return true; }
+  if(remote()){ try{ await dref("estudiantes/"+e.id).set(data); return true; }catch(err){ toast("No se pudo guardar el estudiante."); return false; } }
+  const i=state.estudiantes.findIndex(x=>x.id===e.id); const rec=Object.assign(data,{id:e.id}); if(i>=0) state.estudiantes[i]=rec; else state.estudiantes.push(rec); lsSet(LS_E,state.estudiantes); renderAll(); return true;
+}
+async function ackAviso(estId, key, nota){
+  const e=EST.get(estId); if(!e) return false;
+  const v={fecha:today(), por:ME||"", nota:nota||"", ts:new Date().toISOString()};
+  if(remote() && !state.demo){ try{ await dref("estudiantes/"+estId).update(state.mode==="fb"?{["avisos."+key]:v}:{avisos:{[key]:v}}); return true; }catch(err){ toast("No se pudo marcar el aviso."); return false; } }
+  const n=clone(e); n.avisos=Object.assign({},n.avisos||{},{[key]:v}); return saveEst(n);
+}
+async function saveConfig(cfg){
+  if(state.demo){ applyConfig(cfg); renderAll(); return true; }
+  if(remote()){ try{ await dref("config/general").set(cfg); applyConfig(cfg); return true; }catch(e){ return false; } }
+  applyConfig(cfg); lsSet(LS_C,cfg); renderAll(); return true;
+}
+async function ensureEst(sel){
+  if(sel.id && EST.get(sel.id)) return sel.id;
+  const k=nkey(sel.nombre); const ex=E().find(e=>nkey(e.nombre)===k && e.nivel===sel.nivel);
+  if(ex) return ex.id;
+  const id=uid("e"); const ok=await saveEst({id, nombre:sel.nombre.trim(), nivel:sel.nivel, letra:sel.letra||"", avisos:{}, creado:today(), creadoPor:ME||""});
+  if(!ok) return null; if(state.demo||state.mode==="local") rebuild(); else EST.set(id,{id,nombre:sel.nombre.trim(),nivel:sel.nivel,letra:sel.letra||"",avisos:{}});
+  return id;
+}
+function baseReg(tipo, estId){ const e=EST.get(estId)||{}; return {id:uid("r"), tipo, estId, nombre:e.nombre||"", nivel:e.nivel||"", letra:e.letra||"", por:ME||"", ts:new Date().toISOString()}; }
+
+/* =================== Versión GitHub Pages: igual que Convivencia (enlace del equipo + perfiles con PIN) =================== */
+function loadScript(src){ return new Promise((res,rej)=>{ const sc=document.createElement("script"); sc.src=src; sc.onload=res; sc.onerror=()=>rej(new Error(src)); document.head.appendChild(sc); }); }
+function nuevaClave(){ const a=new Uint8Array(24); crypto.getRandomValues(a); return Array.from(a,x=>"abcdefghijkmnpqrstuvwxyz23456789"[x%32]).join(""); }
+const enlaceEquipo = () => location.origin+location.pathname+"#k="+CLAVE;
+function leerClave(){
+  const m=/[#&]k=([a-z0-9]{24,64})/i.exec(location.hash||"");
+  if(m){ CLAVE=m[1]; lsSet("ve-clave",CLAVE); try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){} return; }
+  if(!CLAVE) CLAVE=lsGet("ve-clave",null);
+}
+async function initFirebase(){
+  state.mode="fb"; renderHeader();
+  leerClave();
+  if(!CLAVE){ showGate("sinEnlace"); return; }
+  const base="https://www.gstatic.com/firebasejs/10.12.2/";
+  try{ await loadScript(base+"firebase-app-compat.js"); await loadScript(base+"firebase-firestore-compat.js"); }
+  catch(e){ showGate("error","No se pudo conectar con la base de datos. Revise su conexión a internet y recargue la página."); return; }
+  try{ firebase.initializeApp(FIREBASE_CONFIG); FS=firebase.firestore(); FS.settings({ignoreUndefinedProperties:true}); }
+  catch(e){ showGate("error","La configuración de Firebase no es válida. Revise el bloque FIREBASE_CONFIG al inicio del código."); return; }
+  $("#gate").hidden=true;
+  subscribe();
+}
+function showGate(kind, extra){
+  const g=$("#gate"); g.hidden=false;
+  const logo=(document.querySelector(".logo-plate img")||{}).src||"";
+  let body="";
+  if(kind==="sinEnlace"){
+    body='<p>Vida Escolar se abre con el <strong>enlace del equipo</strong>. Pídalo a quien administra la plataforma y ábralo en este dispositivo.</p>'+
+      '<form id="gLink" class="grid"><label class="f">¿Ya tiene el enlace? Péguelo aquí<input type="text" id="gLinkIn" autocomplete="off" placeholder="https://…#k=…"></label><button class="btn primary" type="submit">Entrar</button></form>'+
+      '<details class="gate-first"><summary>Primera vez: crear el espacio del colegio</summary><p class="muted">Solo quien instala la plataforma lo hace, una sola vez. Se genera el enlace del equipo para compartir con los inspectores.</p><button class="btn" id="gNew" type="button">Crear espacio y generar enlace</button></details>'+
+      '<p class="gate-err" id="gErr" role="alert"></p>';
+  } else if(kind==="nuevo"){
+    body='<p><strong>Espacio creado.</strong> Este es el enlace del equipo. Guárdelo y compártalo solo con Inspectoría y Vida Escolar: quien lo tenga puede entrar.</p>'+
+      '<div class="linkbox"><code id="gNewLink">'+esc(enlaceEquipo())+'</code><button class="btn sm" id="gCopy" type="button">Copiar</button></div>'+
+      '<p class="muted" style="font-size:13px">También queda en Ajustes → Enlace del equipo.</p><button class="btn primary gate-btn" id="gGo" type="button">Entrar a la plataforma</button>';
+  } else body='<p class="gate-err" role="alert">'+esc(extra||"Ocurrió un error.")+'</p><button class="btn gate-btn" type="button" id="gRe">Reintentar</button>';
+  g.innerHTML='<div class="gate-card"><img class="gate-logo" src="'+logo+'" alt="Lycée Claude Gay Osorno"><h1>Vida Escolar</h1>'+body+'</div>';
+  const gl=$("#gLink"); if(gl) gl.onsubmit=ev=>{ ev.preventDefault(); const m=/[#&]k=([a-z0-9]{24,64})/i.exec($("#gLinkIn").value.trim()); if(!m){ $("#gErr").textContent="Ese no parece el enlace del equipo. Debe terminar en #k= seguido de letras y números."; return; } CLAVE=m[1]; lsSet("ve-clave",CLAVE); initFirebase(); };
+  const gn=$("#gNew"); if(gn) gn.onclick=()=>{ CLAVE=nuevaClave(); lsSet("ve-clave",CLAVE); showGate("nuevo"); };
+  const gc=$("#gCopy"); if(gc) gc.onclick=()=>copiar(enlaceEquipo(), gc);
+  const gg=$("#gGo"); if(gg) gg.onclick=()=>initFirebase();
+  const gr=$("#gRe"); if(gr) gr.onclick=()=>location.reload();
+}
+async function copiar(txt, btn){
+  try{ await navigator.clipboard.writeText(txt); const t=btn.textContent; btn.textContent="Copiado"; setTimeout(()=>btn.textContent=t,1500); }
+  catch(e){ const el=btn.previousElementSibling; if(el){ const r=document.createRange(); r.selectNodeContents(el); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); } toast("Seleccione el texto y cópielo con Ctrl+C."); }
+}
+
+/* ---------- Perfiles con PIN (como Convivencia) ---------- */
+const ROLES_PERFIL = { admin:{l:"Administración", d:"Todo: registros, Ajustes, perfiles y eliminar registros."}, inspector:{l:"Inspector/a", d:"Registra y edita atrasos, anotaciones, dispositivos, medidas y citaciones."} };
+let PERFIL=null;
+const perfilesLista = () => Array.isArray(state.config.perfiles) ? state.config.perfiles : [];
+const hayPerfiles = () => state.mode==="fb" && perfilesLista().length>0;
+function can(accion){ if(!hayPerfiles() || state.demo) return true; if(!PERFIL) return false; if(accion==="ajustes"||accion==="eliminar") return PERFIL.rol==="admin"; return true; }
+async function hashClave(v){ const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode("vida-escolar-lcg|"+String(v))); return Array.from(new Uint8Array(buf),x=>x.toString(16).padStart(2,"0")).join(""); }
+const hashPin = (id,pin) => hashClave("pin|"+id+"|"+pin);
+async function checkClave(v){ const c=state.config; if(c.claveHash){ try{ return (await hashClave(v))===c.claveHash; }catch(e){ return false; } } return String(v)===String(c.claveEliminar||"0000"); }
+function pinAzar(){ const a=new Uint32Array(1); crypto.getRandomValues(a); return String(1000+(a[0]%9000)); }
+function iniciarPerfil(p, recordar){ PERFIL=p; ME=p.nombre+(p.cargo?", "+p.cargo:""); if(recordar) lsSet("ve-perfil",p.id); aplicarPermisos(); renderAll(); if(state.tab==="ajustes") renderAjustes(); }
+function cerrarSesion(){ PERFIL=null; ME=null; try{ localStorage.removeItem("ve-perfil"); }catch(e){} closeDrawer(); aplicarPermisos(); renderHeader(); elegirPerfil(); }
+function aplicarPermisos(){ const ta=$("#tab-ajustes"); ta.hidden = hayPerfiles() && !can("ajustes"); if(state.tab==="ajustes" && ta.hidden) setTab("hoy"); }
+function syncSesion(){
+  if(state.mode!=="fb" || !$("#gate").hidden) return;
+  if(hayPerfiles()){
+    if(PERFIL && PERFIL.id!=="_clave"){ const p=perfilesLista().find(x=>x.id===PERFIL.id); if(!p){ cerrarSesion(); return; } PERFIL=p; ME=p.nombre+(p.cargo?", "+p.cargo:""); }
+    else if(!PERFIL){ const id=lsGet("ve-perfil",null); const p=id && perfilesLista().find(x=>x.id===id); if(p) iniciarPerfil(p,false); else if(!state.pickerOpen) elegirPerfil(); }
+  } else if(!ME && !state.nameAsked){ state.nameAsked=true; pedirAutor(); }
+  aplicarPermisos();
+}
+let pinFallos=0, pinBloqueo=0;
+function elegirPerfil(){
+  state.pickerOpen=true;
+  const ps=perfilesLista().slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+  const logo=(document.querySelector(".logo-plate img")||{}).src||"";
+  const h=$("#pickHost"); h.hidden=false;
+  h.innerHTML='<div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="pTitle"><img class="gate-logo" src="'+logo+'" alt="Lycée Claude Gay Osorno"><h1 id="pTitle">¿Quién ingresa?</h1><p id="pStep">Elija su nombre.</p>'+
+    '<input type="search" id="pSearch" placeholder="Buscar por nombre" autocomplete="off"'+(ps.length>6?'':' hidden')+'><div class="plist" id="pList" role="list"></div>'+
+    '<form id="pForm" class="grid" hidden><p id="pWho" style="font-weight:700;margin:0"></p><label class="f">PIN<input type="password" id="pPin" inputmode="numeric" autocomplete="off" maxlength="8"></label><label class="check"><input type="checkbox" id="pRec" checked> Recordarme en este dispositivo</label><div class="row" style="justify-content:space-between"><button type="button" class="btn" id="pBack">Volver</button><button type="submit" class="btn primary">Entrar</button></div></form>'+
+    '<p class="gate-err" id="pErr" role="alert"></p>'+
+    '<details class="gate-first"><summary>Acceso de administración con clave</summary><p class="muted">Si olvidó su PIN, entre con la clave de administración y restablézcalo en Ajustes → Perfiles.</p><form id="pKeyForm" class="row"><input type="password" id="pKey" autocomplete="off" style="flex:1 1 140px" placeholder="Clave de administración"><button class="btn" type="submit">Entrar</button></form></details></div>';
+  let sel=null; const err=t=>{ $("#pErr").textContent=t||""; };
+  const pintar=()=>{ const q=nkey($("#pSearch").value); const arr=ps.filter(p=>!q||nkey(p.nombre+" "+(p.cargo||"")).includes(q));
+    $("#pList").innerHTML=arr.map(p=>'<button type="button" class="pitem" role="listitem" data-pid="'+esc(p.id)+'"><strong>'+esc(p.nombre)+'</strong><span>'+esc(p.cargo||(ROLES_PERFIL[p.rol]||{}).l||"")+'</span></button>').join("")||'<p class="muted">Nadie coincide.</p>';
+    h.querySelectorAll("[data-pid]").forEach(b=>b.onclick=()=>{ sel=ps.find(p=>p.id===b.dataset.pid); $("#pList").hidden=true; $("#pSearch").hidden=true; $("#pForm").hidden=false; $("#pStep").textContent="Escriba su PIN."; $("#pWho").textContent=sel.nombre; err(""); setTimeout(()=>$("#pPin").focus(),30); }); };
+  $("#pSearch").oninput=pintar; pintar();
+  $("#pBack").onclick=()=>{ sel=null; $("#pForm").hidden=true; $("#pList").hidden=false; $("#pSearch").hidden=ps.length<=6; $("#pStep").textContent="Elija su nombre."; err(""); };
+  $("#pForm").onsubmit=async ev=>{ ev.preventDefault(); if(!sel) return;
+    if(Date.now()<pinBloqueo){ err("Demasiados intentos. Espere "+Math.ceil((pinBloqueo-Date.now())/1000)+" segundos."); return; }
+    let ok=false; try{ ok=(await hashPin(sel.id,$("#pPin").value.trim()))===sel.pinHash; }catch(e){}
+    if(!ok){ pinFallos++; if(pinFallos>=5){ pinBloqueo=Date.now()+30000; pinFallos=0; } err("PIN incorrecto."); $("#pPin").value=""; $("#pPin").focus(); return; }
+    pinFallos=0; const rec=$("#pRec").checked; cerrarPicker(); iniciarPerfil(sel,rec); toast("Hola, "+sel.nombre); };
+  $("#pKeyForm").onsubmit=async ev=>{ ev.preventDefault(); if(await checkClave($("#pKey").value)){ cerrarPicker(); iniciarPerfil({id:"_clave",nombre:"Administración",cargo:"",rol:"admin"},false); setTab("ajustes"); } else { err("Clave de administración incorrecta."); $("#pKey").value=""; } };
+}
+function cerrarPicker(){ state.pickerOpen=false; const h=$("#pickHost"); h.hidden=true; h.innerHTML=""; }
+async function guardarPerfiles(lista){ const cfg=Object.assign(clone(state.config),{perfiles:lista}); if(!cfg.claveHash){ try{ cfg.claveHash=await hashClave(String(state.config.claveEliminar||"0000")); delete cfg.claveEliminar; }catch(e){} } return saveConfig(cfg); }
+function renderPerfiles(){
+  const host=$("#perfilesPanel"); if(!host) return;
+  host.hidden = state.mode!=="fb"; if(host.hidden) return;
+  $("#eqLink").textContent=enlaceEquipo();
+  const ps=perfilesLista().slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"));
+  $("#pfIntro").textContent = ps.length ? "Cada persona entra eligiendo su nombre y escribiendo su PIN. Lo que registre queda con su nombre." : "Aún no hay perfiles: cualquiera con el enlace entra escribiendo su nombre. Cree primero su propio perfil de Administración.";
+  $("#pfList").innerHTML = ps.length ? ps.map(p=>'<li><span><strong>'+esc(p.nombre)+'</strong>'+(p.cargo?' · '+esc(p.cargo):'')+'<span class="sub">'+esc((ROLES_PERFIL[p.rol]||{}).l||p.rol)+(PERFIL&&PERFIL.id===p.id?' · (usted)':'')+'</span></span><span class="row" style="gap:6px"><button class="btn sm" data-pfpin="'+esc(p.id)+'" type="button">Nuevo PIN</button><button class="btn sm ghost" style="color:var(--danger)" data-pfdel="'+esc(p.id)+'" type="button">Quitar</button></span></li>').join("") : '<li class="muted">Sin perfiles todavía.</li>';
+  if(!ps.length) $("#pfRol").value="admin";
+  $$("[data-pfdel]").forEach(b=>b.onclick=async()=>{ const id=b.dataset.pfdel, lista=perfilesLista().filter(x=>x.id!==id);
+    if(lista.length && !lista.some(x=>x.rol==="admin")){ toast("Debe quedar al menos un perfil de Administración."); return; }
+    if(b.dataset.confirm!=="1"){ b.dataset.confirm="1"; b.textContent="¿Quitar? Toque de nuevo"; return; }
+    if(await guardarPerfiles(lista)){ toast("Perfil quitado"); if(PERFIL&&PERFIL.id===id) cerrarSesion(); else renderPerfiles(); } });
+  $$("[data-pfpin]").forEach(b=>b.onclick=async()=>{ const id=b.dataset.pfpin, pin=pinAzar(); const lista=perfilesLista().map(x=>x.id===id?Object.assign({},x):x); const p=lista.find(x=>x.id===id); p.pinHash=await hashPin(id,pin);
+    if(await guardarPerfiles(lista)) mostrarPin([{nombre:p.nombre,cargo:p.cargo,pin}]); });
+  $("#pfAdd").onsubmit=async ev=>{ ev.preventDefault(); const nombre=$("#pfNombre").value.trim(), cargo=$("#pfCargo").value.trim(), rol=$("#pfRol").value;
+    if(nombre.length<2){ $("#pfNombre").focus(); return; }
+    if(!perfilesLista().length && rol!=="admin"){ toast("El primer perfil debe ser de Administración."); return; }
+    const id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), pin=pinAzar();
+    const lista=perfilesLista().concat([{id,nombre,cargo,rol,pinHash:await hashPin(id,pin),creado:today()}]);
+    if(!(await guardarPerfiles(lista))){ toast("No se pudo guardar el perfil."); return; }
+    $("#pfNombre").value=""; $("#pfCargo").value="";
+    if(lista.length===1) iniciarPerfil(lista[0],true);
+    mostrarPin([{nombre,cargo,pin}]); renderPerfiles(); };
+  $("#eqCopy").onclick=()=>copiar(enlaceEquipo(), $("#eqCopy"));
+  if(state.pinsShow) mostrarPin(state.pinsShow);
+}
+function mostrarPin(arr){
+  state.pinsShow=arr; const box=$("#pfPins"); if(!box) return; box.hidden=false;
+  box.innerHTML='<div class="hintbox warn"><strong>Anote este PIN ahora.</strong> Por seguridad no se vuelve a mostrar: la plataforma solo guarda una versión cifrada.'+arr.map(x=>'<div style="margin-top:8px;font-size:15px">'+esc(x.nombre)+(x.cargo?' · '+esc(x.cargo):'')+': <strong class="mono" style="font-size:18px;letter-spacing:.1em">'+esc(x.pin)+'</strong></div>').join("")+'<div class="row" style="margin-top:10px"><button class="btn sm" id="pfPinsOk" type="button">Ya lo anoté, ocultar</button></div></div>';
+  $("#pfPinsOk").onclick=()=>{ state.pinsShow=null; box.hidden=true; box.innerHTML=""; };
+}
+
+/* ---------- Archivos adjuntos en la versión del colegio (sin pagar almacenamiento) ---------- */
+function comprimirImagen(file){
+  return new Promise((res,rej)=>{ const url=URL.createObjectURL(file), img=new Image();
+    img.onload=()=>{ URL.revokeObjectURL(url); let w=img.naturalWidth, hh=img.naturalHeight, max=1800, q=0.72, out="";
+      const cv=document.createElement("canvas"), cx=cv.getContext("2d");
+      for(let i=0;i<10;i++){ const k=Math.min(1,max/Math.max(w,hh)); cv.width=Math.round(w*k); cv.height=Math.round(hh*k); cx.fillStyle="#fff"; cx.fillRect(0,0,cv.width,cv.height); cx.drawImage(img,0,0,cv.width,cv.height); out=cv.toDataURL("image/jpeg",q); if(out.length<=650000) return res(out); if(q>0.45) q-=0.1; else max=Math.round(max*0.8); }
+      rej(new Error("grande")); };
+    img.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error("formato")); }; img.src=url; });
+}
+const leerDataUrl = f => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(f); });
+async function abrirAdjunto(id, nombre){
+  try{ const sn=await dref("adjuntos/"+id).get(); if(!sn.exists){ toast("No se encontró el archivo."); return; }
+    const du=sn.data().dataUrl; const bin=atob(du.split(",")[1]); const arr=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+    const url=URL.createObjectURL(new Blob([arr],{type:du.slice(5,du.indexOf(";"))})); const a=document.createElement("a"); a.href=url; a.target="_blank"; a.rel="noopener"; a.download=nombre||"certificado"; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },60000);
+  }catch(e){ toast("No se pudo abrir el archivo."); }
+}
+
+/* =================== Respaldo: exportar e importar =================== */
+async function exportarRespaldo(){
+  const data={app:"vida-escolar-lcg", version:1, exportado:new Date().toISOString(), anio:state.year, config:state.config, estudiantes:E(), registros:R()};
+  try{ await saveFile("vida-escolar-respaldo-"+today()+".json", JSON.stringify(data,null,1), "application/json"); }catch(e){ toast("No se descargó el archivo."); }
+}
+async function importarRespaldo(file){
+  const msg={ set textContent(t){ state.rsMsg=t; const m=$("#rsMsg"); if(m) m.textContent=t; } }; msg.textContent="Leyendo archivo…";
+  let data=null; try{ data=JSON.parse(await file.text()); }catch(e){ msg.textContent="El archivo no es un respaldo válido."; return; }
+  if(!data || data.app!=="vida-escolar-lcg" || !Array.isArray(data.estudiantes)){ msg.textContent="El archivo no es un respaldo de Vida Escolar."; return; }
+  const items=[].concat(data.estudiantes.map(e=>["estudiantes/"+e.id,e]), (data.registros||[]).map(r=>[regCol()+"/"+r.id,r]));
+  let n=0; msg.textContent="Importando 0 de "+items.length+"…";
+  const strip=o=>{ const c=clone(o); delete c.id; return c; };
+  try{
+    if(state.mode==="fb"){
+      for(let i=0;i<items.length;i+=400){ const b=FS.batch(); items.slice(i,i+400).forEach(([pth,o])=>b.set(FS.doc(PFX()+pth),strip(o))); await b.commit(); n=Math.min(items.length,i+400); msg.textContent="Importando "+n+" de "+items.length+"…"; }
+    } else if(state.mode==="db"){
+      for(let i=0;i<items.length;i+=20){ await Promise.all(items.slice(i,i+20).map(([pth,o])=>DB.doc(pth).set(strip(o)))); n=Math.min(items.length,i+20); msg.textContent="Importando "+n+" de "+items.length+"…"; }
+    } else { msg.textContent="Para importar, use la versión conectada a la base de datos."; return; }
+    if(data.config && !state.configSaved) await saveConfig(Object.assign(clone(state.config),data.config));
+    msg.textContent="Listo: se importaron "+data.estudiantes.length+" estudiantes y "+(data.registros||[]).length+" registros.";
+  }catch(e){ msg.textContent="Se detuvo en "+n+" de "+items.length+". "+(e&&e.code==="permission-denied"?"Su cuenta no tiene permiso.":"Revise su conexión e intente de nuevo; lo ya importado se mantiene."); }
+}
+
+/* =================== Pestañas y cabecera =================== */
+const TABS=["hoy","cal","registrar","estudiantes","registros","stats","ajustes"];
+function setTab(t){
+  state.tab=t;
+  $$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===t)));
+  TABS.forEach(k=>{ $("#view-"+k).hidden = k!==t; });
+  try{ history.replaceState(null,"","#"+t); }catch(e){}
+  renderTab();
+}
+$$("nav.tabs button").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
+function renderTab(){ const t=state.tab; if(t==="hoy") renderHoy(); if(t==="cal") renderCal(); if(t==="registrar") renderRegistrar(); if(t==="estudiantes") renderEstudiantes(); if(t==="registros") renderRegistros(); if(t==="stats") renderStats(); if(t==="ajustes") renderAjustes(); }
+function renderHeader(){
+  const tag=$("#modeTag");
+  if(hayPerfiles() && PERFIL && !state.demo){ tag.innerHTML='<span>'+esc(PERFIL.nombre)+'</span> · <button class="linkbtn" id="btnSalir" type="button">Salir</button>'; $("#btnSalir").onclick=cerrarSesion; }
+  else tag.textContent = state.demo ? "Demostración" : state.mode==="db" ? "Datos compartidos con el equipo" : state.mode==="local" ? "Guardado solo en este navegador" : state.mode==="fb" ? "Base del colegio" : "Conectando…";
+  const ab=$("#autorBtn"); ab.hidden = hayPerfiles(); ab.innerHTML = ME ? '<span class="al">Registra</span> '+esc(ME)+' <span aria-hidden="true">✎</span>' : '¿Quién registra? <span aria-hidden="true">✎</span>';
+  ab.classList.toggle("empty",!ME);
+  $("#demoBanner").hidden=!state.demo;
+  $("#localBanner").hidden=!(state.mode==="local" && !IN_CLAUDE && !state.demo);
+  const n=pendCount(), ac=$("#alertCount"); ac.hidden=!n; ac.textContent=n; ac.title=n+" pendientes por resolver";
+}
+$("#autorBtn").onclick=()=>pedirAutor();
+function renderAll(){ rebuild(); renderHeader(); if(state.tab!=="registrar" && state.tab!=="ajustes") renderTab(); if(state.tab==="registrar") renderTodayList(); const ae=document.activeElement; if(state.drawer && !state.drawer.justify && !(ae && ae.closest && ae.closest(".drawer") && /INPUT|TEXTAREA|SELECT/.test(ae.tagName))) renderDrawer(); }
+
+/* =================== Modal y cajón =================== */
+function openModal(html){ $("#modalHost").innerHTML='<div class="modal" id="modalBg"><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle">'+html+'</div></div>'; $("#modalBg").addEventListener("click",ev=>{ if(ev.target.id==="modalBg") closeModal(); }); }
+function closeModal(){ $("#modalHost").innerHTML=""; }
+function openEst(id){ state.drawer={k:"est",id}; renderDrawer(); }
+function openReg(id){ state.drawer={k:"reg",id,confirm:false}; renderDrawer(); }
+function closeDrawer(){ state.drawer=null; $("#drawerHost").innerHTML=""; }
+document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"){ if($("#modalHost").innerHTML) closeModal(); else if(state.drawer) closeDrawer(); } });
+document.addEventListener("click",ev=>{
+  const a=ev.target.closest("[data-est]"); if(a){ ev.preventDefault(); openEst(a.dataset.est); return; }
+  const b=ev.target.closest("[data-reg]"); if(b){ ev.preventDefault(); openReg(b.dataset.reg); return; }
+  const c=ev.target.closest("[data-adj]"); if(c){ ev.preventDefault(); abrirAdjunto(c.dataset.adj, c.dataset.nom); }
+});
+const estLink = (id,nombre) => '<button type="button" class="linkname" data-est="'+esc(id)+'">'+esc(nombre)+'</button>';
+
+/* ---- Eventos por día (Hoy y Calendario) ---- */
+const TLABEL = {atraso:"Atrasos", anotacion:"Anotaciones negativas", positiva:"Anotaciones positivas", dispositivo:"Dispositivos requisados", medida:"Medidas", citacion:"Citaciones"};
+function eventosDia(f){
+  const out=[], work=isWork(parse(f));
+  R().forEach(r=>{
+    if((r.tipo==="atraso"||r.tipo==="anotacion"||r.tipo==="positiva"||r.tipo==="dispositivo") && r.fecha===f) out.push({k:"reg",t:r.tipo,r,h:r.hora||"",f});
+    if(r.tipo==="medida"){ const m=MMAP[r.medida]||{};
+      if(m.s){ if(r.sesFecha===f) out.push({k:"ses",t:"medida",r,h:r.sesHora||"",f}); }
+      else if(r.medida==="suspension"){ if(r.desde<=f && r.hasta>=f && work) out.push({k:"susp",t:"medida",r,h:"",f}); }
+      else if(r.fecha===f) out.push({k:"reg",t:"medida",r,h:"",f});
+    }
+    if(r.tipo==="citacion" && r.fecha===f) out.push({k:"cit",t:"citacion",r,h:r.hora||"",f});
+    if(r.tipo==="dispositivo" && r.estado!=="devuelto" && r.retencionHasta===f) out.push({k:"dev",t:"dispositivo",r,h:"",f});
+  });
+  return out.sort((a,b)=>(a.h||"99").localeCompare(b.h||"99") || a.r.nombre.localeCompare(b.r.nombre,"es"));
+}
+const EVLABEL = {reg:null, ses:"Medida", susp:"Suspensión", cit:"Citación apoderado", dev:"Devolución"};
+function eventRow(ev, showDate){
+  const r=ev.r, t=today(), lab=EVLABEL[ev.k]||TIPOS[ev.t];
+  let sub="", acts="";
+  if(ev.k==="reg"){ sub=detalle(r)+(r.tipo==="anotacion"?" · "+(GRAV[r.gravedad]||""):""); acts='<button class="btn sm ghost" data-reg="'+esc(r.id)+'">Ver</button>'; }
+  if(ev.k==="ses"){ const est=r.estado||"programada"; sub=(MMAP[r.medida]||{}).l+" · "+(motivoTexto(r)||"—");
+    acts = est==="programada" ? (ev.f<=t ? '<button class="btn sm" data-ses="'+esc(r.id)+'" data-v="cumplida">Asistió</button><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="no_asistio">No se presentó</button><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="justifico">Justificó</button>' : '<span class="chip">Programada</span>')
+      : '<span class="chip '+(est==="cumplida"?"ok":est==="no_asistio"?"bad":"")+'">'+esc(SES_EST[est])+'</span>'; }
+  if(ev.k==="susp"){ sub="Suspendido/a del "+fechaCorta(r.desde)+" al "+fechaCorta(r.hasta)+" · "+(motivoTexto(r)||"—"); acts='<button class="btn sm ghost" data-reg="'+esc(r.id)+'">Ver</button>'; }
+  if(ev.k==="cit"){ const est=r.estado||"pendiente"; sub="El apoderado viene a reunirse con "+r.con+" · Motivo: "+r.motivo+(r.obs?" · "+r.obs:"");
+    acts = est==="pendiente" ? (ev.f<=t ? '<button class="btn sm" data-cit="'+esc(r.id)+'" data-v="asistio">Asistió</button><button class="btn sm" data-cit="'+esc(r.id)+'" data-v="no_asistio">No asistió</button>' : '<span class="chip">Pendiente</span>')
+      : '<span class="chip '+(est==="asistio"?"ok":est==="no_asistio"?"bad":"")+'">'+esc(CITA_EST[est])+'</span>'; }
+  if(ev.k==="dev"){ sub=(r.dispositivo||"Dispositivo")+" requisado el "+fechaCorta(r.fecha)+": cumple la retención y se puede devolver"; acts='<button class="btn sm" data-devolver="'+esc(r.id)+'">Registrar devolución</button>'; }
+  return '<div class="ev t-'+ev.t+'"><span class="hr">'+esc(showDate?fechaCorta(ev.f):(ev.h||"—"))+'</span><span><span class="tchip t-'+ev.t+'">'+esc(lab)+'</span> '+estLink(r.estId,r.nombre)+' <span class="muted">· '+esc(cursoLabel(r.nivel,r.letra))+'</span><span class="sub">'+esc(sub)+'</span></span><span class="acts">'+acts+'</span></div>';
+}
+function legendHTML(){ return '<div class="legend">'+Object.keys(TIPOS).map(k=>'<span class="tchip t-'+k+'">'+esc(TIPOS[k])+'</span>').join("")+'</div>'; }
+
+/* =================== HOY: lo que pasa hoy + pendientes siempre visibles =================== */
+function renderHoy(){
+  const host=$("#view-hoy");
+  if(!state.loaded){ host.innerHTML='<div class="calm">Cargando registros…</div>'; return; }
+  const t=today(), evs=eventosDia(t), p=pendientes(), fl=fechaLarga(t);
+  let main='';
+  if(!evs.length){
+    main='<div class="emptybox"><h3>Todavía no hay nada hoy</h3><p>Aquí aparecen los atrasos, anotaciones, dispositivos, medidas y citaciones de hoy a medida que se registran. Lo programado para otros días está en el Calendario.</p><div class="row" style="justify-content:center"><button class="btn primary" type="button" data-go="registrar">Registrar</button><button class="btn" type="button" data-go="cal">Ver calendario</button></div></div>';
+  } else {
+    const cnt=k=>evs.filter(e=>e.t===k).length;
+    main='<div class="tiles">'+Object.keys(TIPOS).filter(k=>cnt(k)).map(k=>'<div class="tile t-'+k+'"><div class="v num">'+cnt(k)+'</div><div class="l">'+esc(TLABEL[k])+'</div></div>').join("")+'</div>';
+    [["ses","Medidas fuera de jornada de hoy"],["cit","Citaciones de hoy"],["susp","Suspendidos hoy"],["dev","Dispositivos que se pueden devolver hoy"],["reg","Registros del día"]].forEach(([k,l])=>{
+      const xs=evs.filter(e=>e.k===k); if(!xs.length) return;
+      main+='<div class="section-h"><h2>'+esc(l)+'</h2><span class="n">'+xs.length+'</span></div><div class="evs">'+xs.map(e=>eventRow(e,false)).join("")+'</div>';
+    });
+  }
+  host.innerHTML='<div class="section-h"><div><div class="eyebrow">Hoy · '+esc(periodLabel(curPeriod()))+'</div><h2 style="font-size:24px">'+esc(fl.charAt(0).toUpperCase()+fl.slice(1))+'</h2></div><button class="btn primary" type="button" data-go="registrar">Registrar</button></div>'+
+    '<div class="hoy-grid"><div class="hoy-main">'+main+'</div>'+pendPanelHTML(p)+'</div>';
+  bindView(host,p.al);
+  const more=$("#pendMore"); if(more) more.onclick=()=>{ state.pendAll=!state.pendAll; renderHoy(); };
+}
+
+/* =================== PENDIENTES (panel en Hoy) =================== */
+function pendientes(){
+  const t=today();
+  return {
+    al: alertas(),
+    inas: R().filter(r=>r.tipo==="medida"&&r.estado==="no_asistio"&&r.anotInasistId).filter(r=>{ const a=R().find(x=>x.id===r.anotInasistId); return a&&!a.anulada; }),
+    sesAtr: R().filter(r=>r.tipo==="medida"&&MMAP[r.medida]&&MMAP[r.medida].s&&(r.estado||"programada")==="programada"&&r.sesFecha<t).sort((a,b)=>a.sesFecha.localeCompare(b.sesFecha)),
+    citAtr: R().filter(r=>r.tipo==="citacion"&&(r.estado||"pendiente")==="pendiente"&&r.fecha<t).sort((a,b)=>a.fecha.localeCompare(b.fecha)),
+    apel: R().filter(r=>r.tipo==="medida"&&r.apelacion&&r.apelacion.estado==="pendiente"),
+    cust: R().filter(r=>r.tipo==="dispositivo"&&r.estado!=="devuelto").sort((a,b)=>a.fecha.localeCompare(b.fecha))
+  };
+}
+function pendCount(){ if(!state.loaded) return 0; return pendItems(pendientes()).filter(i=>i.sev!=="info").length; }
+const estDe = r => EST.get(r.estId) || {id:r.estId, nombre:r.nombre, nivel:r.nivel, letra:r.letra};
+function pendItems(p){
+  const t=today(), it=[];
+  p.al.forEach((a,i)=>{ let acts='';
+    if(a.acc==="correo") acts='<button class="btn sm primary" data-al="'+i+'" data-a="correo">Preparar correo</button><button class="btn sm" data-al="'+i+'" data-a="ok">Ya avisé</button>';
+    if(a.acc==="programar") acts='<button class="btn sm primary" data-al="'+i+'" data-a="programar">Programar citación</button><button class="btn sm" data-al="'+i+'" data-a="ok">Ya resuelto</button>';
+    if(a.acc==="medida") acts='<button class="btn sm primary" data-al="'+i+'" data-a="medida">Definir medida</button><button class="btn sm" data-al="'+i+'" data-a="sinmedida">Sin medida</button>';
+    it.push({sev:a.sev, est:a.est, s:a.s, ref:a.ref, acts}); });
+  p.inas.forEach(r=>it.push({sev:"aviso", est:estDe(r), s:"No se presentó al castigo del "+fechaCorta(r.sesFecha)+". Tiene la anotación negativa; falta ver si justifica.", ref:"RICE pág. 84", acts:'<button class="btn sm primary" data-just="'+esc(r.anotInasistId)+'">Presentó certificado o justificó</button>'}));
+  p.sesAtr.forEach(r=>it.push({sev:"aviso", est:estDe(r), s:"Castigo del "+fechaCorta(r.sesFecha)+" ("+((MMAP[r.medida]||{}).l||"").toLowerCase()+"): falta registrar si asistió.", acts:'<button class="btn sm" data-ses="'+esc(r.id)+'" data-v="cumplida">Asistió</button><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="no_asistio">No se presentó</button><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="justifico">Justificó</button>'}));
+  p.citAtr.forEach(r=>it.push({sev:"aviso", est:estDe(r), s:"Citación del "+fechaCorta(r.fecha)+" con "+r.con+": falta registrar si el apoderado asistió.", acts:'<button class="btn sm" data-cit="'+esc(r.id)+'" data-v="asistio">Asistió</button><button class="btn sm" data-cit="'+esc(r.id)+'" data-v="no_asistio">No asistió</button>'}));
+  p.apel.forEach(r=>{ const lim=addBusinessDays(r.apelacion.fecha,10), rest=busDiff(t,lim); it.push({sev:rest<0?"grave":"aviso", est:estDe(r), s:"Apelación de "+(((MMAP[r.medida]||{}).l)||"medida").toLowerCase()+": "+r.apelacion.instancia+" debe responder "+(rest<0?"(plazo vencido el "+fechaCorta(lim)+")":"antes del "+fechaCorta(lim))+".", ref:"RICE pág. 116", acts:'<button class="btn sm" data-reg="'+esc(r.id)+'">Responder</button>'}); });
+  p.cust.forEach(r=>{ const listo=!r.retencionHasta||r.retencionHasta<=t; it.push({sev:r.retencionHasta&&listo?"aviso":"info", est:estDe(r), s:(r.dispositivo||"Dispositivo")+" en custodia desde el "+fechaCorta(r.fecha)+": "+(r.retencionHasta?(listo?"ya cumplió la retención, se puede devolver.":"se puede devolver desde el "+fechaCorta(r.retencionHasta)+"."):"se devuelve al apoderado en la citación con CPE."), acts:'<button class="btn sm" data-devolver="'+esc(r.id)+'">Registrar devolución</button>'}); });
+  const o={grave:0,aviso:1,info:2};
+  return it.sort((a,b)=>o[a.sev]-o[b.sev]);
+}
+function pendPanelHTML(p){
+  const it=pendItems(p), n=it.filter(i=>i.sev!=="info").length, LIM=6, show=state.pendAll?it:it.slice(0,LIM);
+  return '<aside class="pend" aria-labelledby="pendTitle"><div class="pend-h"><h2 id="pendTitle">Pendientes</h2><span class="chip '+(it.some(i=>i.sev==="grave")?"bad":n?"warn":"ok")+'">'+(n?n+" por resolver":"Al día")+'</span></div>'+
+    (it.length ? show.map(i=>'<div class="pi '+i.sev+'"><div><span class="pi-n">'+estLink(i.est.id,i.est.nombre)+'</span> <span class="muted">· '+esc(cursoLabel(i.est.nivel,i.est.letra))+'</span></div><div class="pi-s">'+esc(i.s)+(i.ref?' <span class="ref">'+esc(i.ref)+'</span>':'')+'</div><div class="pi-a">'+i.acts+'</div></div>').join("")+
+      (it.length>LIM?'<button class="btn sm ghost" id="pendMore" type="button" style="width:100%">'+(state.pendAll?'Ver menos':'Ver todos ('+it.length+')')+'</button>':'')
+      : '<p class="muted" style="margin:0;font-size:14px">No hay nada pendiente: sin avisos del RICE por enviar, sin asistencias por registrar y sin dispositivos en custodia.</p>')+'</aside>';
+}
+
+/* =================== CALENDARIO =================== */
+const MESES_L = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+function renderCal(){
+  const host=$("#view-cal");
+  if(!state.cal){ const d=new Date(); state.cal={y:d.getFullYear(), m:d.getMonth(), sel:today()}; }
+  if(!state.loaded){ host.innerHTML='<div class="calm">Cargando…</div>'; return; }
+  const {y,m,sel}=state.cal, t=today();
+  const first=new Date(y,m,1), lead=(first.getDay()+6)%7, dim=new Date(y,m+1,0).getDate();
+  let cells='';
+  for(let i=0;i<lead;i++) cells+='<span class="day off" aria-hidden="true"></span>';
+  for(let d=1; d<=dim; d++){
+    const f=fmt(new Date(y,m,d)), evs=eventosDia(f), wd=new Date(y,m,d).getDay();
+    const by={}; evs.forEach(e=>{ by[e.t]=(by[e.t]||0)+1; });
+    const dots=Object.keys(TIPOS).filter(k=>by[k]).map(k=>'<span class="cdot t-'+k+'" title="'+by[k]+' '+esc(TLABEL[k].toLowerCase())+'">'+by[k]+'</span>').join("");
+    const cls=["day"]; if(wd===0||wd===6||FERIADOS.has(f)) cls.push("we"); if(f===t) cls.push("today"); if(f<t) cls.push("past");
+    cells+='<button type="button" class="'+cls.join(" ")+'" data-day="'+f+'" aria-pressed="'+(f===sel)+'" aria-label="'+esc(fechaLarga(f))+', '+evs.length+' eventos"><span class="dn">'+d+'</span><span class="cdots">'+dots+'</span></button>';
+  }
+  const evs=eventosDia(sel);
+  const fl=fechaLarga(sel);
+  host.innerHTML='<div class="cal-head"><div class="row" style="align-items:center"><button class="btn sm" type="button" id="calPrev" aria-label="Mes anterior">‹</button><h2 style="min-width:170px;text-align:center">'+MESES_L[m]+' '+y+'</h2><button class="btn sm" type="button" id="calNext" aria-label="Mes siguiente">›</button><button class="btn sm ghost" type="button" id="calHoy">Hoy</button></div>'+legendHTML()+'</div>'+
+    '<div class="cal">'+["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(w=>'<span class="wd">'+w+'</span>').join("")+cells+'</div>'+
+    '<div class="section-h"><div><div class="eyebrow">'+(sel===t?"Hoy":sel<t?"Día pasado":"Programado")+'</div><h2>'+esc(fl.charAt(0).toUpperCase()+fl.slice(1))+'</h2></div><span class="n">'+evs.length+'</span></div>'+
+    (evs.length ? '<div class="evs">'+evs.map(e=>eventRow(e,false)).join("")+'</div>' : '<div class="calm">'+(sel<t?'No hubo registros este día.':'No hay nada programado para este día.')+'</div>');
+  const go=(dy,dm)=>{ let nm=m+dm, ny=y; if(nm<0){nm=11;ny--;} if(nm>11){nm=0;ny++;} state.cal={y:ny,m:nm,sel:fmt(new Date(ny,nm,1))}; renderCal(); };
+  $("#calPrev").onclick=()=>go(0,-1); $("#calNext").onclick=()=>go(0,1);
+  $("#calHoy").onclick=()=>{ const d=new Date(); state.cal={y:d.getFullYear(),m:d.getMonth(),sel:today()}; renderCal(); };
+  host.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{ state.cal.sel=b.dataset.day; renderCal(); });
+  bindView(host,[]);
+}
+function kpiBtn(v,l,cls,go){ return '<button type="button" class="kpi '+cls+'" data-go="'+esc(go)+'"><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></button>'; }
+function alertCard(a,i){
+  const e=a.est;
+  let acts='';
+  if(a.acc==="correo") acts='<button class="btn sm primary" data-al="'+i+'" data-a="correo">Preparar correo</button><button class="btn sm" data-al="'+i+'" data-a="ok">Marcar avisado</button>';
+  if(a.acc==="programar") acts='<button class="btn sm primary" data-al="'+i+'" data-a="programar">Programar citación y medida</button><button class="btn sm" data-al="'+i+'" data-a="ok">Ya resuelto</button>';
+  if(a.acc==="medida") acts='<button class="btn sm primary" data-al="'+i+'" data-a="medida">Definir medida</button><button class="btn sm" data-al="'+i+'" data-a="sinmedida">Sin medida adicional</button>';
+  return '<div class="alert '+a.sev+'"><div><div>'+estLink(e.id,e.nombre)+' <span class="muted">· '+esc(cursoLabel(e.nivel,e.letra))+'</span></div><div class="t">'+esc(a.t)+'</div><p class="d">'+esc(a.d)+' <span class="ref">'+esc(a.ref)+'</span></p></div><div class="acts">'+acts+'</div></div>';
+}
+function sesionesHTML(ses){
+  const t=today(), g=new Map();
+  ses.slice().sort((a,b)=>(a.sesFecha+a.sesHora).localeCompare(b.sesFecha+b.sesHora)).forEach(r=>{ const k=r.sesFecha+"|"+(r.sesHora||""); if(!g.has(k)) g.set(k,[]); g.get(k).push(r); });
+  return [...g.entries()].map(([k,list])=>{ const [f,hh]=k.split("|"); const late=f<t;
+    return '<div class="sess"><div class="sess-h'+(late?" late":"")+'"><span class="when">'+esc(fechaLarga(f))+(hh?' · '+esc(hh):'')+'</span><span>'+(late?'Falta registrar asistencia · ':f===t?'Hoy · ':'')+list.length+' estudiante'+(list.length>1?'s':'')+'</span></div>'+
+      list.map(r=>'<div class="roll"><span>'+estLink(r.estId,r.nombre)+' <span class="muted">· '+esc(cursoLabel(r.nivel,r.letra))+'</span><span class="sub">'+esc(MMAP[r.medida].l)+' · '+esc(motivoTexto(r)||"—")+'</span></span><span class="acts"><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="cumplida">Asistió</button><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="no_asistio">No se presentó</button><button class="btn sm" data-ses="'+esc(r.id)+'" data-v="justifico">Justificó</button></span></div>').join("")+'</div>'; }).join("");
+}
+function bindView(host, al){
+  host.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{ const g=b.dataset.go; if(g.startsWith("#")){ const el=document.getElementById(g.slice(1)); if(el) el.scrollIntoView({behavior:"smooth",block:"start"}); } else setTab(g); });
+  host.querySelectorAll("[data-al]").forEach(b=>b.onclick=()=>alertAction(al[+b.dataset.al], b.dataset.a));
+  bindRowActions(host);
+}
+function bindRowActions(host){
+  host.querySelectorAll("[data-ses]").forEach(b=>b.onclick=()=>marcarSesion(b.dataset.ses,b.dataset.v));
+  host.querySelectorAll("[data-cit]").forEach(b=>b.onclick=()=>marcarCitacion(b.dataset.cit,b.dataset.v));
+  host.querySelectorAll("[data-devolver]").forEach(b=>b.onclick=()=>devolverModal(b.dataset.devolver));
+  host.querySelectorAll("[data-just]").forEach(b=>b.onclick=()=>{ state.drawer={k:"reg",id:b.dataset.just,justify:true,jt:"cert"}; renderDrawer(); });
+}
+async function alertAction(a, act){
+  if(!a) return;
+  if(act==="ok"){ if(!(await needAutor())) return; if(await ackAviso(a.est.id,a.k)) toast("Aviso marcado como hecho"); }
+  if(act==="correo") correoModal(a);
+  if(act==="programar") programarModal(a);
+  if(act==="medida"){ prefill={estId:a.est.id, tipo:"medida", motivoId:a.reg.id}; state.regTipo="medida"; setTab("registrar"); }
+  if(act==="sinmedida"){ if(!(await needAutor())) return; const r=clone(a.reg); r.sinMedida={fecha:today(),por:ME||""}; if(await saveReg(r)) toast("Registrado: sin medida adicional"); }
+}
+async function marcarSesion(id, v){
+  const r=R().find(x=>x.id===id); if(!r) return; if(!(await needAutor())) return;
+  const n=clone(r); n.estado=v; n.asistencia={fecha:today(), por:ME||""};
+  if(v==="justifico"){ n.estado="programada"; n.reprogramadaDe=(n.reprogramadaDe||[]).concat([n.sesFecha]); n.sesFecha=nextBusiness(n.sesFecha<today()?today():n.sesFecha); }
+  const anId = v==="justifico" ? r.anotInasistId : null; if(anId) delete n.anotInasistId;
+  if(!(await saveReg(n))) return;
+  if(anId){ const an=R().find(x=>x.id===anId); if(an && !an.anulada){ const a2=clone(an); a2.anulada={motivo:"Justificó la inasistencia (certificado médico)",fecha:today(),por:ME||""}; await saveReg(a2); } toast("Anotación por inasistencia anulada. Medida reprogramada para el "+fechaCorta(n.sesFecha)); return; }
+  if(v==="no_asistio" && !r.anotInasistId){
+    const e=EST.get(r.estId)||{}; const ci=cicloDe(e.nivel);
+    const an=Object.assign(baseReg("anotacion",r.estId),{fecha:today(),ambito:ci==="sec"?"ped":"",conducta:"Inasistencia a medida disciplinaria o formativa sin justificación",gravedad:"leve",auto:true,medidaId:r.id});
+    if(await saveReg(an)){ const n2=clone(n); n2.anotInasistId=an.id; await saveReg(n2); toast("Anotación negativa registrada. Queda en Pendientes para ver si justifica"); }
+  } else toast(v==="justifico"?"Reprogramada para el "+fechaCorta(n.sesFecha):"Asistencia registrada");
+}
+async function marcarCitacion(id,v){
+  const r=R().find(x=>x.id===id); if(!r) return; if(!(await needAutor())) return;
+  const n=clone(r); n.estado=v; n.asistencia={fecha:today(),por:ME||""};
+  if(await saveReg(n)) toast(v==="no_asistio"?"Registrado. Según el RICE se puede emitir amonestación escrita al apoderado.":"Asistencia registrada");
+}
+function devolverModal(id){
+  const r=R().find(x=>x.id===id); if(!r) return; const e=EST.get(r.estId)||{};
+  const pend=r.retencionHasta && r.retencionHasta>today();
+  openModal('<h2 id="mTitle">Devolver '+esc((r.dispositivo||"dispositivo").toLowerCase())+'</h2><p>'+esc(r.nombre)+' · requisado el '+esc(fechaCorta(r.fecha))+'. La devolución se hace solo a los padres o tutores, en persona, y firman el «Registro de entrega de dispositivo».</p>'+
+    (pend?'<div class="hintbox warn">La retención de '+state.config.retencion+' días hábiles se cumple el '+esc(fechaLarga(r.retencionHasta))+'.</div>':'')+
+    '<div class="grid g2"><label class="f">Entregado a<input type="text" id="dvA" placeholder="Nombre del apoderado/a" value="'+esc(e.apoderado||"")+'"></label><label class="f">Fecha<input type="date" id="dvF" value="'+today()+'"></label></div>'+
+    '<label class="check"><input type="checkbox" id="dvFirma" checked> El apoderado firmó el registro de entrega</label>'+
+    '<div class="row" style="justify-content:flex-end"><button class="btn" id="dvNo" type="button">Cancelar</button><button class="btn primary" id="dvSi" type="button">Registrar devolución</button></div>');
+  $("#dvNo").onclick=closeModal;
+  $("#dvSi").onclick=async()=>{ const a=$("#dvA").value.trim(); if(!a){ $("#dvA").focus(); return; } if(!(await needAutor())) return;
+    const n=clone(r); n.estado="devuelto"; n.devolucion={a, fecha:$("#dvF").value||today(), firma:$("#dvFirma").checked, por:ME||""};
+    if(await saveReg(n)){ closeModal(); toast("Devolución registrada"); } };
+}
+function correoModal(a){
+  const e=a.est, p=curPeriod(), c=cuenta(e.id,p), cur=cursoLabel(e.nivel,e.letra);
+  let asunto, cuerpo;
+  if(a.mail==="atr"){
+    asunto="Atrasos de "+e.nombre+" ("+cur+")";
+    cuerpo="Estimado/a apoderado/a:\n\nLe informamos que "+e.nombre+", de "+cur+", registra "+c.atr+" atrasos durante el "+periodLabel(p)+":\n"+c.atrList.slice().reverse().map(r=>"• "+fechaLarga(r.fecha)+", "+r.hora+(r.min>0?" ("+r.min+" min)":"")).join("\n")+
+      "\n\nDe acuerdo con el Reglamento Interno, al tercer atraso Vida Escolar informa al apoderado y al profesor/a jefe. Le recordamos que, después del quinto atraso, la situación se considera falta grave: el apoderado deberá asistir al ingreso de la mañana junto a su pupilo/a para firmar una constancia, y el estudiante realizará un trabajo especial fuera del horario de clases.\n\nAgradecemos su apoyo para favorecer la puntualidad.\n\nSaludos cordiales,\n"+(ME||"[Nombre]")+"\nVida Escolar · Lycée Claude Gay de Osorno";
+  } else {
+    asunto="Anotaciones de "+e.nombre+" ("+cur+")";
+    cuerpo="Estimado/a apoderado/a:\n\nLe informamos que "+e.nombre+", de "+cur+", registra "+c.an+" anotaciones durante el "+periodLabel(p)+":\n"+c.anList.slice().reverse().map(r=>"• "+fechaCorta(r.fecha)+": "+(r.tipo==="dispositivo"?"Porte o uso de "+(r.dispositivo||"dispositivo").toLowerCase()+" ("+ordinal(r.infraccion)+" infracción)":r.conducta)).join("\n")+
+      "\n\nSegún el Reglamento Interno, al llegar a 3 anotaciones Vida Escolar notifica al apoderado. Al llegar a 5 anotaciones, el estudiante y su apoderado serán citados por CPE y/o profesor/a jefe, y el estudiante realizará trabajo académico especial fuera de la jornada.\n\nQuedamos atentos para conversar y apoyar a "+e.nombre.split(" ")[0]+".\n\nSaludos cordiales,\n"+(ME||"[Nombre]")+"\nVida Escolar · Lycée Claude Gay de Osorno";
+  }
+  const para=e.correoApoderado||"(correo del apoderado no registrado)", cc=e.correoPJ||"profesor/a jefe";
+  openModal('<h2 id="mTitle">Correo al apoderado</h2>'+
+    '<div class="mailbox"><div><span class="k">Para</span> '+esc(para)+'</div><div><span class="k">Copia</span> '+esc(cc)+'</div><div><span class="k">Asunto</span> '+esc(asunto)+'</div><textarea id="mlBody">'+esc(cuerpo)+'</textarea></div>'+
+    '<p class="ref">Copie el texto y envíelo desde su correo institucional. Luego marque el aviso como enviado para que quede registrado.</p>'+
+    '<div class="row" style="justify-content:flex-end"><button class="btn" id="mlCopy" type="button">Copiar texto</button><button class="btn primary" id="mlSent" type="button">Marcar como enviado</button></div>');
+  $("#mlCopy").onclick=async()=>{ const txt="Asunto: "+asunto+"\n\n"+$("#mlBody").value; try{ await navigator.clipboard.writeText(txt); toast("Texto copiado"); }catch(err){ const ta=$("#mlBody"); ta.focus(); ta.select(); toast("Seleccionado: copie con Ctrl+C"); } };
+  $("#mlSent").onclick=async()=>{ if(!(await needAutor())) return; if(await ackAviso(e.id,a.k,"Correo enviado")){ closeModal(); toast("Aviso registrado como enviado"); } };
+}
+function programarModal(a){
+  const e=a.est, t=today(), C=state.config, wd=+C.diaMedida||3;
+  const conDef = a.plan==="cel" ? "Dirección" : a.plan==="an" ? "CPE (Inspector/a General)" : "Inspector/a de nivel";
+  const motDef = a.plan==="cel" ? "Firma de carta de compromiso" : a.plan==="an" ? "Anotaciones acumuladas" : "Constancia por más de 5 atrasos";
+  const horaCit = a.plan==="atr" ? "08:00" : "12:00";
+  const conMedida = a.plan!=="cel";
+  openModal('<h2 id="mTitle">Programar para '+esc(e.nombre)+'</h2><p class="muted">'+esc(a.t)+'. '+esc(a.d)+'</p>'+
+    '<fieldset style="border:0;padding:0;margin:0" class="grid"><label class="check"><input type="checkbox" id="pgC" checked> Citación al apoderado</label>'+
+    '<div class="grid g2"><label class="f">Con<select id="pgCon">'+CITA_CON.map(x=>'<option'+(x===conDef?" selected":"")+'>'+esc(x)+'</option>').join("")+'</select></label><label class="f">Motivo<select id="pgMot">'+CITA_MOTIVOS.map(x=>'<option'+(x===motDef?" selected":"")+'>'+esc(x)+'</option>').join("")+'</select></label>'+
+    '<label class="f">Fecha<input type="date" id="pgCF" value="'+nextBusiness(t)+'"></label><label class="f">Hora'+(a.plan==="atr"?' <span class="hint">al ingreso de la mañana</span>':'')+'<input type="time" id="pgCH" value="'+horaCit+'"></label></div></fieldset>'+
+    '<fieldset style="border:0;padding:0;margin:0" class="grid"><label class="check"><input type="checkbox" id="pgM"'+(conMedida?" checked":"")+'> '+(a.plan==="cel"?"Carta de compromiso (queda vigente desde la firma)":"Trabajo especial fuera de jornada")+'</label>'+
+    (a.plan==="cel"?'':'<div class="grid g2"><label class="f">Fecha<input type="date" id="pgMF" value="'+nextWeekday(t,wd)+'"></label><label class="f">Hora<input type="time" id="pgMH" value="'+esc(C.horaMedida||"14:30")+'"></label></div>')+'</fieldset>'+
+    '<div class="row" style="justify-content:flex-end"><button class="btn" id="pgNo" type="button">Cancelar</button><button class="btn primary" id="pgSi" type="button">Programar</button></div>');
+  if(a.plan==="cel") $("#pgM").checked=true;
+  $("#pgNo").onclick=closeModal;
+  $("#pgSi").onclick=async()=>{
+    if(!(await needAutor())) return;
+    const motivo = a.plan==="atr" ? "Más de 5 atrasos ("+periodLabel(curPeriod())+")" : a.plan==="an" ? "Anotaciones acumuladas ("+periodLabel(curPeriod())+")" : "3ª infracción con dispositivos";
+    let ok=true;
+    if($("#pgC").checked){ const c=Object.assign(baseReg("citacion",e.id),{fecha:$("#pgCF").value||nextBusiness(t),hora:$("#pgCH").value||"",con:$("#pgCon").value,motivo:$("#pgMot").value,estado:"pendiente",aviso:a.k}); ok=ok&&await saveReg(c); }
+    if($("#pgM").checked){
+      const m = a.plan==="cel" ? Object.assign(baseReg("medida",e.id),{fecha:t,medida:"carta_comp",cartaEstado:"vigente",motivo,gravedadRef:"extrema",fechaCom:t,aviso:a.k})
+        : Object.assign(baseReg("medida",e.id),{fecha:t,medida:"trabajo",sesFecha:$("#pgMF").value,sesHora:$("#pgMH").value,estado:"programada",motivo,gravedadRef:"grave",fechaCom:t,aviso:a.k});
+      ok=ok&&await saveReg(m);
+    }
+    if(ok && await ackAviso(e.id,a.k,"Programado")){ closeModal(); toast("Citación y medida programadas"); }
+  };
+}
+
+/* =================== REGISTRAR =================== */
+let PK={sel:null, q:"", act:0}, prefill=null;
+function renderRegistrar(){
+  const host=$("#view-registrar");
+  if(prefill){ const e=EST.get(prefill.estId); if(e) PK.sel={id:e.id,nombre:e.nombre,nivel:e.nivel,letra:e.letra}; if(prefill.tipo) state.regTipo=prefill.tipo; }
+  const T=[["atraso","Atraso","en la puerta"],["anotacion","Anotación negativa","solo el motivo"],["positiva","Anotación positiva","reconocimiento"],["dispositivo","Dispositivo","celular requisado"],["medida","Medida","castigo o sanción"],["citacion","Citación","al apoderado"]];
+  host.innerHTML='<div class="types" role="group" aria-label="Qué registrar">'+T.map(([k,l,s])=>'<button type="button" data-tipo="'+k+'" aria-pressed="'+(state.regTipo===k)+'">'+l+'<small>'+s+'</small></button>').join("")+'</div>'+
+    '<div id="resHost"></div><div class="panel"><div class="grid" style="gap:16px"><div id="pkHost"></div><div id="fHost" class="grid" style="gap:14px"></div></div>'+
+    '<div class="form-actions"><span class="err" id="fErr" role="alert"></span><button class="btn primary" id="fSave" type="button">Guardar</button></div></div>'+
+    '<div class="today-list" id="todayHost"></div>';
+  host.querySelectorAll("[data-tipo]").forEach(b=>b.onclick=()=>{ state.regTipo=b.dataset.tipo; prefill=null; state.lastResult=null; renderRegistrar(); });
+  renderResult(); renderPicker(); renderFields(); renderTodayList();
+  $("#fSave").onclick=guardar;
+  if(prefill && prefill.motivoId){ const s=$("#mMot"); if(s){ s.value=prefill.motivoId; s.dispatchEvent(new Event("change")); } }
+  prefill=null;
+  if(!PK.sel) setTimeout(()=>{ const q=$("#pkQ"); if(q && state.tab==="registrar") q.focus({preventScroll:true}); },40);
+}
+function renderResult(){ const h=$("#resHost"); if(!h) return; const r=state.lastResult; h.innerHTML = r ? '<div class="result '+(r.cls||"")+'" role="status">'+r.html+'</div>' : ""; }
+function renderPicker(){
+  const host=$("#pkHost"); if(!host) return;
+  if(PK.sel){
+    const s=PK.sel, isNew=!s.id;
+    let meta="";
+    if(!isNew){ const c=cuenta(s.id), carta=cartaDe(s.id); meta='<div class="meta"><span>'+esc(cursoLabel(s.nivel,s.letra))+'</span><span>'+c.atr+' atrasos</span><span>'+c.an+' anotaciones</span><span>'+c.cel+' dispositivos en el año</span>'+(carta?'<span class="chip bad">'+esc(carta)+'</span>':'')+'</div>'; }
+    host.innerHTML='<div class="selcard"><div style="min-width:0"><div class="eyebrow">'+(isNew?"Estudiante nuevo":"Estudiante")+'</div><div class="nm">'+esc(s.nombre)+'</div>'+meta+'</div><button class="btn sm" id="pkChange" type="button">Cambiar</button></div>'+
+      (isNew?'<div class="grid g2" style="margin-top:10px"><label class="f">Curso<select id="pkNivel"><option value="">Elegir…</option>'+NIVELES.filter(n=>n.ci!=="mat").map(n=>'<option value="'+n.c+'"'+(s.nivel===n.c?" selected":"")+'>'+esc(n.l)+'</option>').join("")+'</select></label><label class="f">Letra<select id="pkLetra"><option value="">—</option>'+LETRAS.map(l=>'<option'+(s.letra===l?" selected":"")+'>'+l+'</option>').join("")+'</select></label></div>':'');
+    $("#pkChange").onclick=()=>{ PK.sel=null; PK.q=""; renderPicker(); renderFields(); setTimeout(()=>$("#pkQ").focus(),20); };
+    if(isNew){ $("#pkNivel").onchange=ev=>{ PK.sel.nivel=ev.target.value; renderFields(); }; $("#pkLetra").onchange=ev=>{ PK.sel.letra=ev.target.value; }; }
+    return;
+  }
+  host.innerHTML='<label class="f picker">Estudiante<input type="search" id="pkQ" autocomplete="off" placeholder="Escriba nombre o apellido" value="'+esc(PK.q)+'" role="combobox" aria-expanded="false" aria-controls="pkList"><ul class="sugs" id="pkList" role="listbox" hidden></ul></label>';
+  const q=$("#pkQ"), list=$("#pkList");
+  const draw=()=>{
+    const v=nkey(q.value); PK.q=q.value;
+    if(v.length<2){ list.hidden=true; q.setAttribute("aria-expanded","false"); return; }
+    const words=v.split(" ");
+    const hits=E().filter(e=>{ const k=nkey(e.nombre+" "+cursoLabel(e.nivel,e.letra)); return words.every(w=>k.includes(w)); }).sort((a,b)=>a.nombre.localeCompare(b.nombre,"es")).slice(0,8);
+    PK.hits=hits; PK.act=Math.min(PK.act,hits.length);
+    list.innerHTML=hits.map((e,i)=>{ const c=cuenta(e.id); return '<li><button type="button" role="option" data-i="'+i+'" class="'+(i===PK.act?"act":"")+'"><span>'+esc(e.nombre)+'</span><span class="sub">'+esc(cursoLabel(e.nivel,e.letra))+' · '+c.atr+' atr.</span></button></li>'; }).join("")+
+      '<li><button type="button" role="option" data-i="new" class="'+(PK.act===hits.length?"act":"")+'"><span>Registrar estudiante nuevo: <strong>'+esc(q.value.trim())+'</strong></span><span class="sub">elegir curso</span></button></li>';
+    list.hidden=false; q.setAttribute("aria-expanded","true");
+    list.querySelectorAll("button").forEach(b=>b.onmousedown=ev=>{ ev.preventDefault(); pick(b.dataset.i); });
+  };
+  const pick=i=>{ if(i==="new"||+i===PK.hits.length){ const nm=q.value.trim().replace(/\s+/g," "); if(nm.length<3) return; PK.sel={id:null,nombre:nm.replace(/(^|\s)(\p{L})/gu,(m,a,c)=>a+c.toUpperCase()),nivel:"",letra:""}; } else { const e=PK.hits[+i]; PK.sel={id:e.id,nombre:e.nombre,nivel:e.nivel,letra:e.letra}; } PK.q=""; PK.act=0; renderPicker(); renderFields(); };
+  q.oninput=()=>{ PK.act=0; draw(); };
+  q.onkeydown=ev=>{ if(list.hidden) return; const n=(PK.hits||[]).length; if(ev.key==="ArrowDown"){ ev.preventDefault(); PK.act=Math.min(n,PK.act+1); draw(); } else if(ev.key==="ArrowUp"){ ev.preventDefault(); PK.act=Math.max(0,PK.act-1); draw(); } else if(ev.key==="Enter"){ ev.preventDefault(); pick(PK.act); } };
+  q.onblur=()=>setTimeout(()=>{ list.hidden=true; },150);
+  if(PK.q) draw();
+}
+const nivelSel = () => PK.sel ? PK.sel.nivel : "";
+function optList(arr,sel){ return arr.map(v=>'<option'+(v===sel?" selected":"")+'>'+esc(v)+'</option>').join(""); }
+function renderFields(){
+  const host=$("#fHost"); if(!host) return; const t=state.regTipo, d=today(), hm=nowHM();
+  $("#fErr").textContent="";
+  const fechaHora='<div class="grid g2"><label class="f">Fecha<input type="date" id="fFecha" value="'+d+'"></label><label class="f">Hora<input type="time" id="fHora" value="'+hm+'"></label></div>';
+  if(t==="atraso"){
+    host.innerHTML=fechaHora+'<label class="check"><input type="checkbox" id="aJust"> Atraso justificado <span class="muted" style="font-weight:400">(certificado o aviso del apoderado)</span></label><label class="f" id="aMotW" hidden>Motivo<input type="text" id="aMot" placeholder="Ej.: control médico, aviso por correo"></label><div id="aHint"></div>';
+    const upd=()=>{ const info=atrasoInfo(nivelSel(),$("#fHora").value); const h=$("#aHint"); if(!info){ h.innerHTML=""; return; }
+      if(!PK.sel||!PK.sel.nivel){ h.innerHTML='<div class="hintbox">Elija al estudiante para calcular el atraso según el horario de su nivel.</div>'; return; }
+      const c=PK.sel.id?cuenta(PK.sel.id):{atr:0}; const n=c.atr+(($("#aJust").checked&&!state.config.contarJustificados)?0:1), C=state.config;
+      let next = $("#aJust").checked&&!C.contarJustificados ? "Justificado: no suma al conteo." : n>=C.atrGrave ? "Será el "+ordinal(n)+" atraso del "+periodLabel(curPeriod())+": falta grave." : n===C.atrAviso ? "Será el "+ordinal(n)+" atraso: corresponde aviso al apoderado y profesor/a jefe." : "Será el "+ordinal(n)+" atraso del "+periodLabel(curPeriod())+".";
+      h.innerHTML='<div class="hintbox'+(n>=C.atrGrave?" bad":n>=C.atrAviso?" warn":"")+'">'+(info.min>0?'<strong>'+info.min+' min de atraso</strong> (entrada '+info.entrada+', jornada de la '+info.jornada+'). ':'<strong>Antes del horario de entrada ('+info.entrada+').</strong> ')+esc(next)+'<ul>'+info.pasos.map(p=>'<li>'+esc(p)+'</li>').join("")+'</ul></div>'; };
+    $("#fHora").oninput=upd; $("#aJust").onchange=()=>{ $("#aMotW").hidden=!$("#aJust").checked; upd(); }; upd();
+  }
+  if(t==="anotacion"){
+    const ci=cicloDe(nivelSel());
+    const amb = ci==="bas" ? "" : '<label class="f">Ámbito de la norma<select id="nAmb">'+Object.entries(AMBITOS).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("")+'</select></label>';
+    host.innerHTML='<div class="grid g2"><label class="f">Fecha<input type="date" id="fFecha" value="'+d+'"></label></div><div class="grid'+(ci==="bas"?"":" g2")+'">'+amb+'<label class="f">Motivo <span class="hint">'+(ci==="bas"?"Tipificación 1° a 5° Básico, RICE pág. 85":"6° Básico a IV Medio, RICE pág. 99–112")+'</span><select id="nCond"></select></label></div>'+
+      '<label class="f" id="nOtroW" hidden>¿Qué motivo?<input type="text" id="nOtro" placeholder="Nombre corto del motivo"></label>'+
+      '<div><div class="eyebrow" style="margin-bottom:6px">Gravedad</div><div class="seg" role="group" aria-label="Gravedad">'+Object.entries(GRAV).map(([k,v])=>'<button type="button" data-g="'+k+'" aria-pressed="false">'+esc(v)+'</button>').join("")+'</div></div>'+
+      '<div id="nHint"></div>';
+    let grav="leve";
+    const setG=g=>{ grav=g; host.querySelectorAll("[data-g]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.g===g))); hint(); };
+    const conds=()=>{ if(ci==="bas") return CONDUCTAS_BAS; const a=$("#nAmb").value; return CONDUCTAS_SEC.filter(c=>c.a===a); };
+    const fill=()=>{ const cs=conds(); const s=$("#nCond"); s.innerHTML=["leve","grave","extrema"].map(g=>{ const xs=cs.filter(c=>c.g===g); return xs.length?'<optgroup label="Sugerida: '+GRAV[g]+'">'+xs.map(c=>'<option>'+esc(c.t)+'</option>').join("")+'</optgroup>':""; }).join("")+'<option value="__otro">Otro motivo…</option>'; onC(); };
+    const curC=()=>{ const v=$("#nCond").value; return (ci==="bas"?CONDUCTAS_BAS:CONDUCTAS_SEC).find(c=>c.t===v); };
+    const onC=()=>{ const c=curC(); $("#nOtroW").hidden=$("#nCond").value!=="__otro"; if(c) setG(c.g); else hint(); };
+    const hint=()=>{ const c=curC(); let h='<div class="hintbox'+(grav==="extrema"?" bad":grav==="grave"?" warn":"")+'"><strong>Medidas que contempla el RICE para una falta '+esc(GRAV[grav].toLowerCase())+':</strong> '+esc(MEDIDAS_GRAV[grav])+(grav!=="leve"?' <br><span class="ref">Faltas graves y gravísimas: indagación de hasta 10 días hábiles, prorrogable por 5, informando por correo (pág. 94). Apelación por escrito en 48 horas ante '+esc(apelInstancia(grav))+'.</span>':'')+'</div>';
+      if(c&&c.p) h+='<div class="hintbox bad" style="margin-top:8px"><strong>Activar protocolo de '+esc(c.p)+'.</strong> Informe de inmediato a Convivencia Escolar y registre el caso en su plataforma.</div>';
+      if(c&&c.u) h+='<div class="hintbox" style="margin-top:8px">Por incumplimiento del uniforme <strong>no se puede</strong> devolver al estudiante a su casa ni restringir su derecho a la educación (RICE pág. 48).</div>';
+      $("#nHint").innerHTML=h; };
+    host.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>setG(b.dataset.g));
+    if($("#nAmb")) $("#nAmb").onchange=fill; $("#nCond").onchange=onC;
+    host._grav=()=>grav; fill();
+    host.insertAdjacentHTML("beforeend",'<div class="hintbox" style="font-size:13px">Conductas de autoagresión o ideación suicida <strong>no se registran como falta</strong>: active de inmediato el protocolo de riesgo suicida con Convivencia Escolar (RICE pág. 192).</div>');
+  }
+  if(t==="dispositivo"){
+    host.innerHTML=fechaHora+'<div class="grid g2"><label class="f">Dispositivo<select id="dTipo">'+optList(DISPOSITIVOS,"Celular")+'</select></label><label class="f">Lugar<select id="dLugar">'+optList(LUGARES,"Sala de clases")+'</select></label></div>'+
+      '<label class="check"><input type="checkbox" id="dNego"> Se negó a entregarlo al personal autorizado</label><div id="dHint"></div><div id="dOpts" class="grid" style="gap:8px"></div>';
+    const upd=()=>{ const y=($("#fFecha").value||today()).slice(0,4); const prev=PK.sel&&PK.sel.id?regsDe(PK.sel.id).filter(r=>r.tipo==="dispositivo"&&String(r.fecha).startsWith(y)).length:0; const n=prev+1, c=celConsecuencia(n);
+      $("#dHint").innerHTML='<div class="hintbox'+(c.g==="extrema"?" bad":c.g==="grave"?" warn":"")+'"><strong>'+esc(c.t)+'</strong> en '+y+'<ul>'+c.pasos.map(p=>'<li>'+esc(p)+'</li>').join("")+'</ul><span class="ref">Protocolo de prohibición de porte y uso de dispositivos, RICE pág. 211–213. El dispositivo queda en la oficina de CPE.</span></div>';
+      const wd=+state.config.diaMedida||3, f=$("#fFecha").value||today();
+      $("#dOpts").innerHTML='<label class="check"><input type="checkbox" id="dCit" checked> Crear citación del apoderado con CPE ('+esc(fechaCorta(nextBusiness(f)))+')</label>'+(n===2?'<label class="check"><input type="checkbox" id="dMed" checked> Programar medida formativa del '+esc(fechaLarga(nextWeekday(f,wd)))+', '+esc(state.config.horaMedida)+'</label>':'');
+      host._n=n; };
+    $("#fFecha").oninput=upd; upd();
+  }
+  if(t==="medida"){
+    const ans = PK.sel&&PK.sel.id ? regsDe(PK.sel.id).filter(r=>(r.tipo==="anotacion"||r.tipo==="dispositivo")&&!r.anulada).slice(0,20) : [];
+    host.innerHTML='<div class="grid g2"><label class="f">Medida<select id="mTipo">'+MEDIDAS.map(m=>'<option value="'+m.k+'">'+esc(m.l)+'</option>').join("")+'</select></label>'+
+      '<label class="f">¿Por qué se aplica esta medida? <span class="hint">Elija la anotación del estudiante que la origina</span><select id="mMot">'+(ans.length?'<optgroup label="Anotaciones negativas de este estudiante">'+ans.map(r=>'<option value="'+esc(r.id)+'">'+esc(fechaCorta(r.fecha)+" · "+(r.tipo==="dispositivo"?"Dispositivo requisado ("+ordinal(r.infraccion)+" infracción)":r.conducta)+" · "+(r.tipo==="dispositivo"?GRAV[celGrav(r.infraccion)]:(GRAV[r.gravedad]||"")))+'</option>').join("")+'</optgroup>':'')+'<optgroup label="Sin anotación asociada"><option value="__atr">Atrasos reiterados</option><option value="__otro">Otro motivo…</option></optgroup></select></label></div>'+
+      '<label class="f" id="mOtroW" hidden>Describa el motivo<input type="text" id="mOtro"></label>'+
+      '<div id="mSes" class="grid g2"></div><div id="mSusp" class="grid g3" hidden></div>'+
+      '<div class="grid g2"><label class="f">Comunicada al apoderado el<input type="date" id="mCom" value="'+d+'"></label><label class="f">Responsable<input type="text" id="mResp" value="'+esc(ME||"")+'"></label></div>'+
+      '<div id="mHint"></div><label class="f">Observaciones<textarea id="mObs" placeholder="Acuerdos, pauta de reflexión entregada, etc."></textarea></label>';
+    const wd=+state.config.diaMedida||3;
+    const upd=()=>{ const k=$("#mTipo").value, m=MMAP[k];
+      $("#mOtroW").hidden=$("#mMot").value!=="__otro";
+      const ms=$("#mSes"); if(m.s){ ms.hidden=false; if(!ms.innerHTML) ms.innerHTML='<label class="f">Fecha de cumplimiento<input type="date" id="mSF" value="'+(k==="reflexion"?nextBusiness(d):nextWeekday(d,wd))+'"></label><label class="f">Hora<input type="time" id="mSH" value="'+esc(state.config.horaMedida||"14:30")+'"></label>'; } else { ms.hidden=true; ms.innerHTML=""; }
+      const sp=$("#mSusp"); if(k==="suspension"){ sp.hidden=false; if(!sp.innerHTML){ sp.innerHTML='<label class="f">Desde<input type="date" id="mDesde" value="'+nextBusiness(d)+'"></label><label class="f">Días hábiles<input type="number" id="mDias" min="1" max="7" value="1"></label><div class="f"><span>Hasta</span><div id="mHasta" class="num" style="padding:10px 0;font-weight:600"></div></div>'; } const hs=()=>{ const n=Math.max(1,+$("#mDias").value||1); const de=$("#mDesde").value||d; const first=isWork(parse(de))?de:nextBusiness(de); $("#mHasta").textContent=fechaLarga(addBusinessDays(first,n-1)); hint(); }; $("#mDias").oninput=hs; $("#mDesde").oninput=hs; hs(); } else { sp.hidden=true; sp.innerHTML=""; }
+      hint(); };
+    const hint=()=>{ const k=$("#mTipo").value; const mv=$("#mMot").value; const a=R().find(r=>r.id===mv); const g=a?(a.tipo==="dispositivo"?celGrav(a.infraccion):a.gravedad):(mv==="__atr"?"grave":"");
+      let h=''; if(k==="suspension"){ const n=+($("#mDias")||{}).value||1; const okR = g==="extrema" ? (n>=3&&n<=7) : g==="grave" ? (n>=1&&n<=5) : false;
+        h+='<div class="hintbox '+(okR?"":"warn")+'">Suspensión según el RICE: falta grave, 1 a 5 días; falta extremadamente grave, 3 a 7 días (pág. 91).'+(g==="leve"?' <strong>No corresponde suspender por una falta leve.</strong>':(!okR&&g?' <strong>Los días no calzan con la gravedad del motivo.</strong>':''))+' No aplica en Maternelle.</div>'; }
+      if(k==="carta_comp"||k==="carta_cond") h+='<div class="hintbox">Dirección asigna la carta. El profesor/a jefe la comunica y se firman 3 copias (padres, profesor/a jefe y Vida Escolar). La falta de firma no le quita validez (pág. 115).</div>';
+      if(MMAP[k].s) h+='<div class="hintbox">Si el estudiante no se presenta sin justificación médica, se registra una nueva anotación negativa (pág. 84). Esto se hace solo al marcar «No se presentó» en Hoy.</div>';
+      const com=$("#mCom").value||d; h+='<div class="hintbox" style="margin-top:8px">Apelación: por escrito hasta el '+esc(fechaLarga(addDays(com,2)))+' (48 h desde la comunicación)'+(g?', ante '+esc(apelInstancia(g)):'')+'. Respuesta en 10 días hábiles (pág. 116).</div>';
+      $("#mHint").innerHTML=h; };
+    $("#mTipo").onchange=upd; $("#mMot").onchange=upd; $("#mCom").oninput=hint; upd();
+  }
+  if(t==="positiva"){
+    host.innerHTML='<div class="grid g2"><label class="f">Fecha<input type="date" id="fFecha" value="'+d+'"></label></div>'+
+      '<label class="f">Motivo <span class="hint">Comportamientos destacados según los valores del PEI, RICE pág. 112</span><select id="pMot">'+POSITIVAS.map(x=>'<option>'+esc(x)+'</option>').join("")+'<option value="__otro">Otro motivo…</option></select></label>'+
+      '<label class="f" id="pOtroW" hidden>¿Qué motivo?<input type="text" id="pOtro" placeholder="Nombre corto del motivo"></label>';
+    $("#pMot").onchange=()=>{ $("#pOtroW").hidden=$("#pMot").value!=="__otro"; };
+  }
+  if(t==="citacion"){
+    host.innerHTML='<div class="grid g2"><label class="f">Con<select id="cCon">'+optList(CITA_CON,"CPE (Inspector/a General)")+'</select></label><label class="f">Motivo<select id="cMot">'+optList(CITA_MOTIVOS,"")+'</select></label>'+
+      '<label class="f">Fecha<input type="date" id="cF" value="'+nextBusiness(d)+'"></label><label class="f">Hora<input type="time" id="cH" value="08:00"></label></div>'+
+      '<label class="f">Observaciones<textarea id="cObs" placeholder="Medio por el que se citó, acuerdos previos…"></textarea></label>'+
+      '<div class="hintbox">Si el apoderado no asiste sin justificación, se considera falta a sus obligaciones y se puede emitir una amonestación escrita (RICE pág. 84 y 114).</div>';
+  }
+}
+async function guardar(){
+  const err=$("#fErr"); err.textContent="";
+  if(!PK.sel){ err.textContent="Elija o escriba el nombre del estudiante."; $("#pkQ")&&$("#pkQ").focus(); return; }
+  if(!PK.sel.id && !PK.sel.nivel){ err.textContent="Elija el curso del estudiante nuevo."; $("#pkNivel").focus(); return; }
+  if(!(await needAutor())) return;
+  const btn=$("#fSave"); btn.disabled=true;
+  try{
+    const estId=await ensureEst(PK.sel); if(!estId) return;
+    const t=state.regTipo, f=($("#fFecha")||{}).value||today(), h=($("#fHora")||{}).value||"";
+    const r=baseReg(t,estId); const e=EST.get(estId)||PK.sel; r.nombre=e.nombre; r.nivel=e.nivel; r.letra=e.letra||"";
+    let res=null;
+    if(t==="atraso"){
+      const info=atrasoInfo(e.nivel,h)||{};
+      Object.assign(r,{fecha:f,hora:h,jornada:info.jornada||"",min:Math.max(0,info.min||0),justificado:$("#aJust").checked,motivo:$("#aMot").value.trim()});
+      const C=state.config, c0=cuenta(estId,periodOf(f)), c={atr:c0.atr+((r.justificado&&!C.contarJustificados)?0:1)};
+      if(!(await saveReg(r))) return;
+      const cls=c.atr>=C.atrGrave?"bad":c.atr>=C.atrAviso?"warn":"";
+      res={cls, html:'<strong>'+esc(e.nombre)+'</strong>: '+(r.justificado&&!C.contarJustificados?'atraso justificado registrado.':ordinal(c.atr)+' atraso del '+esc(periodLabel(periodOf(f)))+'.')+(c.atr>=C.atrGrave?' Falta grave: quedó en <strong>Pendientes</strong> (en Hoy) para citar al apoderado y programar el trabajo especial.':c.atr>=C.atrAviso?' Quedó en <strong>Pendientes</strong> (en Hoy) el aviso al apoderado.':'')};
+    }
+    if(t==="anotacion"){
+      const cv=$("#nCond").value, cond=cv==="__otro"?$("#nOtro").value.trim():cv;
+      if(!cond){ err.textContent="Escriba el motivo."; return; }
+      const g=$("#fHost")._grav();
+      Object.assign(r,{fecha:f,ambito:$("#nAmb")?$("#nAmb").value:"",conducta:cond,gravedad:g});
+      const c={an:cuenta(estId,periodOf(f)).an+1};
+      if(!(await saveReg(r))) return;
+      res={cls:g==="leve"?"":g==="grave"?"warn":"bad", html:'Anotación negativa ('+esc(GRAV[g].toLowerCase())+')'+' registrada para <strong>'+esc(e.nombre)+'</strong>. Lleva '+c.an+' en el '+esc(periodLabel(periodOf(f)))+'.'+(g!=="leve"?' Quedó en <strong>Pendientes</strong> (en Hoy) para definir la medida.':'')};
+    }
+    if(t==="dispositivo"){
+      const n=$("#fHost")._n||1, C=state.config;
+      Object.assign(r,{fecha:f,hora:h,dispositivo:$("#dTipo").value,lugar:$("#dLugar").value,seNego:$("#dNego").checked,infraccion:n,estado:"custodia",retencionHasta:n===2?addBusinessDays(f,C.retencion||5):""});
+      if(!(await saveReg(r))) return;
+      if($("#dCit")&&$("#dCit").checked) await saveReg(Object.assign(baseReg("citacion",estId),{nombre:e.nombre,nivel:e.nivel,letra:e.letra||"",fecha:nextBusiness(f),hora:"12:00",con:n>=3?"Dirección":"CPE (Inspector/a General)",motivo:n>=3?"Firma de carta de compromiso":"Devolución de dispositivo",estado:"pendiente",motivoId:r.id}));
+      if($("#dMed")&&$("#dMed").checked) await saveReg(Object.assign(baseReg("medida",estId),{nombre:e.nombre,nivel:e.nivel,letra:e.letra||"",fecha:f,medida:"trabajo",sesFecha:nextWeekday(f,+C.diaMedida||3),sesHora:C.horaMedida||"14:30",estado:"programada",motivoId:r.id,fechaCom:f}));
+      const c=celConsecuencia(n);
+      res={cls:c.g==="leve"?"":c.g==="grave"?"warn":"bad", html:'<strong>'+esc(e.nombre)+'</strong>: '+esc(r.dispositivo.toLowerCase())+' en custodia de CPE · '+esc(c.t)+'.'+(r.retencionHasta?' Se puede devolver desde el '+esc(fechaLarga(r.retencionHasta))+'.':'')};
+    }
+    if(t==="medida"){
+      const k=$("#mTipo").value, m=MMAP[k], mv=$("#mMot").value;
+      Object.assign(r,{fecha:today(),medida:k,fechaCom:$("#mCom").value||today(),responsable:$("#mResp").value.trim(),obs:$("#mObs").value.trim()});
+      if(mv==="__otro"){ r.motivo=$("#mOtro").value.trim(); if(!r.motivo){ err.textContent="Describa el motivo."; return; } } else if(mv==="__atr"){ r.motivo="Atrasos reiterados"; r.gravedadRef="grave"; } else r.motivoId=mv;
+      if(m.s){ r.sesFecha=$("#mSF").value; r.sesHora=$("#mSH").value; r.estado="programada"; if(!r.sesFecha){ err.textContent="Indique la fecha de cumplimiento."; return; } }
+      if(k==="suspension"){ const n=Math.max(1,+$("#mDias").value||1); const de=$("#mDesde").value||today(); r.desde=isWork(parse(de))?de:nextBusiness(de); r.dias=n; r.hasta=addBusinessDays(r.desde,n-1); }
+      if(m.c) r.cartaEstado="vigente";
+      if(!(await saveReg(r))) return;
+      res={html:esc(m.l)+' registrada para <strong>'+esc(e.nombre)+'</strong>.'+(m.s?' Aparecerá en el <strong>Calendario</strong> y en <strong>Hoy</strong> el '+esc(fechaLarga(r.sesFecha))+' para pasar asistencia.':'')};
+    }
+    if(t==="positiva"){
+      const v=$("#pMot").value, cond=v==="__otro"?$("#pOtro").value.trim():v;
+      if(!cond){ err.textContent="Escriba el motivo."; return; }
+      Object.assign(r,{fecha:f,conducta:cond});
+      if(!(await saveReg(r))) return;
+      res={html:'Anotación positiva registrada para <strong>'+esc(e.nombre)+'</strong>: '+esc(cond)+'.'};
+    }
+    if(t==="citacion"){
+      Object.assign(r,{fecha:$("#cF").value||nextBusiness(today()),hora:$("#cH").value,con:$("#cCon").value,motivo:$("#cMot").value,obs:$("#cObs").value.trim(),estado:"pendiente"});
+      if(!(await saveReg(r))) return;
+      res={html:'Citación registrada: <strong>'+esc(e.nombre)+'</strong>, '+esc(fechaLarga(r.fecha))+' '+esc(r.hora)+' con '+esc(r.con)+'.'};
+    }
+    state.lastResult=res; PK={sel:null,q:"",act:0};
+    renderRegistrar(); toast("Guardado");
+  } finally { const b=$("#fSave"); if(b) b.disabled=false; }
+}
+function renderTodayList(){
+  const h=$("#todayHost"); if(!h) return; const t=today();
+  const list=R().filter(r=>r.fecha===t || (r.ts||"").slice(0,10)===t).sort(cmpDesc).slice(0,12);
+  h.innerHTML='<div class="section-h"><h2>Registrado hoy</h2><span class="n">'+list.length+'</span></div>'+(list.length?regList(list,false):'<div class="calm">Aún no hay registros de hoy.</div>');
+}
+
+/* =================== Listas =================== */
+function regList(list, head){
+  return '<div class="list">'+(head?'<div class="li li-head"><span>Fecha</span><span>Tipo</span><span>Estudiante</span><span>Detalle</span><span>Registró</span></div>':'')+
+    list.map(r=>{ let tc=r.tipo, extra=""; if(r.tipo==="anotacion") extra=' <span class="chip '+esc(r.gravedad)+'">'+esc(GRAV[r.gravedad]||"")+'</span>';
+      return '<button type="button" class="li t-'+r.tipo+'" data-reg="'+esc(r.id)+'"><span class="c-fecha num">'+esc(fechaCorta(r.fecha))+'<span class="sub">'+esc(r.tipo==="medida"&&r.sesHora?r.sesHora:(r.hora||""))+'</span></span><span class="c-tipo"><span class="tchip t-'+tc+'">'+esc(TIPOS[r.tipo]||r.tipo)+'</span></span><span class="c-est"><strong>'+esc(r.nombre)+'</strong><span class="sub">'+esc(cursoLabel(r.nivel,r.letra))+'</span></span><span class="c-det">'+esc(detalle(r))+extra+'</span><span class="c-por muted" style="font-size:13px">'+esc(r.por||"")+'</span></button>'; }).join("")+'</div>';
+}
+function fillNivelSel(sel){ if(sel.options.length) return; sel.innerHTML='<option value="">Todos</option>'+NIVELES.filter(n=>n.ci!=="mat").map(n=>'<option value="'+n.c+'">'+esc(n.l)+'</option>').join(""); }
+["#eQ","#eNivel","#eOrden"].forEach(s=>$(s).addEventListener("input",()=>renderEstudiantes()));
+function renderEstudiantes(){
+  fillNivelSel($("#eNivel"));
+  const host=$("#estHost"); if(!state.loaded){ host.innerHTML='<div class="calm">Cargando…</div>'; return; }
+  const q=nkey($("#eQ").value), nv=$("#eNivel").value, ord=$("#eOrden").value, p=curPeriod(), C=state.config;
+  let rows=E().map(e=>({e, c:cuenta(e.id,p), carta:cartaDe(e.id)}));
+  if(q) rows=rows.filter(x=>q.split(" ").every(w=>nkey(x.e.nombre+" "+cursoLabel(x.e.nivel,x.e.letra)).includes(w)));
+  if(nv) rows=rows.filter(x=>x.e.nivel===nv);
+  const byCurso=(a,b)=>((NMAP[a.e.nivel]||{i:99}).i-(NMAP[b.e.nivel]||{i:99}).i)||(a.e.letra||"").localeCompare(b.e.letra||"")||a.e.nombre.localeCompare(b.e.nombre,"es");
+  rows.sort(ord==="atr"?(a,b)=>b.c.atr-a.c.atr||b.c.an-a.c.an||byCurso(a,b):ord==="an"?(a,b)=>b.c.an-a.c.an||b.c.atr-a.c.atr||byCurso(a,b):ord==="curso"?byCurso:(a,b)=>a.e.nombre.localeCompare(b.e.nombre,"es"));
+  if(!E().length){ host.innerHTML='<div class="emptybox"><h3>Todavía no hay estudiantes</h3><p>Se agregan solos la primera vez que registra un atraso, una anotación o una medida.</p><button class="btn primary" type="button" onclick="document.getElementById(\'tab-registrar\').click()">Registrar el primero</button></div>'; return; }
+  const cl=(v,a,g)=>v>=g?"b":v>=a?"w":"";
+  host.innerHTML='<p class="ref" style="margin:0 0 8px">Conteo del '+esc(periodLabel(p))+'. Anotaciones incluye dispositivos requisados. '+rows.length+' estudiantes.</p><div class="list"><div class="est-li li-head"><span>Estudiante</span><span>Curso</span><span style="text-align:center">Atrasos</span><span style="text-align:center">Anot.</span><span style="text-align:center">Disp.</span><span>Carta</span></div>'+
+    rows.slice(0,400).map(x=>'<button type="button" class="est-li" data-est="'+esc(x.e.id)+'"><span class="c-n"><strong>'+esc(x.e.nombre)+'</strong></span><span class="c-c muted">'+esc(cursoLabel(x.e.nivel,x.e.letra))+'</span><span class="cnt '+cl(x.c.atr,C.atrAviso,C.atrGrave)+'" data-l="Atrasos">'+x.c.atr+'</span><span class="cnt '+cl(x.c.an,C.anAviso,C.anCita)+'" data-l="Anot.">'+x.c.an+'</span><span class="cnt '+cl(x.c.cel,2,3)+'" data-l="Disp.">'+x.c.cel+'</span><span class="c-carta">'+(x.carta?'<span class="chip bad">'+esc(x.carta)+'</span>':'')+'</span></button>').join("")+'</div>';
+}
+["#rQ","#rTipo","#rNivel","#rDesde","#rHasta"].forEach(s=>$(s).addEventListener("input",()=>renderRegistros()));
+function regFiltrados(){
+  const q=nkey($("#rQ").value), tp=$("#rTipo").value, nv=$("#rNivel").value, de=$("#rDesde").value, ha=$("#rHasta").value;
+  return R().filter(r=>(!tp||r.tipo===tp)&&(!nv||r.nivel===nv)&&(!de||r.fecha>=de)&&(!ha||r.fecha<=ha)&&(!q||q.split(" ").every(w=>nkey(r.nombre+" "+detalle(r)+" "+(r.por||"")+" "+(r.obs||"")).includes(w)))).sort(cmpDesc);
+}
+function renderRegistros(){
+  const ts=$("#rTipo"); if(!ts.options.length) ts.innerHTML='<option value="">Todos</option>'+Object.entries(TIPOS).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("");
+  fillNivelSel($("#rNivel"));
+  if(!$("#rDesde").value && !$("#rDesde").dataset.init){ $("#rDesde").dataset.init="1"; $("#rDesde").value=addDays(today(),-30); }
+  const host=$("#regHost"); if(!state.loaded){ host.innerHTML='<div class="calm">Cargando…</div>'; return; }
+  const list=regFiltrados();
+  $("#rCsv").hidden=!canDL();
+  host.innerHTML = list.length ? '<p class="ref" style="margin:0 0 8px">'+list.length+' registros'+(list.length>300?' (se muestran los 300 más recientes)':'')+'.</p>'+regList(list.slice(0,300),true) : '<div class="emptybox"><h3>Sin registros con estos filtros</h3><p>Pruebe con otro rango de fechas o borre la búsqueda.</p></div>';
+}
+let DL=null;
+const canDL = () => !!DL || !IN_CLAUDE;
+async function initDownloads(){ try{ if(IN_CLAUDE) DL=await window.claude.use("downloads"); }catch(e){ DL=null; } if(state.tab==="registros") renderRegistros(); }
+function saveFile(filename,data,mime){ if(DL) return DL.save({filename,data}); const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([data],{type:mime})); a.download=filename; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500); return Promise.resolve(); }
+$("#rCsv").onclick=async()=>{
+  const list=regFiltrados(), q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
+  const head=["Fecha","Hora","Tipo","Estudiante","Curso","Detalle","Gravedad","Registró"];
+  const rows=list.map(r=>[r.fecha,r.hora||r.sesHora||"",TIPOS[r.tipo],r.nombre,cursoLabel(r.nivel,r.letra),detalle(r),r.tipo==="anotacion"?GRAV[r.gravedad]:"",r.por||""]);
+  const csv="\uFEFF"+[head].concat(rows).map(r=>r.map(q).join(";")).join("\r\n");
+  try{ await saveFile("vida-escolar-"+today()+".csv",csv,"text/csv;charset=utf-8"); }catch(e){ toast("No se descargó el archivo."); }
+};
+
+/* =================== Cajón: estudiante y registro =================== */
+function renderDrawer(){
+  const d=state.drawer; if(!d) return;
+  let html="";
+  if(d.k==="est") html=drawerEst(d.id); else html=drawerReg(d.id);
+  if(html===null){ closeDrawer(); return; }
+  const keep=$("#drawerBody")?$("#drawerBody").scrollTop:0;
+  $("#drawerHost").innerHTML='<div class="scrim" id="scrim"></div><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle">'+html+'</aside>';
+  $("#scrim").onclick=closeDrawer; $("#dClose").onclick=closeDrawer;
+  if($("#drawerBody")) $("#drawerBody").scrollTop=keep;
+  bindDrawer();
+}
+function meter(v,label,a,g,sub){
+  const max=Math.max(g,v); let ticks=""; for(let i=1;i<=max;i++) ticks+='<i class="'+(i<=v?"on"+(i>=g?" b":i>=a?" w":""):"")+'"></i>';
+  return '<div class="meter"><div class="v num">'+v+'</div><div class="l">'+esc(label)+'</div><div class="ticks" aria-hidden="true">'+ticks+'</div><div class="s">'+sub+'</div></div>';
+}
+function drawerEst(id){
+  const e=EST.get(id); if(!e) return null; const p=curPeriod(), c=cuenta(id,p), C=state.config, av=e.avisos||{}, carta=cartaDe(id), rs=regsDe(id);
+  const avTxt=(k,lbl)=>av[k]?'<span style="color:var(--ok)">✓ '+esc(lbl)+' '+esc(fechaCorta(av[k].fecha))+'</span>':'';
+  let h='<div class="d-head"><div><div class="eyebrow">'+esc(cursoLabel(e.nivel,e.letra))+' · Inspector/a: '+esc(inspectorDe(e.nivel)||"—")+'</div><h2 id="dTitle">'+esc(e.nombre)+'</h2>'+(carta?'<span class="chip bad" style="margin-top:6px">'+esc(carta)+' vigente</span>':'')+'</div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
+  h+='<div class="row"><button class="btn primary" id="dReg" type="button">Registrar para este estudiante</button></div>';
+  h+='<div class="eyebrow">'+esc(periodLabel(p))+'</div><div class="meters">'+
+    meter(c.atr,"Atrasos sin justificar"+(c.atrJ?" · "+c.atrJ+" justificados":""),C.atrAviso,C.atrGrave,(avTxt("atrA_"+p,"avisado")||"Aviso al "+C.atrAviso+"°")+" · falta grave al "+C.atrGrave+"° "+(avTxt("atrG_"+p,"")||""))+
+    meter(c.an,"Anotaciones ("+c.anG+" graves, "+c.anE+" ext. graves)",C.anAviso,C.anCita,(avTxt("anA_"+p,"notificado")||"Correo a las "+C.anAviso)+" · citación a las "+C.anCita)+
+    meter(c.cel,"Dispositivos requisados en "+p.slice(0,4),2,3,"2ª: retención "+C.retencion+" días · 3ª: carta")+
+    '<div class="meter t-positiva" style="background:var(--ts)"><div class="v num" style="color:var(--tc)">'+rs.filter(r=>r.tipo==="positiva"&&periodOf(r.fecha)===p).length+'</div><div class="l">Anotaciones positivas</div><div class="s">Reconocimientos según el PEI</div></div></div>';
+  h+='<div class="panel"><h3>Datos de contacto</h3><div class="grid g2"><label class="f">Apoderado/a<input type="text" id="deAp" value="'+esc(e.apoderado||"")+'"></label><label class="f">Correo del apoderado/a<input type="email" id="deApM" value="'+esc(e.correoApoderado||"")+'"></label><label class="f">Profesor/a jefe<input type="text" id="dePJ" value="'+esc(e.profesorJefe||"")+'"></label><label class="f">Correo profesor/a jefe<input type="email" id="dePJM" value="'+esc(e.correoPJ||"")+'"></label>'+
+    '<label class="f">Curso<select id="deNivel">'+NIVELES.filter(n=>n.ci!=="mat").map(n=>'<option value="'+n.c+'"'+(e.nivel===n.c?" selected":"")+'>'+esc(n.l)+'</option>').join("")+'</select></label><label class="f">Letra<select id="deLetra"><option value="">—</option>'+LETRAS.map(l=>'<option'+(e.letra===l?" selected":"")+'>'+l+'</option>').join("")+'</select></label></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" id="deSave" type="button">Guardar datos</button></div></div>';
+  h+='<div class="panel"><h3>Hoja de vida en Vida Escolar · '+state.year+'</h3>'+(rs.length?'<ul class="tl">'+rs.map(r=>'<li><button type="button" data-reg="'+esc(r.id)+'"><time class="num">'+esc(fechaCorta(r.fecha))+'<br>'+esc(r.hora||"")+'</time><span><span class="tchip t-'+r.tipo+'">'+esc(TIPOS[r.tipo])+'</span>'+(r.tipo==="anotacion"?' <span class="chip '+esc(r.gravedad)+'">'+esc(GRAV[r.gravedad])+'</span>':'')+'<span style="display:block;margin-top:3px">'+esc(detalle(r))+'</span><span class="sub">'+esc(r.por||"")+'</span></span></button></li>').join("")+'</ul>':'<p class="muted" style="margin:0">Sin registros este año.</p>')+'</div>';
+  return h+'</div>';
+}
+function drawerReg(id){
+  const r=R().find(x=>x.id===id); if(!r) return null; const d=state.drawer; const e=EST.get(r.estId)||{};
+  const kv=[]; const add=(k,v)=>{ if(v!==""&&v!=null) kv.push('<dt>'+esc(k)+'</dt><dd>'+v+'</dd>'); };
+  add("Estudiante", estLink(r.estId,r.nombre)+' · '+esc(cursoLabel(r.nivel,r.letra)));
+  add("Fecha", esc(fechaLarga(r.fecha))+(r.hora?" · "+esc(r.hora):""));
+  let acts="";
+  if(r.tipo==="atraso"){ add("Jornada",esc(r.jornada||"")); add("Minutos de atraso",esc(r.min)); add("Justificado",r.justificado?"Sí"+(r.motivo?" · "+esc(r.motivo):""):"No"); acts='<button class="btn" data-x="just">'+(r.justificado?"Quitar justificación":"Marcar como justificado")+'</button>'; }
+  if(r.tipo==="anotacion"){ add("Ámbito",esc(AMBITOS[r.ambito]||"Básica 1° a 5°")); add("Motivo",esc(r.conducta)); add("Gravedad",'<span class="chip '+esc(r.gravedad)+'">'+esc(GRAV[r.gravedad])+'</span>'); add("Lugar",esc(r.lugar)); add("Observado por",esc(r.observador)); add("Descripción",esc(r.descripcion)); const ms=R().filter(m=>m.tipo==="medida"&&m.motivoId===r.id); add("Medidas",ms.length?ms.map(m=>'<button type="button" class="linkname" data-reg="'+esc(m.id)+'">'+esc(MMAP[m.medida].l)+'</button>').join(", "):(r.sinMedida?"Sin medida adicional":"—")); if(r.anulada) add("Estado",'<span class="chip ok">Justificada</span> '+esc(r.anulada.motivo)+' · recibido el '+esc(fechaCorta(r.anulada.fecha))+(r.anulada.por?' · '+esc(r.anulada.por):'')+'<span style="display:block;font-size:12.5px;color:var(--muted);margin-top:3px">Queda en el historial, pero ya no suma en el conteo de anotaciones ni activa avisos.</span>');
+    if(r.anulada && r.anulada.adjunto) add("Archivo",adjLink(r.anulada.adjunto)); if(r.medidaId) add("Origen",'Inasistencia a una <button type="button" class="linkname" data-reg="'+esc(r.medidaId)+'">medida</button>'); acts = r.anulada ? '<button class="btn" data-x="anular">Restaurar anotación</button>' : (d.justify?'':'<button class="btn primary" data-x="justif">Presentó certificado o justificó</button>')+(r.auto?'':'<button class="btn" data-x="medida">Definir medida</button>'); }
+  if(r.tipo==="dispositivo"){ const c=celConsecuencia(r.infraccion); add("Dispositivo",esc(r.dispositivo)); add("Lugar",esc(r.lugar)); add("Infracción",'<span class="chip '+c.g+'">'+esc(c.t)+'</span>'); add("Se negó a entregarlo",r.seNego?"Sí":"No"); add("Retención hasta",r.retencionHasta?esc(fechaLarga(r.retencionHasta)):"—"); add("Estado",r.estado==="devuelto"?"Devuelto a "+esc(r.devolucion.a)+" el "+esc(fechaCorta(r.devolucion.fecha))+(r.devolucion.firma?" · firmó registro":" · sin firma"):"En custodia de CPE"); if(r.estado!=="devuelto") acts='<button class="btn primary" data-devolver="'+esc(r.id)+'">Registrar devolución</button>'; }
+  if(r.tipo==="medida"){ const m=MMAP[r.medida]||{l:r.medida}; const g=gravMedida(r);
+    add("Medida",esc(m.l)); add("Motivo",esc(motivoTexto(r))+(r.motivoId?' · <button type="button" class="linkname" data-reg="'+esc(r.motivoId)+'">ver</button>':''));
+    if(m.s){ add("Cumplimiento",esc(fechaLarga(r.sesFecha))+" · "+esc(r.sesHora||"")); add("Estado",esc(SES_EST[r.estado||"programada"])+(r.reprogramadaDe&&r.reprogramadaDe.length?" · reprogramada desde "+r.reprogramadaDe.map(fechaCorta).join(", "):"")); acts = r.estado==="no_asistio" ? (r.anotInasistId?'<button class="btn primary" data-x="certmed">Presentó certificado o justificó</button>':'<button class="btn primary" data-ses="'+esc(r.id)+'" data-v="justifico">Llegó certificado médico</button>') : r.estado==="cumplida" ? '' : '<button class="btn" data-ses="'+esc(r.id)+'" data-v="cumplida">Asistió</button><button class="btn" data-ses="'+esc(r.id)+'" data-v="no_asistio">No se presentó</button><button class="btn" data-ses="'+esc(r.id)+'" data-v="justifico">Justificó</button>';
+      if(r.justificacion) add("Justificación",esc(r.justificacion.motivo||"Justificó")+' · '+esc(fechaCorta(r.justificacion.fecha))+(r.justificacion.adjunto?' · '+adjLink(r.justificacion.adjunto):''));
+      if(r.anotInasistId) add("Anotación por inasistencia",'<button type="button" class="linkname" data-reg="'+esc(r.anotInasistId)+'">ver</button>'+(r.estado==="no_asistio"?' · se anula si llega el certificado':'')); }
+    if(r.medida==="suspension"){ add("Suspensión",esc(r.dias)+" día(s) hábil(es): "+esc(fechaCorta(r.desde))+" al "+esc(fechaCorta(r.hasta))); }
+    if(m.c){ add("Carta",r.cartaEstado==="levantada"?"Levantada":"Vigente"); acts='<button class="btn" data-x="carta">'+(r.cartaEstado==="levantada"?"Marcar vigente":"Levantar carta")+'</button>'; }
+    add("Comunicada",esc(fechaCorta(r.fechaCom))); add("Responsable",esc(r.responsable||r.por)); add("Observaciones",esc(r.obs));
+    const ap=r.apelacion;
+    add("Apelación", ap ? esc(ap.instancia)+" · recibida "+esc(fechaCorta(ap.fecha))+" · "+(ap.estado==="pendiente"?"plazo de respuesta "+esc(fechaCorta(addBusinessDays(ap.fecha,10))):esc(ap.estado==="acogida"?"acogida":"rechazada")+(ap.respuesta?": "+esc(ap.respuesta):"")) : "Plazo hasta el "+esc(fechaCorta(addDays(r.fechaCom||r.fecha,2)))+(g?" ante "+esc(apelInstancia(g)):""));
+    acts+= !ap ? '<button class="btn" data-x="apelar">Registrar apelación</button>' : ap.estado==="pendiente" ? '<button class="btn" data-x="apelOk">Apelación acogida</button><button class="btn" data-x="apelNo">Apelación rechazada</button>' : '';
+  }
+  if(r.tipo==="positiva"){ add("Motivo",esc(r.conducta)); }
+  if(r.tipo==="citacion"){ add("Con",esc(r.con)); add("Motivo",esc(r.motivo)); add("Estado",esc(CITA_EST[r.estado||"pendiente"])+(r.asistencia?" · registrado por "+esc(r.asistencia.por):"")); add("Observaciones",esc(r.obs)); acts='<button class="btn" data-cit="'+esc(r.id)+'" data-v="asistio">Asistió</button><button class="btn" data-cit="'+esc(r.id)+'" data-v="no_asistio">No asistió</button><button class="btn" data-cit="'+esc(r.id)+'" data-v="reagendada">Reagendada</button>'; }
+  add("Registró",esc(r.por||"—")+(r.auto?" · automático":""));
+  let h='<div class="d-head"><div><div class="eyebrow"><span class="tchip t-'+r.tipo+'">'+esc(TIPOS[r.tipo])+'</span></div><h2 id="dTitle">'+esc(r.tipo==="anotacion"||r.tipo==="positiva"?r.conducta:r.tipo==="medida"?(MMAP[r.medida]||{}).l:r.tipo==="citacion"?"Citación: "+r.motivo:r.tipo==="dispositivo"?(r.dispositivo||"Dispositivo")+" requisado":"Atraso de "+r.nombre)+'</h2></div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
+  h+='<div class="panel"><dl class="kv">'+kv.join("")+'</dl>'+(acts?'<div class="row" style="margin-top:14px">'+acts+'</div>':'')+'</div>';
+  h+='<div id="apHost">'+(d.justify && r.tipo==="anotacion" && !r.anulada ? justifPanel(r) : '')+'</div>';
+  h+= d.confirm ? '<div class="confirm"><label class="f" style="flex:1 1 160px">Clave para eliminar<input type="password" id="delKey" autocomplete="off"></label><button class="btn" id="delNo" type="button">Cancelar</button><button class="btn danger" id="delSi" type="button">Eliminar registro</button></div>' : '<div class="row"><button class="btn ghost" style="color:var(--danger)" id="delAsk" type="button">Eliminar registro…</button></div>';
+  return h+'</div>';
+}
+function bindDrawer(){
+  const d=state.drawer, body=$("#drawerBody"); if(!body) return;
+  bindRowActions(body);
+  if(d.k==="est"){
+    const e=EST.get(d.id);
+    $("#dReg").onclick=()=>{ prefill={estId:d.id}; closeDrawer(); setTab("registrar"); };
+    $("#deSave").onclick=async()=>{ if(!(await needAutor())) return; const n=clone(e); n.apoderado=$("#deAp").value.trim(); n.correoApoderado=$("#deApM").value.trim(); n.profesorJefe=$("#dePJ").value.trim(); n.correoPJ=$("#dePJM").value.trim(); n.nivel=$("#deNivel").value; n.letra=$("#deLetra").value;
+      if(remote()&&!state.demo){ try{ const up=clone(n); delete up.id; delete up.avisos; up.actualizado=new Date().toISOString(); await dref("estudiantes/"+e.id).update(up); toast("Datos guardados"); }catch(err){ toast("No se pudieron guardar los datos."); } }
+      else if(await saveEst(n)) toast("Datos guardados"); };
+    return;
+  }
+  const r=R().find(x=>x.id===d.id); if(!r) return;
+  if(d.justify && $("#jPanel")) bindJustif(r);
+  body.querySelectorAll("[data-x]").forEach(b=>b.onclick=async()=>{
+    const x=b.dataset.x;
+    if(x==="justif"){ state.drawer.justify=true; state.drawer.jt="cert"; renderDrawer(); setTimeout(()=>{ const p=$("#jPanel"); if(p) p.scrollIntoView({block:"nearest"}); },30); return; }
+    if(x==="certmed"){ state.drawer={k:"reg",id:r.anotInasistId,justify:true,jt:"cert"}; renderDrawer(); return; }
+    if(x==="medida"){ prefill={estId:r.estId,tipo:"medida",motivoId:r.id}; state.regTipo="medida"; closeDrawer(); setTab("registrar"); return; }
+    if(x==="apelar"){ const g=gravMedida(r); $("#apHost").innerHTML='<div class="panel"><h3>Apelación</h3><div class="grid g2"><label class="f">Recibida el<input type="date" id="apF" value="'+today()+'"></label><label class="f">Resuelve<select id="apI">'+optList(["Profesor/a jefe","CPE","Director/a","Consejo de Disciplina"],apelInstancia(g))+'</select></label></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn primary" id="apSave" type="button">Guardar apelación</button></div></div>';
+      $("#apSave").onclick=async()=>{ if(!(await needAutor())) return; const n=clone(r); n.apelacion={fecha:$("#apF").value||today(),instancia:$("#apI").value,estado:"pendiente",por:ME||""}; if(await saveReg(n)) toast("Apelación registrada: respuesta en 10 días hábiles"); }; return; }
+    if(!(await needAutor())) return;
+    const n=clone(r);
+    if(x==="just") n.justificado=!r.justificado;
+    if(x==="anular"){ if(r.anulada) delete n.anulada; else n.anulada={motivo:"Justificada",fecha:today(),por:ME||""}; }
+    if(x==="carta") n.cartaEstado=r.cartaEstado==="levantada"?"vigente":"levantada";
+    if(x==="apelOk"||x==="apelNo"){ n.apelacion.estado=x==="apelOk"?"acogida":"rechazada"; n.apelacion.fechaResp=today(); }
+    if(await saveReg(n)) toast("Actualizado");
+  });
+  if($("#delAsk")) $("#delAsk").onclick=()=>{ state.drawer.confirm=true; renderDrawer(); setTimeout(()=>$("#delKey").focus(),20); };
+  if($("#delNo")) $("#delNo").onclick=()=>{ state.drawer.confirm=false; renderDrawer(); };
+  if($("#delSi")) $("#delSi").onclick=async()=>{ if(!state.demo && !(await checkClave($("#delKey").value))){ toast("Clave incorrecta"); return; } if(await delReg(r.id)){ closeDrawer(); toast("Registro eliminado"); } };
+}
+
+/* =================== Justificaciones con archivo adjunto =================== */
+let AS=null;
+async function initAssets(){ try{ if(IN_CLAUDE) AS=await window.claude.use("assets"); }catch(e){ AS=null; } }
+function adjLink(a){
+  if(!a) return "";
+  if(a.adjId) return '<button type="button" class="linkname" data-adj="'+esc(a.adjId)+'" data-nom="'+esc(a.nombre||"")+'">'+esc(a.nombre||"Ver archivo")+'</button>';
+  const href = a.id ? "/_blob/"+a.id : (a.url||"");
+  return href ? '<a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(a.nombre||"Ver archivo")+'</a>' : esc(a.nombre||"")+(a.demo?' <span class="muted">(demostración: no se guardó)</span>':'');
+}
+function justifPanel(r){
+  const jt=state.drawer.jt||"cert";
+  return '<div class="panel" id="jPanel"><h3>Justificación de la anotación</h3>'+
+    '<div class="seg" role="group" aria-label="Tipo de justificación" style="margin-bottom:12px"><button type="button" data-jt="cert" aria-pressed="'+(jt==="cert")+'">Presentó certificado médico</button><button type="button" data-jt="otra" aria-pressed="'+(jt==="otra")+'">Otra justificación</button></div>'+
+    '<div class="grid g2"><label class="f">Recibido el<input type="date" id="jF" value="'+today()+'"></label>'+
+    '<label class="f"><span id="jFileL">'+(jt==="cert"?"Certificado":"Respaldo (opcional)")+'</span><input type="file" id="jFile" accept="application/pdf,image/jpeg,image/png,image/webp,.pdf,.jpg,.jpeg,.png"><span class="hint">PDF, JPG o PNG, hasta 20 MB. Puede ser una foto.</span></label></div>'+
+    '<label class="f" id="jMotW" style="margin-top:12px"'+(jt==="otra"?'':' hidden')+'>Cuál fue la justificación<input type="text" id="jMot" placeholder="Ej.: aviso del apoderado por correo"></label>'+
+    '<p class="ref" style="margin:12px 0 0">Al guardar, la anotación deja de contar para los avisos'+(r.medidaId?' y la medida se reprograma para el día hábil siguiente (RICE pág. 91)':'')+'. El archivo queda adjunto en la anotación.</p>'+
+    '<div class="row" style="justify-content:flex-end;margin-top:12px"><span class="err" id="jErr" role="alert"></span><button class="btn" id="jNo" type="button">Cancelar</button><button class="btn primary" id="jSi" type="button">Guardar justificación</button></div></div>';
+}
+const tipoArchivo = f => f.type || ({pdf:"application/pdf",jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",webp:"image/webp"})[(f.name.split(".").pop()||"").toLowerCase()] || "";
+function bindJustif(r){
+  const setJt=jt=>{ state.drawer.jt=jt; $$("#jPanel [data-jt]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.jt===jt))); $("#jMotW").hidden=jt!=="otra"; $("#jFileL").textContent=jt==="cert"?"Certificado":"Respaldo (opcional)"; };
+  $$("#jPanel [data-jt]").forEach(b=>b.onclick=()=>setJt(b.dataset.jt));
+  $("#jNo").onclick=()=>{ state.drawer.justify=false; renderDrawer(); };
+  $("#jSi").onclick=async()=>{
+    const err=$("#jErr"), btn=$("#jSi"); err.textContent="";
+    const jt=state.drawer.jt||"cert", file=$("#jFile").files[0], fecha=$("#jF").value||today(), mot=$("#jMot").value.trim();
+    if(jt==="cert" && !file){ err.textContent="Adjunte el certificado."; return; }
+    if(file && file.size>20*1024*1024){ err.textContent="El archivo pesa más de 20 MB."; return; }
+    const tipo=file?tipoArchivo(file):"";
+    if(file && !/^(application\/pdf|image\/(jpeg|png|webp))$/.test(tipo)){ err.textContent="Formato no aceptado. Use PDF, JPG o PNG."; return; }
+    if(!(await needAutor())) return;
+    let adj=null;
+    if(file){
+      if(state.demo) adj={nombre:file.name, demo:true};
+      else if(state.mode==="fb"){
+        btn.disabled=true; btn.textContent="Guardando archivo…";
+        try{
+          let du;
+          if(tipo.startsWith("image/")) du=await comprimirImagen(file);
+          else { if(file.size>700000) throw new Error("pdfgrande"); du=await leerDataUrl(file); }
+          const aid=uid("a"); await dref("adjuntos/"+aid).set({dataUrl:du, nombre:file.name, tipo, creado:new Date().toISOString(), por:ME||""});
+          adj={adjId:aid, nombre:file.name, tipo};
+        }catch(e){ btn.disabled=false; btn.textContent="Guardar justificación"; err.textContent=e&&e.message==="pdfgrande"?"El PDF pesa más de 700 KB. Envíe una foto del certificado (se comprime sola) o un PDF más liviano.":e&&e.message==="grande"?"La imagen es demasiado grande.":"No se pudo guardar el archivo. Intente de nuevo."; return; }
+      }
+      else if(!IN_CLAUDE) adj={nombre:file.name, url:URL.createObjectURL(file)};
+      else if(!AS){ err.textContent="Su acceso no permite adjuntar archivos. Pida acceso de edición a quien administra la página."; return; }
+      else {
+        btn.disabled=true; btn.textContent="Subiendo archivo…";
+        try{ const up=await AS.upload(file, file.type?undefined:{type:tipo}); adj={id:up.id, nombre:file.name, tipo:up.contentType, bytes:up.sizeBytes}; }
+        catch(e){ btn.disabled=false; btn.textContent="Guardar justificación"; const c=e&&e.code;
+          err.textContent = c==="unsupported_type"?"Formato no aceptado. Use PDF, JPG o PNG.":c==="too_large"||c==="payload_too_large"?"El archivo es demasiado grande.":c==="quota_exceeded"?"Se llenó el espacio para archivos de la página.":c==="not_granted"?"Su acceso no permite adjuntar archivos.":"No se pudo subir el archivo. Intente de nuevo."; return; }
+      }
+    }
+    const motivo = jt==="cert" ? "Presentó certificado médico" : "Justificó"+(mot?": "+mot:"");
+    const n=clone(r); n.anulada={tipo:jt, motivo, fecha, por:ME||"", adjunto:adj};
+    if(!(await saveReg(n))){ btn.disabled=false; btn.textContent="Guardar justificación"; return; }
+    let msg="Justificación guardada: la anotación ya no cuenta";
+    if(r.medidaId){ const m=R().find(x=>x.id===r.medidaId);
+      if(m && m.estado==="no_asistio"){ const m2=clone(m); m2.estado="programada"; m2.reprogramadaDe=(m2.reprogramadaDe||[]).concat([m2.sesFecha]); m2.sesFecha=nextBusiness(today()); delete m2.anotInasistId; m2.justificacion={motivo, fecha, por:ME||"", adjunto:adj};
+        if(await saveReg(m2)) msg+=". Medida reprogramada para el "+fechaCorta(m2.sesFecha); } }
+    state.drawer.justify=false; renderDrawer(); toast(msg);
+  };
+}
+
+/* =================== Estadísticas =================== */
+function hbars(items, cls){ const max=Math.max(1,...items.map(i=>i.v)); return items.length?'<div class="hbars">'+items.map(i=>'<div class="hb"><span class="lab" title="'+esc(i.l)+'">'+esc(i.l)+'</span><span class="track"><span class="bar '+(i.c||cls||"")+'" style="width:'+(i.v/max*100)+'%"></span></span><span class="val">'+i.v+'</span></div>').join("")+'</div>':'<div class="nodata">Sin datos en el periodo.</div>'; }
+function renderStats(){
+  const host=$("#view-stats"); if(!state.loaded){ host.innerHTML='<div class="calm">Cargando…</div>'; return; }
+  const sel=state.statsP||"actual"; const y=state.year, cp=curPeriod();
+  const opts=[["actual",periodLabel(cp)],[y+"-S1","1er semestre "+y],[y+"-S2","2° semestre "+y],["anio","Año "+y]];
+  const inP = f => sel==="anio" ? String(f).startsWith(y) : (sel==="actual" ? (state.config.periodo==="anio"?String(f).startsWith(y):periodOf(f)===cp) : (String(f).startsWith(y) && (String(f).slice(5)>=(state.config.s2Inicio||"08-01")?"S2":"S1")===sel.slice(-2)));
+  const L=R().filter(r=>inP(r.fecha));
+  const atr=L.filter(r=>r.tipo==="atraso"&&!r.justificado), an=L.filter(r=>r.tipo==="anotacion"&&!r.anulada), dis=L.filter(r=>r.tipo==="dispositivo"), med=L.filter(r=>r.tipo==="medida");
+  const ses=med.filter(r=>MMAP[r.medida]&&MMAP[r.medida].s);
+  const tally=(list,fn)=>{ const m=new Map(); list.forEach(r=>{ const k=fn(r); if(!k) return; m.set(k,(m.get(k)||0)+1); }); return [...m.entries()].map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v); };
+  const porCurso=tally(atr,r=>cursoLabel(r.nivel,r.letra));
+  const topEst=tally(atr,r=>r.nombre+" · "+cursoLabel(r.nivel,r.letra)).slice(0,10);
+  const months=[2,3,4,5,6,7,8,9,10,11]; const mc=months.map(m=>atr.filter(r=>+String(r.fecha).slice(5,7)===m+1).length); const mmax=Math.max(1,...mc);
+  const g={leve:an.filter(r=>r.gravedad==="leve").length,grave:an.filter(r=>r.gravedad==="grave").length,extrema:an.filter(r=>r.gravedad==="extrema").length};
+  const conds=tally(an,r=>r.conducta).slice(0,8);
+  const cumpl={c:ses.filter(r=>r.estado==="cumplida").length,n:ses.filter(r=>r.estado==="no_asistio").length,p:ses.filter(r=>(r.estado||"programada")==="programada").length};
+  host.innerHTML='<div class="section-h"><div><div class="eyebrow">Estadísticas</div><h2>Vida Escolar en cifras</h2></div><label class="f">Periodo<select id="stP">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+esc(l)+'</option>').join("")+'</select></label></div>'+
+    '<div class="kpis">'+kpiStat(atr.length,"Atrasos sin justificar")+kpiStat(an.length,"Anotaciones negativas")+kpiStat(L.filter(r=>r.tipo==="positiva").length,"Anotaciones positivas")+kpiStat(dis.length,"Dispositivos requisados")+kpiStat(med.length,"Medidas aplicadas")+'</div>'+
+    '<div class="charts">'+
+    '<div class="card wide"><h3>Atrasos por mes</h3><p class="sub">Sin justificar · marzo a diciembre</p><div class="months">'+mc.map(v=>'<div class="mcol"><div class="top">'+(v||"")+'</div><div class="b" style="height:'+(v/mmax*100*0.85)+'%"></div></div>').join("")+'</div><div class="mlabels">'+months.map(m=>'<span>'+MESES[m]+'</span>').join("")+'</div></div>'+
+    '<div class="card"><h3>Atrasos por curso</h3><p class="sub">Cursos con más atrasos</p>'+hbars(porCurso.slice(0,12))+'</div>'+
+    '<div class="card"><h3>Estudiantes con más atrasos</h3><p class="sub">Los 10 primeros</p>'+hbars(topEst.map(i=>Object.assign(i,{c:i.v>=state.config.atrGrave?"b":i.v>=state.config.atrAviso?"w":""})))+'</div>'+
+    '<div class="card"><h3>Anotaciones por gravedad</h3><p class="sub">Según tipificación del RICE</p>'+hbars([{l:"Leves",v:g.leve},{l:"Graves",v:g.grave,c:"w"},{l:"Extremadamente graves",v:g.extrema,c:"b"}])+'</div>'+
+    '<div class="card"><h3>Motivos más frecuentes</h3><p class="sub">Anotaciones del periodo</p>'+hbars(conds)+'</div>'+
+    '<div class="card"><h3>Cumplimiento de medidas fuera de jornada</h3><p class="sub">Trabajo especial, reflexión y servicios</p>'+hbars([{l:"Cumplidas",v:cumpl.c},{l:"No se presentó",v:cumpl.n,c:"b"},{l:"Programadas",v:cumpl.p,c:"w"}])+'</div>'+
+    '</div>';
+  $("#stP").onchange=ev=>{ state.statsP=ev.target.value; renderStats(); };
+}
+const kpiStat=(v,l)=>'<div class="kpi"><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>';
+
+/* =================== Ajustes =================== */
+function renderAjustes(){
+  const C=state.config, host=$("#view-ajustes");
+  const num=(id,v,l,ref)=>'<div class="cfg-row"><label for="'+id+'">'+esc(l)+(ref?'<span class="ref">'+esc(ref)+'</span>':'')+'</label><input type="number" id="'+id+'" min="1" max="30" value="'+esc(v)+'"></div>';
+  host.innerHTML='<div class="panel"><h2>Reglas del RICE</h2><p class="lead">Vienen cargadas según el RICE 2025. Se comparten con todo el equipo.</p>'+
+    '<div class="grid g2"><label class="f">Contar atrasos y anotaciones por<select id="cfP"><option value="semestre"'+(C.periodo==="semestre"?" selected":"")+'>Semestre</option><option value="anio"'+(C.periodo==="anio"?" selected":"")+'>Año escolar</option></select></label><label class="f">Inicio del 2° semestre <span class="hint">Mes-día</span><input type="text" id="cfS2" value="'+esc(C.s2Inicio)+'" placeholder="08-01"></label></div>'+
+    num("cfAA",C.atrAviso,"Atraso que activa el correo al apoderado y profesor/a jefe","RICE pág. 39: al tercer atraso")+
+    num("cfAG",C.atrGrave,"Atraso que se considera falta grave","RICE pág. 39: posterior al quinto atraso")+
+    num("cfNA",C.anAviso,"Anotaciones para notificar al apoderado","RICE pág. 114: 3 anotaciones")+
+    num("cfNC",C.anCita,"Anotaciones para citar con CPE y trabajo especial","RICE pág. 114: 5 anotaciones")+
+    num("cfRet",C.retencion,"Días hábiles de retención en la 2ª infracción con dispositivo","Protocolo de dispositivos pág. 213")+
+    '<div class="grid g2" style="margin-top:12px"><label class="f">Día habitual de medidas fuera de jornada<select id="cfDia">'+[3,6,1,2,4,5].map(d=>'<option value="'+d+'"'+(+C.diaMedida===d?" selected":"")+'>'+DIAS[d]+'</option>').join("")+'</select></label><label class="f">Hora habitual<input type="time" id="cfHora" value="'+esc(C.horaMedida)+'"></label></div>'+
+    '<label class="check" style="margin-top:12px"><input type="checkbox" id="cfJ"'+(C.contarJustificados?" checked":"")+'> Contar también los atrasos justificados</label></div>'+
+    '<div class="panel"><h2>Inspectores por nivel</h2><p class="lead">Aparecen en la ficha de cada estudiante (RICE pág. 256–257).</p><div class="grid g2">'+INSP_GRUPOS.map(g=>'<label class="f">'+esc(g.l)+'<input type="text" id="cfI_'+g.k+'" value="'+esc((C.inspectores||{})[g.k]||"")+'"></label>').join("")+'</div></div>'+
+    '<div class="panel"><h2>Calendario y seguridad</h2><div class="grid g2"><label class="f">Feriados <span class="hint">Una fecha por línea (AAAA-MM-DD). No cuentan como días hábiles.</span><textarea id="cfFer" rows="7">'+esc((C.feriados||[]).join("\n"))+'</textarea></label><label class="f">Clave de administración <span class="hint">Para eliminar registros y entrar si se olvida un PIN. Provisoria: 0000</span><input type="password" id="cfClave" autocomplete="new-password" placeholder="Nueva clave (vacío para mantener)"></label></div>'+
+    '<div class="form-actions" style="margin-top:16px"><span class="err" id="cfMsg"></span>'+(state.demo||state.mode==="fb"?'':'<button class="btn" id="cfDemo" type="button">Ver demostración</button>')+'<button class="btn primary" id="cfSave" type="button">Guardar ajustes</button></div></div>'+
+    '<div class="panel" id="perfilesPanel" hidden><h2>Enlace del equipo</h2><p class="lead">Quien tenga este enlace puede abrir Vida Escolar. Compártalo solo con Inspectoría y Vida Escolar.</p><div class="linkbox"><code id="eqLink"></code><button class="btn sm" id="eqCopy" type="button">Copiar</button></div>'+
+      '<h2 style="margin-top:22px">Perfiles</h2><p class="lead" id="pfIntro"></p><div id="pfPins" hidden></div><ul class="eqlist" id="pfList"></ul>'+
+      '<form id="pfAdd" class="grid g4" style="margin-top:16px;align-items:end"><label class="f">Nombre<input type="text" id="pfNombre" required placeholder="Ej.: Roxana Barría"></label><label class="f">Cargo<input type="text" id="pfCargo" placeholder="Ej.: Inspectora 6° a 8°"></label><label class="f">Perfil<select id="pfRol">'+Object.entries(ROLES_PERFIL).map(([k,v])=>'<option value="'+k+'">'+esc(v.l)+'</option>').join("")+'</select></label><button class="btn primary" type="submit">Crear perfil</button></form><p class="ref" style="margin:8px 0 0">El PIN se genera al azar y se muestra una sola vez. Entréguelo a cada persona.</p></div>'+
+    '<div class="panel"><h2>Respaldo</h2><p class="lead">Descargue una copia de todos los estudiantes y registros, o cargue un respaldo (por ejemplo, para pasar los datos a la versión del colegio).</p>'+
+      '<div class="row"><button class="btn" id="rsExp" type="button">Descargar respaldo</button>'+(state.mode==="fb"||state.mode==="db"?'<label class="btn" for="rsFile" style="cursor:pointer">Importar respaldo<input type="file" id="rsFile" accept=".json,application/json" hidden></label>':'')+'</div><p class="ref" id="rsMsg" role="status" style="margin:10px 0 0"></p></div>';
+  $("#cfSave").onclick=async()=>{
+    const n=v=>Math.max(1,Math.round(+v||1));
+    const cfg=Object.assign(clone(C),{periodo:$("#cfP").value,s2Inicio:/^\d\d-\d\d$/.test($("#cfS2").value.trim())?$("#cfS2").value.trim():"08-01",atrAviso:n($("#cfAA").value),atrGrave:n($("#cfAG").value),anAviso:n($("#cfNA").value),anCita:n($("#cfNC").value),retencion:n($("#cfRet").value),diaMedida:+$("#cfDia").value,horaMedida:$("#cfHora").value||"14:30",contarJustificados:$("#cfJ").checked,
+      inspectores:Object.fromEntries(INSP_GRUPOS.map(g=>[g.k,$("#cfI_"+g.k).value.trim()])), feriados:$("#cfFer").value.split(/\s+/).filter(x=>/^\d{4}-\d\d-\d\d$/.test(x))});
+    const k=$("#cfClave").value.trim(); if(k){ cfg.claveHash=await hashClave(k); delete cfg.claveEliminar; }
+    const ok=await saveConfig(cfg); $("#cfMsg").textContent=ok?"":"No se pudieron guardar los ajustes."; if(ok) toast("Ajustes guardados");
+  };
+  if($("#cfDemo")) $("#cfDemo").onclick=()=>{ startDemo(false); setTab("hoy"); };
+  $("#rsExp").onclick=exportarRespaldo;
+  if($("#rsFile")) $("#rsFile").onchange=ev=>{ const f=ev.target.files[0]; if(f) importarRespaldo(f); ev.target.value=""; };
+  renderPerfiles();
+  $("#rsMsg").textContent=state.rsMsg||"";
+}
+
+/* =================== Demostración (datos inventados, no se guardan) =================== */
+function startDemo(auto){
+  if(auto===undefined) auto=true;
+  const t=today(), ests=[], regs=[];
+  const back=n=>{ let d=t; let k=n; while(k>0){ d=addDays(d,-1); if(isWork(parse(d))) k--; } return d; };
+  const mk=(nombre,nivel,letra,extra)=>{ const e=Object.assign({id:uid("e"),nombre,nivel,letra,avisos:{},apoderado:"",correoApoderado:"",profesorJefe:"",correoPJ:""},extra||{}); ests.push(e); return e; };
+  const R0=(e,o)=>{ const r=Object.assign({id:uid("r"),estId:e.id,nombre:e.nombre,nivel:e.nivel,letra:e.letra,por:"Inspectora de nivel (ejemplo)",ts:new Date().toISOString()},o); regs.push(r); return r; };
+  const atr=(e,n,h)=>R0(e,{tipo:"atraso",fecha:back(n),hora:h,jornada:h>="12:00"?"tarde":"mañana",min:Math.max(0,toMin(h)-toMin(cicloDe(e.nivel)==="sec"?(h>="12:00"?"14:10":"08:00"):(h>="12:00"?"14:00":"08:10"))),justificado:false});
+  const a=mk("Valentina Ortega (ejemplo)","8B","A",{apoderado:"Carolina Muñoz",correoApoderado:"apoderado.ejemplo@correo.cl",profesorJefe:"Prof. jefe 8° A"});
+  [14,10,6,3].forEach((n,i)=>atr(a,n,["08:07","08:22","08:12","08:35"][i]));
+  const b=mk("Benjamín Soto (ejemplo)","2M","B");
+  [30,24,18,12,8,4].forEach((n,i)=>atr(b,n,["08:05","08:18","08:09","08:26","08:40","08:11"][i]));
+  b.avisos["atrA_"+curPeriod()]={fecha:back(11),por:"Inspectora de nivel (ejemplo)",nota:"Correo enviado"};
+  const c=mk("Agustina Pérez (ejemplo)","1M","A");
+  R0(c,{tipo:"anotacion",fecha:back(20),ambito:"ped",conducta:"Interrumpir la clase o distraer (ruidos, comentarios, levantarse sin permiso)",gravedad:"leve"});
+  R0(c,{tipo:"anotacion",fecha:back(9),ambito:"auto",conducta:"Permanecer en zonas no permitidas (estacionamiento, sala en recreo)",gravedad:"leve"});
+  R0(c,{tipo:"anotacion",fecha:back(1),ambito:"conv",conducta:"Burlas, insultos o humillación a un compañero/a",gravedad:"grave"});
+  const d=mk("Matías Herrera (ejemplo)","7B","C");
+  R0(d,{tipo:"dispositivo",fecha:back(25),hora:"09:30",dispositivo:"Celular",lugar:"Sala de clases",seNego:false,infraccion:1,estado:"devuelto",retencionHasta:"",devolucion:{a:"Apoderado (ejemplo)",fecha:back(24),firma:true}});
+  const cel2=R0(d,{tipo:"dispositivo",fecha:back(2),hora:"11:50",dispositivo:"Celular",lugar:"Patio / recreo",seNego:false,infraccion:2,estado:"custodia",retencionHasta:addBusinessDays(back(2),5)});
+  R0(d,{tipo:"medida",fecha:back(2),medida:"trabajo",sesFecha:nextWeekday(back(2),3)<t?nextWeekday(t,3):nextWeekday(back(2),3),sesHora:"14:30",estado:"programada",motivoId:cel2.id,fechaCom:back(2)});
+  R0(d,{tipo:"citacion",fecha:t,hora:"12:00",con:"CPE (Inspector/a General)",motivo:"Devolución de dispositivo",estado:"pendiente",motivoId:cel2.id});
+  const f=mk("Isidora Fuentes (ejemplo)","6B","A");
+  const anF=R0(f,{tipo:"anotacion",fecha:back(5),ambito:"medio",conducta:"Rayados o graffiti en paredes, puertas o mobiliario",gravedad:"grave"});
+  R0(f,{tipo:"medida",fecha:back(4),medida:"serv_com",sesFecha:nextWeekday(back(4),3)<t?nextWeekday(t,3):nextWeekday(back(4),3),sesHora:"14:30",estado:"programada",motivoId:anF.id,fechaCom:back(4),obs:"Limpieza de la puerta con apoyo del auxiliar."});
+  const g=mk("Tomás Riquelme (ejemplo)","3M","A");
+  const anG=R0(g,{tipo:"anotacion",fecha:back(6),ambito:"auto",conducta:"Consumo o porte de tabaco o cigarrillo electrónico",gravedad:"grave"});
+  R0(g,{tipo:"medida",fecha:back(5),medida:"suspension",motivoId:anG.id,desde:back(1),dias:3,hasta:addBusinessDays(back(1),2),fechaCom:back(5)});
+  [9,3].forEach((n,i)=>atr(g,n,["08:14","14:22"][i]));
+  const h=mk("Florencia Vidal (ejemplo)","4B","B");
+  [7,2].forEach(n=>atr(h,n,"08:20"));
+  const k=mk("Lucas Navarro (ejemplo)","4M","A");
+  atr(k,0,"08:16");
+  const m=mk("Antonia Castro (ejemplo)","5B","A");
+  R0(m,{tipo:"anotacion",fecha:back(3),ambito:"",conducta:"No traer el material de trabajo solicitado",gravedad:"leve"});
+  const n=mk("Joaquín Morales (ejemplo)","8B","B");
+  R0(n,{tipo:"medida",fecha:back(40),medida:"carta_comp",cartaEstado:"vigente",motivo:"Reiteración de faltas leves y una falta grave",fechaCom:back(40)});
+  atr(n,0,"08:09");
+  state.demoData={estudiantes:ests,registros:regs}; state.demo=true; state.demoAuto=auto; closeDrawer(); renderAll();
+}
+$("#exitDemo").onclick=()=>{ state.demo=false; state.demoData=null; try{ localStorage.setItem("ve-demo-off","1"); }catch(e){} closeDrawer(); PK={sel:null,q:"",act:0}; renderAll(); if(state.tab==="registrar") renderRegistrar(); toast("Ahora ve los datos reales del equipo"); };
+
+/* =================== Inicio =================== */
+if(!IN_CLAUDE && FIREBASE_CONFIG) leerClave();
+const initial=(location.hash||"").replace("#","");
+setTab(TABS.includes(initial)?initial:"hoy");
+renderHeader();
+initStore();
+initDownloads();
+initAssets();
+})();
+</script>
+
+</body></html>
