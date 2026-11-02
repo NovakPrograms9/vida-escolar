@@ -651,7 +651,7 @@ function detalle(r){
   if(r.tipo==="atraso") return (r.hora||"")+(r.min>0?" · "+r.min+" min":"")+(r.justificado?" · justificado":"")+(r.motivo?" · "+r.motivo:"");
   if(r.tipo==="positiva") return r.conducta;
   if(r.tipo==="retiro") return r.motivo||"";
-  if(r.tipo==="inasistencia") return (r.hasta&&r.hasta!==r.fecha?fechaCorta(r.fecha)+" al "+fechaCorta(r.hasta)+" · ":"")+(r.dias||1)+" día"+((r.dias||1)>1?"s":"")+(r.motivo?" · "+r.motivo:"")+" · "+(r.justificacion?JUST_INA[r.justificacion.tipo]||"Justificada":"sin justificar");
+  if(r.tipo==="inasistencia") return (r.hasta&&r.hasta!==r.fecha?fechaCorta(r.fecha)+" al "+fechaCorta(r.hasta)+" · ":"")+(r.dias||1)+" día"+((r.dias||1)>1?"s":"")+(r.motivo?" · "+r.motivo:"")+" · "+(r.sinJustificar&&!r.justificacion?"injustificada":r.justificacion?(JUST_INA[r.justificacion.tipo]||"Justificada")+(r.sinJustificar?" · no trajo certificado":""):"sin justificar");
   if(r.tipo==="anotacion") return (r.anulada?(r.anulada.tipo==="cert"?"(Certificado médico) ":r.anulada.tipo==="otra"?"(Justificada) ":"(Anulada) "):"")+r.conducta+(r.descripcion?" — "+r.descripcion:"");
   if(r.tipo==="dispositivo") return (r.dispositivo||"Dispositivo")+" · "+ordinal(r.infraccion)+" infracción · "+(r.estado==="devuelto"?"devuelto "+fechaCorta(r.devolucion&&r.devolucion.fecha):"en custodia");
   if(r.tipo==="medida"){ const m=MMAP[r.medida]; let t=m?m.l:r.medida; if(m&&m.s) t+=" · "+fechaCorta(r.sesFecha)+" "+(r.sesHora||"")+" · "+SES_EST[r.estado||"programada"]; if(r.medida==="suspension") t+=" · "+r.dias+" día(s), hasta "+fechaCorta(r.hasta); if(m&&m.c) t+=" · "+(r.cartaEstado==="levantada"?"levantada":"vigente"); return t; }
@@ -1062,7 +1062,7 @@ function pendientes(){
     sesAtr: R().filter(r=>r.tipo==="medida"&&MMAP[r.medida]&&MMAP[r.medida].s&&(r.estado||"programada")==="programada"&&r.sesFecha<t).sort((a,b)=>a.sesFecha.localeCompare(b.sesFecha)),
     citAtr: R().filter(r=>r.tipo==="citacion"&&(r.estado||"pendiente")==="pendiente"&&r.fecha<t).sort((a,b)=>a.fecha.localeCompare(b.fecha)),
     apel: R().filter(r=>r.tipo==="medida"&&r.apelacion&&r.apelacion.estado==="pendiente"),
-    ina: R().filter(r=>r.tipo==="inasistencia" && (!r.justificacion || ((r.dias||1)>4 && r.justificacion.tipo!=="cert")) && r.fecha<=t).sort((a,b)=>a.fecha.localeCompare(b.fecha)),
+    ina: R().filter(r=>r.tipo==="inasistencia" && !r.sinJustificar && (!r.justificacion || ((r.dias||1)>4 && r.justificacion.tipo!=="cert")) && r.fecha<=t).sort((a,b)=>a.fecha.localeCompare(b.fecha)),
     cust: R().filter(r=>r.tipo==="dispositivo"&&r.estado!=="devuelto").sort((a,b)=>a.fecha.localeCompare(b.fecha))
   };
 }
@@ -1081,7 +1081,7 @@ function pendItems(p){
   p.apel.forEach(r=>{ const lim=addBusinessDays(r.apelacion.fecha,10), rest=busDiff(t,lim); it.push({sev:rest<0?"grave":"aviso", est:estDe(r), s:"Apelación de "+(((MMAP[r.medida]||{}).l)||"medida").toLowerCase()+": "+r.apelacion.instancia+" debe responder "+(rest<0?"(plazo vencido el "+fechaCorta(lim)+")":"antes del "+fechaCorta(lim))+".", ref:"RICE pág. 116", acts:'<button class="btn sm" data-reg="'+esc(r.id)+'">Responder</button>'}); });
   p.ina.forEach(r=>{ const per=(r.hasta&&r.hasta!==r.fecha?"del "+fechaCorta(r.fecha)+" al "+fechaCorta(r.hasta):"el "+fechaCorta(r.fecha))+" ("+(r.dias||1)+" día"+((r.dias||1)>1?"s":"")+")", lim=addBusinessDays(r.hasta||r.fecha,3), larga=(r.dias||1)>4, venc=larga&&lim<t;
     const s = !r.justificacion ? "Faltó "+per+": falta la justificación del apoderado."+(larga?" Por ser más de 4 días, debe traer certificado médico (hasta el "+fechaCorta(lim)+").":"") : "Faltó "+per+": falta el certificado médico (hasta el "+fechaCorta(lim)+").";
-    it.push({sev:venc?"grave":(r.hasta||r.fecha)<t?"aviso":"info", est:estDe(r), s, ref:"RICE pág. 38", acts:'<button class="btn sm primary" data-just="'+esc(r.id)+'">'+(r.justificacion?'Llegó el certificado':'Registrar justificación')+'</button>'}); });
+    it.push({sev:venc?"grave":(r.hasta||r.fecha)<t?"aviso":"info", est:estDe(r), s, ref:"RICE pág. 38", acts:'<button class="btn sm primary" data-just="'+esc(r.id)+'">'+(r.justificacion?'Llegó el certificado':'Registrar justificación')+'</button><button class="btn sm" data-noj="'+esc(r.id)+'">'+(r.justificacion?'No trajo certificado':'No justificó')+'</button>'}); });
   p.cust.forEach(r=>{ const listo=!r.retencionHasta||r.retencionHasta<=t; it.push({sev:r.retencionHasta&&listo?"aviso":"info", est:estDe(r), s:(r.dispositivo||"Dispositivo")+" en custodia desde el "+fechaCorta(r.fecha)+": "+(r.retencionHasta?(listo?"ya cumplió la retención, se puede devolver.":"se puede devolver desde el "+fechaCorta(r.retencionHasta)+"."):"se devuelve al apoderado en la citación con CPE."), acts:'<button class="btn sm" data-devolver="'+esc(r.id)+'">Registrar devolución</button>'}); });
   const o={grave:0,aviso:1,info:2};
   return it.sort((a,b)=>o[a.sev]-o[b.sev]);
@@ -1148,7 +1148,13 @@ function bindRowActions(host){
   host.querySelectorAll("[data-ses]").forEach(b=>b.onclick=()=>marcarSesion(b.dataset.ses,b.dataset.v));
   host.querySelectorAll("[data-cit]").forEach(b=>b.onclick=()=>marcarCitacion(b.dataset.cit,b.dataset.v));
   host.querySelectorAll("[data-devolver]").forEach(b=>b.onclick=()=>devolverModal(b.dataset.devolver));
+  host.querySelectorAll("[data-noj]").forEach(b=>b.onclick=()=>noJustifico(b.dataset.noj));
   host.querySelectorAll("[data-just]").forEach(b=>b.onclick=()=>{ const rr=R().find(x=>x.id===b.dataset.just); state.drawer={k:"reg",id:b.dataset.just,justify:true,jt:rr&&rr.tipo==="inasistencia"&&!rr.justificacion&&!((rr.dias||1)>4)?"otra":"cert"}; renderDrawer(); });
+}
+async function noJustifico(id){
+  const r=R().find(x=>x.id===id); if(!r) return; if(!(await needAutor())) return;
+  const n=clone(r); n.sinJustificar={fecha:today(), por:ME||"", sinCert:!!r.justificacion};
+  if(await saveReg(n)) toast(r.justificacion?"Guardado: no trajo certificado médico":"Guardado como inasistencia injustificada");
 }
 async function alertAction(a, act){
   if(!a) return;
@@ -1589,9 +1595,10 @@ function drawerReg(id){
   if(r.tipo==="positiva"){ add("Motivo",esc(r.conducta)); }
   if(r.tipo==="retiro"){ add("Motivo",esc(r.motivo)); }
   if(r.tipo==="inasistencia"){ const j=r.justificacion; if(r.hasta&&r.hasta!==r.fecha) add("Hasta",esc(fechaLarga(r.hasta))); add("Días hábiles",esc(r.dias||1)); add("Motivo",esc(r.motivo||"Sin informar"));
-    add("Justificación", j ? esc(j.motivo||JUST_INA[j.tipo]||"Justificada")+' · '+esc(fechaCorta(j.fecha))+(j.adjunto?' · '+adjLink(j.adjunto):'') : '<span class="chip warn">Sin justificar</span>');
-    if((r.dias||1)>4 && !(j&&j.tipo==="cert")) add("Certificado médico","Debe entregarlo al reintegrarse, hasta el "+esc(fechaCorta(addBusinessDays(r.hasta||r.fecha,3))));
-    acts = !j ? '<button class="btn primary" data-x="justif">Registrar justificación</button>' : (j.tipo==="cert"&&!j.adjunto) ? '<button class="btn" data-x="justif">Adjuntar certificado</button>' : ''; }
+    const sj=r.sinJustificar;
+    add("Justificación", j ? esc(j.motivo||JUST_INA[j.tipo]||"Justificada")+' · '+esc(fechaCorta(j.fecha))+(j.adjunto?' · '+adjLink(j.adjunto):'') : sj ? '<span class="chip bad">No justificó</span> · registrado el '+esc(fechaCorta(sj.fecha))+(sj.por?' por '+esc(sj.por):'') : '<span class="chip warn">Sin justificar</span>');
+    if((r.dias||1)>4 && !(j&&j.tipo==="cert") && !(sj&&!j)) add("Certificado médico", sj&&j ? '<span class="chip bad">No lo trajo</span> · registrado el '+esc(fechaCorta(sj.fecha)) : "Debe entregarlo al reintegrarse, hasta el "+esc(fechaCorta(addBusinessDays(r.hasta||r.fecha,3))));
+    acts = !j ? '<button class="btn primary" data-x="justif">'+(sj?'Llegó la justificación':'Registrar justificación')+'</button>'+(sj?'':'<button class="btn" data-noj="'+esc(r.id)+'">No justificó</button>') : (j.tipo==="cert"&&!j.adjunto) ? '<button class="btn" data-x="justif">Adjuntar certificado</button>' : ((r.dias||1)>4&&j.tipo!=="cert") ? '<button class="btn" data-x="justif">Llegó el certificado</button>'+(sj?'':'<button class="btn" data-noj="'+esc(r.id)+'">No trajo certificado</button>') : ''; }
   if(r.tipo==="citacion"){ add("Con",esc(r.con)); add("Motivo",esc(r.motivo)); add("Estado",esc(CITA_EST[r.estado||"pendiente"])+(r.asistencia?" · registrado por "+esc(r.asistencia.por):"")); add("Observaciones",esc(r.obs)); acts='<button class="btn" data-cit="'+esc(r.id)+'" data-v="asistio">Asistió</button><button class="btn" data-cit="'+esc(r.id)+'" data-v="no_asistio">No asistió</button><button class="btn" data-cit="'+esc(r.id)+'" data-v="reagendada">Reagendada</button>'; }
   add("Registró",esc(r.por||"—")+(r.auto?" · automático":""));
   let h='<div class="d-head"><div><div class="eyebrow"><span class="tchip t-'+r.tipo+'">'+esc(TIPOS[r.tipo])+'</span></div><h2 id="dTitle">'+esc(r.tipo==="anotacion"||r.tipo==="positiva"?r.conducta:r.tipo==="medida"?(MMAP[r.medida]||{}).l:r.tipo==="citacion"?"Citación: "+r.motivo:r.tipo==="dispositivo"?(r.dispositivo||"Dispositivo")+" requisado":r.tipo==="retiro"?"Retiro de "+r.nombre:r.tipo==="inasistencia"?"Inasistencia de "+r.nombre:"Atraso de "+r.nombre)+'</h2></div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
@@ -1689,7 +1696,7 @@ function bindJustif(r){
       }
     }
     const motivo = jt==="cert" ? "Presentó certificado médico" : "Justificó"+(mot?": "+mot:"");
-    if(r.tipo==="inasistencia"){ const n=clone(r); n.justificacion={tipo:jt==="cert"?"cert":"correo", motivo, fecha, por:ME||"", adjunto:adj||(r.justificacion&&r.justificacion.adjunto)||null};
+    if(r.tipo==="inasistencia"){ const n=clone(r); delete n.sinJustificar; n.justificacion={tipo:jt==="cert"?"cert":"correo", motivo, fecha, por:ME||"", adjunto:adj||(r.justificacion&&r.justificacion.adjunto)||null};
       if(!(await saveReg(n))){ btn.disabled=false; btn.textContent="Guardar justificación"; return; }
       state.drawer.justify=false; renderDrawer(); toast("Justificación guardada"); return; }
     const n=clone(r); n.anulada={tipo:jt, motivo, fecha, por:ME||"", adjunto:adj};
@@ -1727,7 +1734,7 @@ function renderStats(){
     '<div class="card"><h3>Estudiantes con más atrasos</h3><p class="sub">Los 10 primeros</p>'+hbars(topEst.map(i=>Object.assign(i,{c:i.v>=state.config.atrGrave?"b":i.v>=state.config.atrAviso?"w":""})))+'</div>'+
     '<div class="card"><h3>Anotaciones por gravedad</h3><p class="sub">Según tipificación del RICE</p>'+hbars([{l:"Leves",v:g.leve},{l:"Graves",v:g.grave,c:"w"},{l:"Extremadamente graves",v:g.extrema,c:"b"}])+'</div>'+
     '<div class="card"><h3>Motivos más frecuentes</h3><p class="sub">Anotaciones del periodo</p>'+hbars(conds)+'</div>'+
-    '<div class="card"><h3>Estudiantes con más días de inasistencia</h3><p class="sub">Los 10 primeros · '+ina.filter(r=>!r.justificacion).length+' inasistencias sin justificar</p>'+hbars((()=>{ const m=new Map(); ina.forEach(r=>{ const k=r.nombre+" · "+cursoLabel(r.nivel,r.letra); m.set(k,(m.get(k)||0)+(r.dias||1)); }); return [...m.entries()].map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v).slice(0,10); })())+'</div>'+
+    '<div class="card"><h3>Estudiantes con más días de inasistencia</h3><p class="sub">Los 10 primeros · '+ina.filter(r=>!r.justificacion).length+' sin justificación ('+ina.filter(r=>r.sinJustificar&&!r.justificacion).length+' marcadas como injustificadas)</p>'+hbars((()=>{ const m=new Map(); ina.forEach(r=>{ const k=r.nombre+" · "+cursoLabel(r.nivel,r.letra); m.set(k,(m.get(k)||0)+(r.dias||1)); }); return [...m.entries()].map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v).slice(0,10); })())+'</div>'+
     '<div class="card"><h3>Retiros por motivo</h3><p class="sub">Salidas anticipadas del periodo</p>'+hbars(tally(ret,r=>r.motivo))+'</div>'+
     '<div class="card"><h3>Cumplimiento de medidas fuera de jornada</h3><p class="sub">Trabajo especial, reflexión y servicios</p>'+hbars([{l:"Cumplidas",v:cumpl.c},{l:"No se presentó",v:cumpl.n,c:"b"},{l:"Programadas",v:cumpl.p,c:"w"}])+'</div>'+
     '</div>';
