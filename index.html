@@ -4,6 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@500&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style id="repCss"></style>
 <style>
 /* Layout: misma familia que Convivencia Escolar — barra institucional con pestañas; "Hoy" como tablero de turno del inspector; registro rápido pensado para el celular en la puerta. */
 :root{
@@ -75,6 +76,11 @@ nav.tabs button:focus-visible,.autor-btn:focus-visible{outline-color:var(--head-
 .tabs .count{font-size:11px;background:#e5484d;color:#fff;border-radius:999px;padding:1px 7px;margin-left:4px;vertical-align:1px}
 
 main{padding-block:22px 40px}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.checks{display:flex;flex-direction:column;gap:8px;margin-top:14px;font-size:14px}
+.checks label{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.checks input{width:18px;height:18px;accent-color:var(--accent)}
+.rep-wrap{margin-top:16px;overflow-x:auto;border-radius:10px;box-shadow:0 2px 14px rgba(15,40,80,.12)}
 .pie{text-align:center;font-size:12.5px;color:var(--muted);padding:18px 16px 28px;border-top:1px solid var(--line);margin-top:10px}
 .banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--accent-soft);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:14px}
 .banner.warnb{background:var(--warn-soft)}
@@ -364,6 +370,7 @@ button.kpi{cursor:pointer} button.kpi:hover{border-color:var(--muted)}
       <button role="tab" data-tab="estudiantes" aria-selected="false" id="tab-estudiantes">Estudiantes</button>
       <button role="tab" data-tab="registros" aria-selected="false" id="tab-registros">Registros</button>
       <button role="tab" data-tab="stats" aria-selected="false" id="tab-stats">Estadísticas</button>
+      <button role="tab" data-tab="informe" aria-selected="false" id="tab-informe">Informe</button>
       <button role="tab" data-tab="ajustes" aria-selected="false" id="tab-ajustes">Ajustes</button>
     </nav>
   </div>
@@ -399,6 +406,24 @@ button.kpi{cursor:pointer} button.kpi:hover{border-color:var(--muted)}
     <div id="regHost"></div>
   </section>
   <section id="view-stats" role="tabpanel" hidden></section>
+  <section id="view-informe" role="tabpanel" hidden>
+    <div class="panel rep-controls">
+      <h2>Informe de Vida Escolar</h2>
+      <p class="lead">El informe se arma solo con los registros. Puede descargarlo para imprimirlo, guardarlo como PDF o abrirlo en Word.</p>
+      <div class="seg" id="iTipo" role="group" aria-label="Tipo de informe" style="margin-bottom:12px"><button type="button" data-it="general" aria-pressed="false">Colegio</button><button type="button" data-it="curso" aria-pressed="true">Por curso</button><button type="button" data-it="estudiante" aria-pressed="false">Por estudiante</button></div>
+      <div data-inf-cur style="margin-bottom:12px"><label class="f" style="max-width:320px">Curso <select id="iCurso"></select></label></div>
+      <div data-inf-est hidden style="margin-bottom:12px"><label class="f">Estudiante <span class="hint">Escriba el nombre o elíjalo de la lista</span><input type="search" id="iEst" list="iEsts" autocomplete="off" placeholder="Apellidos y nombres"><datalist id="iEsts"></datalist></label></div>
+      <div class="quick"><button class="btn sm" type="button" data-irango="anio">Año completo</button><button class="btn sm" type="button" data-irango="s1">1er semestre</button><button class="btn sm" type="button" data-irango="s2">2do semestre</button><button class="btn sm" type="button" data-irango="mes">Mes actual</button></div>
+      <div class="row" style="margin-top:10px">
+        <label class="f" style="flex:0 1 170px">Desde <input type="date" id="iDesde"></label>
+        <label class="f" style="flex:0 1 170px">Hasta <input type="date" id="iHasta"></label>
+      </div>
+      <div class="checks" data-inf-gen hidden><label><input type="checkbox" id="iNombres" checked> Incluir nombres de estudiantes <span class="muted">(desmarcado para Consejo Escolar)</span></label></div>
+      <div class="checks" data-inf-lis><label><input type="checkbox" id="iListado" checked> Incluir listado de registros</label></div>
+      <div class="form-actions" style="margin-top:14px"><button class="btn primary" id="iDl" type="button" hidden>Descargar informe</button></div>
+    </div>
+    <div id="iHost" class="rep-wrap"></div>
+  </section>
   <section id="view-ajustes" role="tabpanel" hidden></section>
 </main>
 <footer class="pie" id="pie">Sistema programado por Nicolás Novakovic</footer>
@@ -948,7 +973,7 @@ async function importarRespaldo(file){
 }
 
 /* =================== Pestañas y cabecera =================== */
-const TABS=["hoy","cal","registrar","estudiantes","registros","stats","ajustes"];
+const TABS=["hoy","cal","registrar","estudiantes","registros","stats","informe","ajustes"];
 function setTab(t){
   if(hayPerfiles() && ((t==="stats"&&!can("stats"))||(t==="ajustes"&&!can("ajustes")))) t="hoy";
   state.tab=t;
@@ -958,7 +983,7 @@ function setTab(t){
   renderTab();
 }
 $$("nav.tabs button").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
-function renderTab(){ const t=state.tab; if(t==="hoy") renderHoy(); if(t==="cal") renderCal(); if(t==="registrar") renderRegistrar(); if(t==="estudiantes") renderEstudiantes(); if(t==="registros") renderRegistros(); if(t==="stats") renderStats(); if(t==="ajustes") renderAjustes(); }
+function renderTab(){ const t=state.tab; if(t==="hoy") renderHoy(); if(t==="cal") renderCal(); if(t==="registrar") renderRegistrar(); if(t==="estudiantes") renderEstudiantes(); if(t==="registros") renderRegistros(); if(t==="stats") renderStats(); if(t==="informe") renderInforme(); if(t==="ajustes") renderAjustes(); }
 function renderHeader(){
   const tag=$("#modeTag");
   if(hayPerfiles() && PERFIL && !state.demo){ tag.innerHTML='<span>'+esc(PERFIL.nombre)+'</span> · <button class="linkbtn" id="btnSalir" type="button">Salir</button>'; $("#btnSalir").onclick=cerrarSesion; }
@@ -1512,9 +1537,11 @@ function renderEstudiantes(){
   rows.sort(ord==="lista"?(cur&&!q?byLista:(a,b)=>byCurso(a,b)||byLista(a,b)):ord==="atr"?(a,b)=>b.c.atr-a.c.atr||b.c.an-a.c.an||byCurso(a,b):ord==="an"?(a,b)=>b.c.an-a.c.an||b.c.atr-a.c.atr||byCurso(a,b):ord==="curso"?byCurso:(a,b)=>a.e.nombre.localeCompare(b.e.nombre,"es"));
   if(!E().length){ host.innerHTML='<div class="emptybox"><h3>Todavía no hay estudiantes</h3><p>Se agregan solos la primera vez que registra un atraso, una anotación o una medida.</p><button class="btn primary" type="button" onclick="document.getElementById(\'tab-registrar\').click()">Registrar el primero</button></div>'; return; }
   const cl=(v,a,g)=>v>=g?"b":v>=a?"w":"";
-  const head = q ? '<div class="curso-h"><h2>Búsqueda en todos los cursos</h2><span class="muted">'+rows.length+' estudiantes</span></div>' : cur ? '<div class="curso-h"><h2>'+esc(cursoLabel(cur.nivel,cur.letra))+'</h2><span class="muted">'+(cur.pj?'Profesor/a jefe: '+esc(cur.pj)+' · ':'')+'Inspector/a: '+esc(inspectorDe(cur.nivel)||"—")+' · '+cur.n+' estudiantes</span></div>' : '<div class="curso-h"><h2>Todos los cursos</h2><span class="muted">'+rows.length+' estudiantes</span></div>';
+  const pdfB = cur&&!q ? '<button class="btn sm" id="pdfBtn" type="button" style="margin-left:auto">Informe del curso</button>' : '';
+  const head = q ? '<div class="curso-h"><h2>Búsqueda en todos los cursos</h2><span class="muted">'+rows.length+' estudiantes</span></div>' : cur ? '<div class="curso-h"><h2>'+esc(cursoLabel(cur.nivel,cur.letra))+'</h2><span class="muted">'+(cur.pj?'Profesor/a jefe: '+esc(cur.pj)+' · ':'')+'Inspector/a: '+esc(inspectorDe(cur.nivel)||"—")+' · '+cur.n+' estudiantes</span>'+pdfB+'</div>' : '<div class="curso-h"><h2>Todos los cursos</h2><span class="muted">'+rows.length+' estudiantes</span>'+pdfB+'</div>';
   host.innerHTML=head+'<p class="ref" style="margin:0 0 8px">Conteo del '+esc(periodLabel(p))+'. Anotaciones incluye dispositivos requisados.</p><div class="list"><div class="est-li li-head"><span>Estudiante</span><span>Curso</span><span style="text-align:center">Atrasos</span><span style="text-align:center">Anot.</span><span style="text-align:center">Disp.</span><span>Carta</span></div>'+
     rows.map(x=>'<button type="button" class="est-li" data-est="'+esc(x.e.id)+'"><span class="c-n">'+(cur&&!q&&x.e.nListaCurso?'<span class="nlista">'+esc(x.e.nListaCurso)+'</span>':'')+'<strong>'+esc(x.e.nombre)+'</strong></span><span class="c-c muted">'+esc(cursoLabel(x.e.nivel,x.e.letra))+'</span><span class="cnt '+cl(x.c.atr,C.atrAviso,C.atrGrave)+'" data-l="Atrasos">'+x.c.atr+'</span><span class="cnt '+cl(x.c.an,C.anAviso,C.anCita)+'" data-l="Anot.">'+x.c.an+'</span><span class="cnt '+cl(x.c.cel,2,3)+'" data-l="Disp.">'+x.c.cel+'</span><span class="c-carta">'+(x.carta?'<span class="chip bad">'+esc(x.carta)+'</span>':'')+'</span></button>').join("")+'</div>';
+  const pb=$("#pdfBtn"); if(pb) pb.onclick=()=>irInforme("curso",cur.k);
 }
 ["#rQ","#rTipo","#rNivel","#rDesde","#rHasta"].forEach(s=>$(s).addEventListener("input",()=>renderRegistros()));
 function regFiltrados(){
@@ -1563,7 +1590,7 @@ function drawerEst(id){
   const e=EST.get(id); if(!e) return null; const p=curPeriod(), c=cuenta(id,p), C=state.config, av=e.avisos||{}, carta=cartaDe(id), rs=regsDe(id);
   const avTxt=(k,lbl)=>av[k]?'<span style="color:var(--ok)">✓ '+esc(lbl)+' '+esc(fechaCorta(av[k].fecha))+'</span>':'';
   let h='<div class="d-head"><div><div class="eyebrow">'+esc(cursoLabel(e.nivel,e.letra))+' · Inspector/a: '+esc(inspectorDe(e.nivel)||"—")+'</div><h2 id="dTitle">'+esc(e.nombre)+'</h2>'+(carta?'<span class="chip bad" style="margin-top:6px">'+esc(carta)+' vigente</span>':'')+'</div><button class="btn ghost" id="dClose" aria-label="Cerrar">✕</button></div><div class="d-body" id="drawerBody">';
-  h+='<div class="row"><button class="btn primary" id="dReg" type="button">Registrar para este estudiante</button></div>';
+  h+='<div class="row"><button class="btn primary" id="dReg" type="button">Registrar para este estudiante</button><button class="btn" id="dPdf" type="button">Informe del estudiante</button></div>';
   h+='<div class="eyebrow">'+esc(periodLabel(p))+'</div><div class="meters">'+
     meter(c.atr,"Atrasos sin justificar"+(c.atrJ?" · "+c.atrJ+" justificados":""),C.atrAviso,C.atrGrave,(avTxt("atrA_"+p,"avisado")||"Aviso al "+C.atrAviso+"°")+" · falta grave al "+C.atrGrave+"° "+(avTxt("atrG_"+p,"")||""))+
     meter(c.an,"Anotaciones ("+c.anG+" graves, "+c.anE+" ext. graves)",C.anAviso,C.anCita,(avTxt("anA_"+p,"notificado")||"Correo a las "+C.anAviso)+" · citación a las "+C.anCita)+
@@ -1617,6 +1644,7 @@ function bindDrawer(){
   if(d.k==="est"){
     const e=EST.get(d.id);
     $("#dReg").onclick=()=>{ prefill={estId:d.id}; closeDrawer(); setTab("registrar"); };
+    $("#dPdf").onclick=()=>irInforme("estudiante",d.id);
     $("#deSave").onclick=async()=>{ if(!(await needAutor())) return; const n=clone(e); n.apoderado=$("#deAp").value.trim(); n.correoApoderado=$("#deApM").value.trim(); n.profesorJefe=$("#dePJ").value.trim(); n.correoPJ=$("#dePJM").value.trim(); n.nivel=$("#deNivel").value; n.letra=$("#deLetra").value;
       if(remote()&&!state.demo){ try{ const up=clone(n); delete up.id; delete up.avisos; up.actualizado=new Date().toISOString(); await dref("estudiantes/"+e.id).update(up); toast("Datos guardados"); }catch(err){ toast("No se pudieron guardar los datos."); } }
       else if(await saveEst(n)) toast("Datos guardados"); };
@@ -1713,6 +1741,148 @@ function bindJustif(r){
   };
 }
 
+/* =================== Informe (igual que en Convivencia: vista previa y descarga) =================== */
+const REP_CSS = `
+.rep{background:#fff;color:#1b2340;font-family:"Public Sans","Segoe UI",system-ui,sans-serif;font-size:13.5px;line-height:1.5;max-width:900px;margin:0 auto;padding:36px 40px;border-radius:6px}
+.rep *{box-sizing:border-box}
+.rep-head{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:3px solid #e4152f;padding-bottom:14px;margin-bottom:18px;flex-wrap:wrap}
+.rep-head img{height:52px;width:auto}
+.rep-head .rt{text-align:right}
+.rep h1{font-family:"Bricolage Grotesque","Segoe UI",sans-serif;font-size:24px;color:#0f3f7a;margin:0}
+.rep h2{font-family:"Bricolage Grotesque","Segoe UI",sans-serif;font-size:16px;color:#0f3f7a;margin:22px 0 8px;padding-bottom:4px;border-bottom:1px solid #d5deea}
+.rep .meta{color:#5a6580;font-size:12.5px}
+.rep p{margin:0 0 8px}
+.rep .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.rep .k{border:1px solid #d5deea;border-radius:8px;padding:10px}
+.rep .k b{display:block;font-size:22px;color:#0f3f7a;font-variant-numeric:tabular-nums}
+.rep .k span{font-size:11.5px;color:#5a6580}
+.rep .tw{overflow-x:auto}
+.rep table{width:100%;border-collapse:collapse;margin:4px 0 6px;font-size:12.5px}
+.rep th{text-align:left;background:#eef3fa;color:#0f3f7a;font-weight:600;padding:6px 8px;border-bottom:1px solid #cfdbea}
+.rep td{padding:5px 8px;border-bottom:1px solid #e6ecf4;vertical-align:top}
+.rep td.n,.rep th.n{text-align:right;font-variant-numeric:tabular-nums}
+.rep .bar{display:inline-block;height:8px;background:#0f3f7a;border-radius:2px;vertical-align:middle}
+.rep .red{color:#c01d2c;font-weight:600}
+.rep .foot{margin-top:26px;padding-top:10px;border-top:1px solid #d5deea;color:#5a6580;font-size:11.5px}
+.rep .credito{margin-top:6px;color:#0f3f7a;font-weight:600;font-size:11.5px}
+.rep .firmas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:46px}
+.rep .firmas div{border-top:1px solid #1b2340;padding-top:6px;text-align:center;font-size:12px}
+@media (max-width:640px){.rep{padding:20px 16px}.rep .kpis{grid-template-columns:repeat(2,1fr)}.rep-head .rt{text-align:left}}
+@media print{.rep{padding:0;max-width:none}.rep h2{break-after:avoid}.rep tr{break-inside:avoid}}
+`;
+function resumenRegs(rs){ const c={atr:0,atrJ:0,an:0,anL:0,anG:0,anE:0,pos:0,dis:0,med:0,inaN:0,inaD:0,inaSJ:0,ret:0,cit:0};
+  rs.forEach(r=>{ if(r.tipo==="atraso"){ if(r.justificado) c.atrJ++; else c.atr++; }
+    if(r.tipo==="anotacion"&&!r.anulada){ c.an++; if(r.gravedad==="leve") c.anL++; if(r.gravedad==="grave") c.anG++; if(r.gravedad==="extrema") c.anE++; }
+    if(r.tipo==="positiva") c.pos++; if(r.tipo==="dispositivo") c.dis++; if(r.tipo==="medida") c.med++; if(r.tipo==="retiro") c.ret++; if(r.tipo==="citacion") c.cit++;
+    if(r.tipo==="inasistencia"){ c.inaN++; c.inaD+=(r.dias||1); if(!r.justificacion) c.inaSJ++; } }); return c; }
+function repTabla(head, rows, numCols){ numCols=numCols||[];
+  return '<div class="tw"><table><thead><tr>'+head.map((x,i)=>'<th'+(numCols.includes(i)?' class="n"':'')+'>'+esc(x)+'</th>').join("")+'</tr></thead><tbody>'+
+    (rows.length?rows.map(r=>'<tr>'+r.map((x,i)=>'<td'+(numCols.includes(i)?' class="n"':'')+'>'+x+'</td>').join("")+'</tr>').join(""):'<tr><td colspan="'+head.length+'">Sin registros en el periodo.</td></tr>')+'</tbody></table></div>'; }
+const repKpis = c => '<div class="kpis">'+[[c.atr,"Atrasos sin justificar"+(c.atrJ?" ("+c.atrJ+" justificados)":"")],[c.an,"Anotaciones negativas"],[c.pos,"Anotaciones positivas"],[c.dis,"Dispositivos requisados"],[c.inaD,"Días de inasistencia"+(c.inaSJ?" ("+c.inaSJ+" sin justificar)":"")],[c.ret,"Retiros"],[c.med,"Medidas"],[c.cit,"Citaciones al apoderado"]].map(k=>'<div class="k"><b>'+k[0]+'</b><span>'+esc(k[1])+'</span></div>').join("")+'</div>';
+const repFila = c => [c.atr,c.an,c.pos,c.dis,c.inaD,c.ret,c.med];
+const REP_COLS = ["Atrasos","Anot. negativas","Anot. positivas","Dispositivos","Días inasist.","Retiros","Medidas"];
+const repDet = r => esc(detalle(r))+(r.tipo==="anotacion"?' <span class="meta">('+esc((GRAV[r.gravedad]||"").toLowerCase())+')</span>':'');
+const repOrden = (a,b) => (a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||""));
+function repCabecera(titulo, sub){ const logo=(document.querySelector(".logo-plate img")||{}).src||"";
+  return '<header class="rep-head">'+(logo?'<img src="'+logo+'" alt="Lycée Claude Gay Osorno">':'<strong>Lycée Claude Gay de Osorno</strong>')+'<div class="rt"><h1>'+esc(titulo)+'</h1><div class="meta">'+sub+'</div></div></header>'; }
+const repPie = (txt) => '<p class="foot">Informe generado desde el Registro de Vida Escolar (Inspectoría). Es un apoyo para el seguimiento: el registro oficial está en el sistema del colegio. '+esc(txt||"")+'<span class="credito" style="display:block">'+esc(CREDITO)+'</span></p></div>';
+function repPeriodo(){ const y=state.year; return {desde:$("#iDesde").value||y+"-01-01", hasta:$("#iHasta").value||y+"-12-31"}; }
+function setRangoInf(tipo){ const y=state.year, s2=state.config.s2Inicio||"08-01"; const s2d=parse(y+"-"+s2), s1f=new Date(s2d); s1f.setDate(s1f.getDate()-1); let d,h;
+  if(tipo==="anio"){ d=y+"-01-01"; h=y+"-12-31"; } else if(tipo==="s1"){ d=y+"-03-01"; h=fmt(s1f); } else if(tipo==="s2"){ d=y+"-"+s2; h=y+"-12-31"; }
+  else { const n=new Date(); d=y+"-"+String(n.getMonth()+1).padStart(2,"0")+"-01"; h=fmt(new Date(+y,n.getMonth()+1,0)); }
+  $("#iDesde").value=d; $("#iHasta").value=h; renderInforme(); }
+function informeGeneralHTML(){
+  const {desde,hasta}=repPeriodo(), per=fechaCorta(desde)+" al "+fechaCorta(hasta), nombres=$("#iNombres").checked;
+  const rs=R().filter(r=>r.fecha>=desde&&r.fecha<=hasta), c=resumenRegs(rs), cs=cursosExistentes();
+  const porCurso=cs.map(k=>({k,c:resumenRegs(rs.filter(r=>r.nivel===k.nivel&&(r.letra||"")===k.letra))}));
+  const topC=porCurso.slice().sort((a,b)=>b.c.atr-a.c.atr)[0];
+  const meses=new Map(); rs.forEach(r=>{ const k=r.fecha.slice(0,7); const m=meses.get(k)||[]; m.push(r); meses.set(k,m); });
+  const top=(fn,peso)=>{ const m=new Map(); rs.filter(fn).forEach(r=>{ const o=m.get(r.estId)||{n:r.nombre,c:cursoLabel(r.nivel,r.letra),v:0}; o.v+=peso?peso(r):1; m.set(r.estId,o); }); return [...m.values()].sort((a,b)=>b.v-a.v).slice(0,15); };
+  const nm=(x,i)=>nombres?esc(x.n):"Estudiante "+(i+1);
+  const mot=new Map(); rs.filter(r=>r.tipo==="anotacion"&&!r.anulada).forEach(r=>mot.set(r.conducta,(mot.get(r.conducta)||0)+1));
+  const ret=new Map(); rs.filter(r=>r.tipo==="retiro").forEach(r=>ret.set(r.motivo||"Sin motivo",(ret.get(r.motivo||"Sin motivo")||0)+1));
+  const meds=rs.filter(r=>r.tipo==="medida"), ses=meds.filter(r=>MMAP[r.medida]&&MMAP[r.medida].s), mm=new Map(); meds.forEach(r=>{ const l=(MMAP[r.medida]||{l:r.medida}).l; mm.set(l,(mm.get(l)||0)+1); });
+  const cits=rs.filter(r=>r.tipo==="citacion"), ce=k=>cits.filter(r=>(r.estado||"pendiente")===k).length;
+  const resumen = rs.length ? 'Entre el '+esc(per)+' se registraron <b>'+c.atr+'</b> atrasos sin justificar'+(c.atrJ?' (más '+c.atrJ+' justificados)':'')+', <b>'+c.an+'</b> anotaciones negativas ('+c.anL+' leves, '+c.anG+' graves y '+c.anE+' extremadamente graves), <b>'+c.pos+'</b> anotaciones positivas, <b>'+c.dis+'</b> dispositivos requisados, <b>'+c.inaD+'</b> días de inasistencia y <b>'+c.ret+'</b> retiros. '+(topC&&topC.c.atr?'El curso con más atrasos fue <b>'+esc(cursoLabel(topC.k.nivel,topC.k.letra))+'</b> ('+topC.c.atr+').':'') : 'No hay registros entre el '+esc(per)+'.';
+  return '<article class="rep">'+repCabecera("Informe de Vida Escolar","Lycée Claude Gay de Osorno · Periodo: "+esc(per)+"<br>Emitido el "+esc(fechaCorta(today()))+" · Vida Escolar · Inspectoría")+
+    '<h2>1. Resumen</h2><p>'+resumen+'</p>'+repKpis(c)+
+    '<h2>2. Por curso</h2>'+repTabla(["Curso","Estudiantes"].concat(REP_COLS), porCurso.map(x=>['<span style="white-space:nowrap">'+esc(cursoLabel(x.k.nivel,x.k.letra))+'</span>',x.k.n].concat(repFila(x.c))),[1,2,3,4,5,6,7,8])+
+    '<h2>3. Por mes</h2>'+repTabla(["Mes"].concat(REP_COLS), [...meses.entries()].sort().map(([k,l])=>{ const d=parse(k+"-01"); return ['<span style="white-space:nowrap">'+MESES_L[d.getMonth()]+" "+d.getFullYear()+'</span>'].concat(repFila(resumenRegs(l))); }),[1,2,3,4,5,6,7])+
+    '<h2>4. Anotaciones negativas por motivo</h2>'+repTabla(["Motivo","Cantidad"], [...mot.entries()].sort((a,b)=>b[1]-a[1]).slice(0,15).map(([k,v])=>[esc(k),v]),[1])+
+    '<h2>5. Estudiantes con más atrasos sin justificar</h2>'+repTabla(["Estudiante","Curso","Atrasos"], top(r=>r.tipo==="atraso"&&!r.justificado).map((x,i)=>[nm(x,i),'<span style="white-space:nowrap">'+esc(x.c)+'</span>',x.v]),[2])+
+    '<h2>6. Estudiantes con más anotaciones negativas</h2>'+repTabla(["Estudiante","Curso","Anotaciones"], top(r=>r.tipo==="anotacion"&&!r.anulada).map((x,i)=>[nm(x,i),esc(x.c),x.v]),[2])+
+    '<h2>7. Estudiantes con más días de inasistencia</h2>'+repTabla(["Estudiante","Curso","Días"], top(r=>r.tipo==="inasistencia",r=>r.dias||1).map((x,i)=>[nm(x,i),esc(x.c),x.v]),[2])+
+    '<h2>8. Retiros por motivo</h2>'+repTabla(["Motivo","Retiros"], [...ret.entries()].sort((a,b)=>b[1]-a[1]).map(([k,v])=>[esc(k),v]),[1])+
+    '<h2>9. Medidas y citaciones</h2>'+repTabla(["Medida","Cantidad"], [...mm.entries()].sort((a,b)=>b[1]-a[1]).map(([k,v])=>[esc(k),v]),[1])+
+    repTabla(["Indicador","Valor"],[["Medidas fuera de jornada cumplidas",String(ses.filter(r=>r.estado==="cumplida").length)],["No se presentaron",String(ses.filter(r=>r.estado==="no_asistio").length)],["Citaciones al apoderado",String(cits.length)],["Apoderado asistió",String(ce("asistio"))],["Apoderado no asistió",String(ce("no_asistio"))]],[1])+
+    (nombres?'':'<p class="meta">Nombres omitidos para resguardar la identidad de los estudiantes.</p>')+
+    '<div style="break-inside:avoid"><div class="firmas"><div>CPE (Inspector/a General)</div><div>Dirección</div></div>'+repPie(nombres?"Contiene datos personales de estudiantes: uso reservado.":"Documento sin nombres de estudiantes.")+'</article>';
+}
+function informeCursoHTML(){
+  const cs=cursosExistentes(), cur=cs.find(c=>c.k===$("#iCurso").value);
+  if(!cur) return '<article class="rep"><p class="meta">Elija un curso para generar su informe.</p></article>';
+  const {desde,hasta}=repPeriodo(), per=fechaCorta(desde)+" al "+fechaCorta(hasta), nombre=cursoLabel(cur.nivel,cur.letra);
+  const ests=E().filter(e=>e.nivel===cur.nivel&&(e.letra||"")===cur.letra).sort((a,b)=>((a.nListaCurso||999)-(b.nListaCurso||999))||a.nombre.localeCompare(b.nombre,"es"));
+  const ids=new Set(ests.map(e=>e.id)), rs=R().filter(r=>ids.has(r.estId)&&r.fecha>=desde&&r.fecha<=hasta).sort(repOrden), c=resumenRegs(rs);
+  const filas=ests.map((e,i)=>({e,i,c:resumenRegs(rs.filter(r=>r.estId===e.id))}));
+  const conAtr=filas.filter(x=>x.c.atr>=state.config.atrAviso).length;
+  const resumen = rs.length ? '<b>'+esc(nombre)+'</b> ('+ests.length+' estudiantes) registra entre el '+esc(per)+' <b>'+c.atr+'</b> atrasos sin justificar, <b>'+c.an+'</b> anotaciones negativas, <b>'+c.pos+'</b> anotaciones positivas, <b>'+c.inaD+'</b> días de inasistencia y <b>'+c.ret+'</b> retiros.'+(conAtr?' <b>'+conAtr+'</b> '+(conAtr===1?'estudiante tiene':'estudiantes tienen')+' '+state.config.atrAviso+' o más atrasos.':'') : 'No hay registros de '+esc(nombre)+' entre el '+esc(per)+'.';
+  return '<article class="rep">'+repCabecera("Informe de Vida Escolar", esc(nombre)+(cur.pj?" · Profesor/a jefe: "+esc(cur.pj):"")+" · Inspector/a: "+esc(inspectorDe(cur.nivel)||"—")+"<br>Periodo: "+esc(per)+" · Emitido el "+esc(fechaCorta(today())))+
+    '<h2>1. Resumen</h2><p>'+resumen+'</p>'+repKpis(c)+
+    '<h2>2. Por estudiante</h2>'+repTabla(["N°","Estudiante"].concat(REP_COLS), filas.map(x=>[x.e.nListaCurso||x.i+1,esc(x.e.nombre)].concat(repFila(x.c).map((v,j)=>j===0&&v>=state.config.atrAviso?'<span class="red">'+v+'</span>':v))),[0,2,3,4,5,6,7,8])+
+    ($("#iListado").checked?'<h2>3. Listado de registros</h2>'+repTabla(["Fecha","Estudiante","Tipo","Detalle","Registró"], rs.map(r=>['<span style="white-space:nowrap">'+esc(fechaCorta(r.fecha)+(r.hora?" "+r.hora:""))+'</span>',esc(r.nombre),esc(TIPOS[r.tipo]||r.tipo),repDet(r),esc(r.por||"")])):'')+
+    '<div style="break-inside:avoid"><div class="firmas"><div>Inspector/a de nivel</div><div>Profesor/a jefe</div></div>'+repPie("Contiene datos personales de estudiantes: uso reservado.")+'</article>';
+}
+function informeEstHTML(){
+  const k=nkey($("#iEst").value); if(!k) return '<article class="rep"><p class="meta">Escriba o elija el nombre del estudiante para generar su informe.</p></article>';
+  const e=E().find(x=>nkey(x.nombre)===k) || E().find(x=>nkey(x.nombre+" · "+cursoLabel(x.nivel,x.letra))===k);
+  if(!e) return '<article class="rep"><p>No se encontró a <b>'+esc($("#iEst").value)+'</b>. Elíjalo de la lista.</p></article>';
+  const {desde,hasta}=repPeriodo(), per=fechaCorta(desde)+" al "+fechaCorta(hasta);
+  const rs=regsDe(e.id).filter(r=>r.fecha>=desde&&r.fecha<=hasta).sort(repOrden), c=resumenRegs(rs), carta=cartaDe(e.id);
+  const resumen = rs.length ? '<b>'+esc(e.nombre)+'</b> registra entre el '+esc(per)+' <b>'+c.atr+'</b> atrasos sin justificar'+(c.atrJ?' (y '+c.atrJ+' justificados)':'')+', <b>'+c.an+'</b> anotaciones negativas'+(c.anG||c.anE?' ('+c.anG+' graves, '+c.anE+' extremadamente graves)':'')+', <b>'+c.pos+'</b> anotaciones positivas, <b>'+c.dis+'</b> dispositivos requisados, <b>'+c.inaD+'</b> días de inasistencia y <b>'+c.ret+'</b> retiros.'+(carta?' Tiene <span class="red">'+esc(carta.toLowerCase())+' vigente</span>.':'') : 'No hay registros de <b>'+esc(e.nombre)+'</b> entre el '+esc(per)+'.';
+  return '<article class="rep">'+repCabecera("Informe del estudiante", esc(e.nombre)+" · "+esc(cursoLabel(e.nivel,e.letra))+"<br>Periodo: "+esc(per)+" · Emitido el "+esc(fechaCorta(today())))+
+    '<h2>1. Datos</h2>'+repTabla(["Dato",""],[["Curso",esc(cursoLabel(e.nivel,e.letra))],["Profesor/a jefe",esc(e.profesorJefe||"—")],["Inspector/a de nivel",esc(inspectorDe(e.nivel)||"—")],["Apoderado/a",esc(e.apoderado||"—")+(e.correoApoderado?' · '+esc(e.correoApoderado):'')]])+
+    '<h2>2. Resumen</h2><p>'+resumen+'</p>'+repKpis(c)+
+    ($("#iListado").checked?'<h2>3. Registros del periodo</h2>'+repTabla(["Fecha","Tipo","Detalle","Registró"], rs.map(r=>['<span style="white-space:nowrap">'+esc(fechaCorta(r.fecha)+(r.hora?" "+r.hora:""))+'</span>',esc(TIPOS[r.tipo]||r.tipo),repDet(r),esc(r.por||"")])):'')+
+    '<div style="break-inside:avoid"><div class="firmas"><div>Inspector/a de nivel</div><div>Apoderado/a</div></div>'+repPie("Contiene datos personales del estudiante: uso reservado.")+'</article>';
+}
+function informeActual(){ const t=state.infTipo||"curso"; return t==="general"?informeGeneralHTML():t==="estudiante"?informeEstHTML():informeCursoHTML(); }
+function setInfTipo(t){ if(t==="general"&&!can("stats")) t="curso"; state.infTipo=t;
+  $$("#iTipo [data-it]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.it===t)));
+  $$("[data-inf-gen]").forEach(x=>x.hidden=t!=="general"); $$("[data-inf-cur]").forEach(x=>x.hidden=t!=="curso"); $$("[data-inf-est]").forEach(x=>x.hidden=t!=="estudiante"); $$("[data-inf-lis]").forEach(x=>x.hidden=t==="general");
+  renderInforme(); }
+function renderInforme(){
+  if(!state.loaded){ $("#iHost").innerHTML='<div class="calm">Cargando…</div>'; return; }
+  const gb=$('#iTipo [data-it="general"]'); gb.hidden=!can("stats"); if(state.infTipo==="general"&&gb.hidden) state.infTipo="curso";
+  if(!$("#iDesde").value){ const y=state.year, cp=curPeriod(); if(cp.endsWith("S2")) { $("#iDesde").value=y+"-"+(state.config.s2Inicio||"08-01"); $("#iHasta").value=y+"-12-31"; } else { $("#iDesde").value=y+"-01-01"; $("#iHasta").value=y+"-12-31"; } }
+  const sc=$("#iCurso"), cs=cursosExistentes(), cv=sc.value||state.eCurso||(cs[0]&&cs[0].k)||"";
+  sc.innerHTML=cs.map(c=>'<option value="'+esc(c.k)+'">'+esc(cursoLabel(c.nivel,c.letra))+'</option>').join(""); if(cv) sc.value=cv;
+  const dl=$("#iEsts"); if(dl.options.length!==E().length) dl.innerHTML=E().slice().sort((a,b)=>a.nombre.localeCompare(b.nombre,"es")).map(e=>'<option value="'+esc(e.nombre)+'">'+esc(cursoLabel(e.nivel,e.letra))+'</option>').join("");
+  $$("#iTipo [data-it]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.it===(state.infTipo||"curso"))));
+  $$("[data-inf-gen]").forEach(x=>x.hidden=(state.infTipo||"curso")!=="general"); $$("[data-inf-cur]").forEach(x=>x.hidden=(state.infTipo||"curso")!=="curso"); $$("[data-inf-est]").forEach(x=>x.hidden=state.infTipo!=="estudiante"); $$("[data-inf-lis]").forEach(x=>x.hidden=state.infTipo==="general");
+  $("#iHost").innerHTML=informeActual(); $("#iDl").hidden=!canDL();
+}
+async function descargarInforme(){
+  const {desde,hasta}=repPeriodo(), t=state.infTipo||"curso";
+  let nom="Informe Vida Escolar";
+  if(t==="curso"){ const c=cursosExistentes().find(x=>x.k===$("#iCurso").value); if(!c){ toast("Elija primero el curso."); return; } nom+=" - "+cursoLabel(c.nivel,c.letra); }
+  if(t==="estudiante"){ const n=$("#iEst").value.trim(); if(!n||!E().some(x=>nkey(x.nombre)===nkey(n))){ toast("Elija primero al estudiante."); return; } nom+=" - "+n; }
+  if(t==="general") nom+=" - Colegio";
+  const doc='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="author" content="Nicolás Novakovic"><title>'+esc(nom)+' '+desde+' a '+hasta+'</title>'+
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;600&display=swap">'+
+    '<style>body{margin:0;background:#eef3fa;padding:24px 12px}@media print{body{background:#fff;padding:0}@page{margin:16mm}}'+REP_CSS+'</style></head><body>'+informeActual()+'</body></html>';
+  const fname=(nom.replace(/[\\/:*?"<>|]+/g,"").slice(0,110))+" "+desde+" a "+hasta+".html";
+  try{ await saveFile(fname, doc, "text/html;charset=utf-8"); toast("Informe descargado"); }
+  catch(e){ if(e && e.code!=="declined") toast("No se pudo descargar el informe."); }
+}
+function irInforme(tipo, arg){ state.infTipo=tipo; if(tipo==="curso") $("#iCurso").innerHTML='<option value="'+esc(arg)+'"></option>', $("#iCurso").value=arg; if(tipo==="estudiante"){ const e=EST.get(arg); $("#iEst").value=e?e.nombre:""; } closeDrawer(); setTab("informe"); }
+$$("#iTipo [data-it]").forEach(b=>b.onclick=()=>setInfTipo(b.dataset.it));
+["#iDesde","#iHasta","#iCurso","#iNombres","#iListado"].forEach(s=>$(s).addEventListener("change",renderInforme));
+$("#iEst").addEventListener("input",()=>{ clearTimeout(renderInforme.t); renderInforme.t=setTimeout(renderInforme,250); });
+$$("[data-irango]").forEach(b=>b.onclick=()=>setRangoInf(b.dataset.irango));
+$("#iDl").onclick=descargarInforme;
+document.getElementById("repCss").textContent=REP_CSS;
+
 /* =================== Estadísticas =================== */
 function hbars(items, cls){ const max=Math.max(1,...items.map(i=>i.v)); return items.length?'<div class="hbars">'+items.map(i=>'<div class="hb"><span class="lab" title="'+esc(i.l)+'">'+esc(i.l)+'</span><span class="track"><span class="bar '+(i.c||cls||"")+'" style="width:'+(i.v/max*100)+'%"></span></span><span class="val">'+i.v+'</span></div>').join("")+'</div>':'<div class="nodata">Sin datos en el periodo.</div>'; }
 function renderStats(){
@@ -1730,7 +1900,7 @@ function renderStats(){
   const g={leve:an.filter(r=>r.gravedad==="leve").length,grave:an.filter(r=>r.gravedad==="grave").length,extrema:an.filter(r=>r.gravedad==="extrema").length};
   const conds=tally(an,r=>r.conducta).slice(0,8);
   const cumpl={c:ses.filter(r=>r.estado==="cumplida").length,n:ses.filter(r=>r.estado==="no_asistio").length,p:ses.filter(r=>(r.estado||"programada")==="programada").length};
-  host.innerHTML='<div class="section-h"><div><div class="eyebrow">Estadísticas</div><h2>Vida Escolar en cifras</h2></div><label class="f">Periodo<select id="stP">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+esc(l)+'</option>').join("")+'</select></label></div>'+
+  host.innerHTML='<div class="section-h"><div><div class="eyebrow">Estadísticas</div><h2>Vida Escolar en cifras</h2></div><div class="row" style="align-items:flex-end"><label class="f">Periodo<select id="stP">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===sel?" selected":"")+'>'+esc(l)+'</option>').join("")+'</select></label><button class="btn" id="stPdf" type="button">Informe del colegio</button></div></div>'+
     '<div class="kpis">'+kpiStat(atr.length,"Atrasos sin justificar")+kpiStat(an.length,"Anotaciones negativas")+kpiStat(L.filter(r=>r.tipo==="positiva").length,"Anotaciones positivas")+kpiStat(dis.length,"Dispositivos requisados")+kpiStat(med.length,"Medidas aplicadas")+kpiStat(ina.reduce((a,r)=>a+(r.dias||1),0),"Días de inasistencia")+kpiStat(ret.length,"Retiros")+'</div>'+
     '<div class="charts">'+
     '<div class="card wide"><h3>Atrasos por mes</h3><p class="sub">Sin justificar · marzo a diciembre</p><div class="months">'+mc.map(v=>'<div class="mcol"><div class="top">'+(v||"")+'</div><div class="b" style="height:'+(v/mmax*100*0.85)+'%"></div></div>').join("")+'</div><div class="mlabels">'+months.map(m=>'<span>'+MESES[m]+'</span>').join("")+'</div></div>'+
@@ -1743,6 +1913,7 @@ function renderStats(){
     '<div class="card"><h3>Cumplimiento de medidas fuera de jornada</h3><p class="sub">Trabajo especial, reflexión y servicios</p>'+hbars([{l:"Cumplidas",v:cumpl.c},{l:"No se presentó",v:cumpl.n,c:"b"},{l:"Programadas",v:cumpl.p,c:"w"}])+'</div>'+
     '</div>';
   $("#stP").onchange=ev=>{ state.statsP=ev.target.value; renderStats(); };
+  $("#stPdf").onclick=()=>irInforme("general");
 }
 const kpiStat=(v,l)=>'<div class="kpi"><div class="v">'+esc(v)+'</div><div class="l">'+esc(l)+'</div></div>';
 
