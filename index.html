@@ -631,7 +631,7 @@ function atrasoInfo(nivel, hora){
   const min = toMin(hora)-toMin(entrada), pasos=[];
   if(!tarde){
     pasos.push(hora<="08:30" ? "Ingresa por el gimnasio; el representante de Vida Escolar entrega la autorización de ingreso a sala." : "Ingresa por recepción y pide la autorización de acceso al aula en la oficina central de Vida Escolar.");
-    if(ci==="sec") pasos.push(hora<="08:15" ? "Espera en el hall hasta las 8:10 y luego pasa a su sala." : "Permanece fuera, en Vida Escolar, hasta el cambio de hora (8:45).");
+    if(ci==="sec") pasos.push(hora<="08:10" ? "Espera en el hall hasta las 8:10 y luego pasa a su sala." : "Permanece fuera, en Vida Escolar, hasta el cambio de hora (8:45).");
   } else pasos.push(hora<="14:30" ? "Ingresa por el hall trasero (abierto hasta las 14:30)." : "Ingresa por recepción y pide la autorización en la oficina central de Vida Escolar.");
   return {jornada:tarde?"tarde":"mañana", entrada, min, pasos};
 }
