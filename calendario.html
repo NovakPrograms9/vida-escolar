@@ -123,6 +123,8 @@ main{padding-block:20px 28px}
 .legend{display:flex;gap:6px 12px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 .legend i{width:11px;height:11px;border-radius:50%;background:var(--tc)}
+.legend i.hab-i{background:var(--surface);box-shadow:inset 0 0 0 2px var(--muted)}
+.cnum.hab{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2px var(--muted)}
 
 /* Type tokens */
 .t-salida{--tc:var(--c-salida);--ts:var(--s-salida)} .t-paes{--tc:var(--c-paes);--ts:var(--s-paes)} .t-licencia{--tc:var(--c-licencia);--ts:var(--s-licencia)} .t-permiso{--tc:var(--c-permiso);--ts:var(--s-permiso)}
@@ -385,12 +387,17 @@ function renderCal(){
       evs.filter(e => e.tipo===t.k).forEach(e => { n++; (e.inspectores||[]).forEach(id => { if(!state.filtro || id===state.filtro) ids.add(id); }); });
       return n ? {t, ids:[...ids], cant: Math.max(ids.size, 1)} : null;
     }).filter(Boolean);
-    const chips = grupos.map(g => {
+    /* Círculo blanco: quienes no tienen ninguna actividad ese día hábil (siguen en funciones habituales) */
+    const habil = wd!==0 && wd!==6 && !FERIADOS[f];
+    const ocupados = new Set(evs.flatMap(e => e.inspectores||[]));
+    const libres = habil ? (state.filtro ? state.equipo.filter(i => i.id===state.filtro) : state.equipo).filter(i => !ocupados.has(i.id)) : [];
+    const hab = libres.length ? '<span class="cnum hab" title="'+esc("Funciones habituales: "+libres.length+(libres.length===1?" persona":" personas")+" ("+libres.map(i => primerNombre(i.nombre)).join(", ")+")")+'">'+libres.length+'</span>' : '';
+    const chips = hab + grupos.map(g => {
       const nombres = g.ids.map(id => primerNombre(nombreInsp(id))).join(", ");
       const txt = g.t.l+": "+g.cant+(g.cant===1?" persona":" personas")+(nombres?" ("+nombres+")":"");
       return '<span class="cnum t-'+g.t.k+'" title="'+esc(txt)+'">'+g.cant+'</span>'; }).join("");
-    const resumen = grupos.map(g => g.t.l+" "+g.cant).join(", ");
-    const lab = DIAS[wd]+" "+d+" de "+MESES[m]+(FERIADOS[f]?", feriado":"")+(evs.length?". "+resumen:"");
+    const resumen = (libres.length ? ["Funciones habituales "+libres.length] : []).concat(grupos.map(g => g.t.l+" "+g.cant)).join(", ");
+    const lab = DIAS[wd]+" "+d+" de "+MESES[m]+(FERIADOS[f]?", feriado":"")+(resumen?". "+resumen:"");
     h += '<button type="button" class="'+cls.join(" ")+'" data-d="'+f+'" aria-pressed="'+(f===state.sel)+'" aria-label="'+esc(lab)+'">'+
       '<span class="dn">'+d+'</span>'+(FERIADOS[f]?'<span class="fer-l">'+esc(FERIADOS[f])+'</span>':'')+
       '<span class="chips">'+chips+'</span></button>';
@@ -402,7 +409,7 @@ function renderCal(){
   });
 }
 
-function renderLegend(){ $("#legend").innerHTML = '<span style="width:100%">El número de cada círculo es cuántas personas están en esa actividad ese día.</span>' + TIPOS.map(t => '<span class="t-'+t.k+'"><i></i>'+esc(t.l)+'</span>').join("") + '<span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Feriado</span>'; }
+function renderLegend(){ $("#legend").innerHTML = '<span style="width:100%">El número de cada círculo es cuántas personas están en esa actividad ese día. El blanco son las que quedan en funciones habituales.</span><span><i class="hab-i"></i>Funciones habituales</span>' + TIPOS.map(t => '<span class="t-'+t.k+'"><i></i>'+esc(t.l)+'</span>').join("") + '<span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Feriado</span>'; }
 
 /* ===== Panel del día ===== */
 function estadoInsp(id, evs){
