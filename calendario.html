@@ -250,7 +250,7 @@ footer{text-align:center;font-size:12.5px;color:var(--muted);padding-block:10px 
 </header>
 
 <main class="wrap">
-  <div id="demoBanner" class="demob" hidden><span><strong>Demostración.</strong> Semana inventada con el equipo real para probar el calendario. Puede agregar, editar y borrar: nada se guarda en la base del colegio.</span><button class="btn sm" type="button" id="demoSalir">Salir de la demostración</button></div>
+  <div id="demoBanner" class="demob" hidden><span><strong>Demostración:</strong> semana de ejemplo. Nada de lo que haga aquí se guarda.</span><button class="btn sm" type="button" id="demoSalir">Salir de la demostración</button></div>
   <div class="layout">
     <div class="col">
       <section class="card" aria-labelledby="mesTitulo">
@@ -416,7 +416,7 @@ function evBtn(e, conNombres){
   const extra = conNombres ? (e.inspectores||[]).map(nombreInsp).join(", ") : "";
   return '<button type="button" class="evb t-'+esc(e.tipo)+'" data-ev="'+esc(e.id)+'"><span class="tl">'+esc(TIPO[e.tipo]?.l||"Actividad")+(e.fuera?" · fuera del colegio":"")+'</span>'+
     '<span class="tt">'+esc(e.titulo||TIPO[e.tipo]?.l)+'</span><span class="mt">'+esc(meta)+'</span>'+
-    (e.cubre?'<span class="mt">Cubre su puesto: '+esc(e.cubre)+'</span>':'')+(extra?'<span class="mt">'+esc(extra)+'</span>':'')+'</button>';
+    (extra?'<span class="mt">'+esc(extra)+'</span>':'')+'</button>';
 }
 function renderDia(){
   const f = state.sel, d = parse(f), wd = d.getDay(), evs = eventosDe(f);
@@ -474,7 +474,7 @@ document.addEventListener("keydown", ev => { if(ev.key==="Escape" && !$("#modal"
 function abrirForm(ev, fecha){
   if(!state.equipo.length){ abrirEquipo(); return; }
   const nuevo = !ev;
-  form = nuevo ? {tipo:"salida", titulo:"", desde:fecha||state.sel, hasta:fecha||state.sel, todoDia:false, horaIni:"08:00", horaFin:"13:00", lugar:"", inspectores: state.filtro ? [state.filtro] : [], fuera:true, cubre:"", notas:""}
+  form = nuevo ? {tipo:"salida", titulo:"", desde:fecha||state.sel, hasta:fecha||state.sel, todoDia:false, horaIni:"08:00", horaFin:"13:00", lugar:"", inspectores: state.filtro ? [state.filtro] : [], fuera:true, notas:""}
                : JSON.parse(JSON.stringify(ev));
   form._id = nuevo ? null : ev.id; form._confirm = false;
   dibujarForm();
@@ -492,14 +492,14 @@ function dibujarForm(){
     '<label class="check"><input type="checkbox" id="fTodo"'+(f.todoDia?" checked":"")+'> Todo el día</label>'+
     '<div class="g2" id="fHoras"'+(f.todoDia?" hidden":"")+'><label class="f">Sale / empieza<input type="time" id="fIni" value="'+esc(f.horaIni||"")+'"></label><label class="f">Regresa / termina<input type="time" id="fFin" value="'+esc(f.horaFin||"")+'"></label></div>'+
     '<label class="check"><input type="checkbox" id="fFuera"'+(f.fuera?" checked":"")+'> Está fuera del colegio</label>'+
-    '<div class="g2"><label class="f">Lugar<input type="text" id="fLugar" maxlength="100" value="'+esc(f.lugar||"")+'" placeholder="Ej.: Liceo Rahue, sala 12"></label><label class="f">Cubre su puesto<input type="text" id="fCubre" maxlength="100" value="'+esc(f.cubre||"")+'" placeholder="Ej.: Guillermo Valle"></label></div>'+
+    '<label class="f">Lugar<input type="text" id="fLugar" maxlength="100" value="'+esc(f.lugar||"")+'" placeholder="Ej.: Museo, lechería, gimnasio"></label>'+
     '<label class="f">Notas<textarea id="fNotas" maxlength="600" placeholder="Cursos, contacto, lo que haya que saber">'+esc(f.notas||"")+'</textarea></label>'+
     '<p class="who-line" id="fWho"></p><p class="err" id="fErr" role="alert"></p>'+
     (f._confirm ? '<div class="confirm"><span>¿Eliminar esta actividad? No se puede deshacer.</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="fNo">Cancelar</button><button class="btn sm danger" type="button" id="fSi">Eliminar</button></span></div>' : '')+
     '<div class="mfoot">'+(f._id && !f._confirm ? '<button class="btn ghost" type="button" id="fDel" style="color:var(--danger);margin-right:auto">Eliminar…</button>' : '')+
     '<button class="btn" type="button" id="fCancel">Cancelar</button><button class="btn primary" type="submit" id="fSave"'+(state.canWrite?'':' disabled')+'>Guardar</button></div></form></div>';
   mo.hidden = false;
-  const leer = () => { f.titulo = $("#fTitulo").value; f.desde = $("#fDesde").value; f.hasta = $("#fHasta").value; f.todoDia = $("#fTodo").checked; f.horaIni = $("#fIni").value; f.horaFin = $("#fFin").value; f.fuera = $("#fFuera").checked; f.lugar = $("#fLugar").value; f.cubre = $("#fCubre").value; f.notas = $("#fNotas").value; };
+  const leer = () => { f.titulo = $("#fTitulo").value; f.desde = $("#fDesde").value; f.hasta = $("#fHasta").value; f.todoDia = $("#fTodo").checked; f.horaIni = $("#fIni").value; f.horaFin = $("#fFin").value; f.fuera = $("#fFuera").checked; f.lugar = $("#fLugar").value; f.notas = $("#fNotas").value; };
   mo.querySelectorAll("[data-t]").forEach(b => b.onclick = () => { leer(); const prev = TIPO[f.tipo]; f.tipo = b.dataset.t; if(prev && f.fuera===prev.fuera) f.fuera = TIPO[f.tipo].fuera; if(f.tipo==="licencia"||f.tipo==="permiso") f.todoDia = true; dibujarForm(); });
   mo.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { const id = b.dataset.i, k = f.inspectores.indexOf(id); if(k>=0) f.inspectores.splice(k,1); else f.inspectores.push(id); b.setAttribute("aria-pressed", String(k<0)); });
   $("#fTodos").onclick = () => { leer(); f.inspectores = state.equipo.map(i => i.id); dibujarForm(); };
@@ -545,7 +545,7 @@ async function guardar(){
   if(!MODO){ err.textContent = "No hay conexión con la base de datos compartida."; return; }
   const ahora = new Date().toISOString(), yo = MODO!=="db" ? "n:"+(ME||"Sin nombre") : state.uid;
   const data = { tipo:f.tipo, titulo:f.titulo.trim(), desde:f.desde, hasta:f.hasta||f.desde, todoDia:!!f.todoDia, horaIni:f.todoDia?"":(f.horaIni||""), horaFin:f.todoDia?"":(f.horaFin||""),
-    fuera:!!f.fuera, lugar:(f.lugar||"").trim(), cubre:(f.cubre||"").trim(), notas:(f.notas||"").trim(), inspectores:f.inspectores.slice(),
+    fuera:!!f.fuera, lugar:(f.lugar||"").trim(), notas:(f.notas||"").trim(), inspectores:f.inspectores.slice(),
     creadoPor: f._id ? (f.creadoPor||null) : yo, creadoPorNombre: f._id ? (f.creadoPorNombre||"") : (MODO!=="db" ? ME : ""), creadoEn: f._id ? (f.creadoEn||ahora) : ahora,
     editadoPor: yo, editadoPorNombre: MODO!=="db" ? ME : "", editadoEn: ahora };
   $("#fSave").disabled = true; err.textContent = "";
@@ -860,17 +860,14 @@ function semanaDemo(){
   const hoy = parse(TODAY), wd = hoy.getDay(), lun = new Date(hoy);
   lun.setDate(hoy.getDate() + (wd===0 ? 1 : wd===6 ? 2 : 1-wd));
   const D = n => { const d = new Date(lun); d.setDate(lun.getDate()+n); return iso(d); };
-  const ev = (id, o) => Object.assign({id, desde:o.d, hasta:o.h||o.d, todoDia:!o.i, horaIni:o.i||"", horaFin:o.f||"", lugar:"", cubre:"", notas:"", fuera:TIPO[o.tipo].fuera, creadoPor:"n:Admin", creadoPorNombre:"Admin", creadoEn:new Date().toISOString()}, o);
+  const ev = (id, o) => Object.assign({id, desde:o.d, hasta:o.h||o.d, todoDia:!o.i, horaIni:o.i||"", horaFin:o.f||"", lugar:"", notas:"", fuera:TIPO[o.tipo].fuera, creadoPor:"n:Admin", creadoPorNombre:"Admin", creadoEn:new Date().toISOString()}, o);
   return [
-    ev("d1", {tipo:"salida", titulo:"Granja educativa con 2° Básico A y B", d:D(0), i:"08:30", f:"13:00", lugar:"Granja Los Copihues, Osorno", cubre:"Guillermo Valle", inspectores:["sbavestrello"], notas:"Bus sale de portería a las 08:15. Llevar listas de curso y botiquín."}),
-    ev("d2", {tipo:"capacitacion", titulo:"Jornada comunal de Convivencia Escolar", d:D(0), i:"14:30", f:"17:00", lugar:"Teatro Municipal de Osorno", cubre:"Ximena Velásquez", inspectores:["mburgos"]}),
-    ev("d3", {tipo:"paes", titulo:"Examinadores PAES", d:D(1), h:D(2), lugar:"Sede Universidad de Los Lagos", cubre:"Guillermo Valle cubre patio central", inspectores:["mburgos","rrojas","xvelasquez","nnovakovic"], notas:"Presentarse a las 07:30 con cédula de identidad."}),
-    ev("d4", {tipo:"turno", titulo:"Cubre portería y patio central", d:D(1), h:D(2), lugar:"Portería principal", inspectores:["gvalle"]}),
-    ev("d5", {tipo:"licencia", titulo:"Licencia médica", d:D(2), h:D(4), cubre:"Silvia Bavestrello apoya 4° y 5° Básico", inspectores:["rbarria"]}),
-    ev("d6", {tipo:"acto", titulo:"Acto de aniversario del Lycée", d:D(3), i:"10:00", f:"11:30", lugar:"Gimnasio", inspectores:["sbavestrello","rrojas","mburgos","gvalle","xvelasquez","nnovakovic"], notas:"Cada inspector acompaña a sus cursos y ordena la salida al recreo."}),
-    ev("d7", {tipo:"permiso", titulo:"Permiso administrativo (tarde)", d:D(3), i:"14:00", f:"17:30", cubre:"Nicolás Novakovic", inspectores:["xvelasquez"]}),
-    ev("d8", {tipo:"salida", titulo:"Museo Histórico Municipal con 5° Básico B", d:D(4), i:"09:00", f:"12:30", lugar:"Museo Histórico Municipal de Osorno", cubre:"Guillermo Valle", inspectores:["nnovakovic","rrojas"]}),
-    ev("d9", {tipo:"otro", titulo:"Charla de orientación vocacional IV Medio", d:D(4), i:"11:00", f:"12:30", lugar:"Biblioteca", inspectores:["mburgos"]})
+    ev("d1", {tipo:"salida", titulo:"Salida lechería", d:D(0), i:"08:30", f:"13:00", inspectores:["sbavestrello","gvalle"]}),
+    ev("d2", {tipo:"paes", titulo:"Ensayo PAES", d:D(1), i:"08:00", f:"13:15", fuera:false, inspectores:["mburgos","rrojas","xvelasquez","nnovakovic"]}),
+    ev("d3", {tipo:"licencia", titulo:"Licencia", d:D(2), h:D(4), inspectores:["rbarria"]}),
+    ev("d4", {tipo:"paes", titulo:"Ensayo PAES", d:D(3), i:"08:00", f:"13:15", fuera:false, inspectores:["mburgos","rrojas","nnovakovic"]}),
+    ev("d5", {tipo:"permiso", titulo:"Permiso administrativo", d:D(3), inspectores:["xvelasquez"]}),
+    ev("d6", {tipo:"salida", titulo:"Salida museo", d:D(4), i:"09:00", f:"12:30", inspectores:["nnovakovic","rrojas","gvalle"]})
   ];
 }
 function iniciarDemo(){
