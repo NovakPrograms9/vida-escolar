@@ -109,20 +109,20 @@ main{padding-block:20px 28px}
 .day[aria-pressed="true"]{outline:2.5px solid var(--accent);outline-offset:1px}
 .dn{font-weight:700;font-size:13px;align-self:flex-start;font-variant-numeric:tabular-nums}
 .fer-l{font-size:10.5px;font-weight:600;color:var(--warn);line-height:1.2}
-.chips{display:flex;flex-direction:column;gap:3px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:4px;min-width:0;margin-top:auto}
+.cnum{min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--tc);color:var(--surface);font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;line-height:1}
 .ce{display:block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--ts);color:var(--tc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:17px}
 .more{font-size:11px;color:var(--muted);font-weight:600}
 @media (max-width:640px){
   .cal{grid-template-columns:repeat(7,minmax(0,1fr))}
   .day{min-height:58px;padding:4px}
-  .chips{flex-direction:row;flex-wrap:wrap}
-  .ce{font-size:0;width:9px;height:9px;padding:0;border-radius:50%;background:var(--tc)}
-  .more{font-size:10px}
+  .chips{gap:2px}
+  .cnum{min-width:17px;height:17px;padding:0 4px;font-size:10.5px}
   .fer-l{display:none}
 }
 .legend{display:flex;gap:6px 12px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:5px}
-.legend i{width:10px;height:10px;border-radius:3px;background:var(--tc)}
+.legend i{width:11px;height:11px;border-radius:50%;background:var(--tc)}
 
 /* Type tokens */
 .t-salida{--tc:var(--c-salida);--ts:var(--s-salida)} .t-paes{--tc:var(--c-paes);--ts:var(--s-paes)} .t-licencia{--tc:var(--c-licencia);--ts:var(--s-licencia)} .t-permiso{--tc:var(--c-permiso);--ts:var(--s-permiso)}
@@ -376,13 +376,21 @@ function renderCal(){
     const f = y+"-"+pad(m+1)+"-"+pad(d), wd = new Date(y,m,d).getDay();
     let evs = eventosDe(f); if(state.filtro) evs = evs.filter(e => (e.inspectores||[]).includes(state.filtro));
     const cls = ["day"]; if(wd===0||wd===6) cls.push("we"); if(FERIADOS[f]) cls.push("fer"); if(f<TODAY) cls.push("past"); if(f===TODAY) cls.push("today");
-    const lab = DIAS[wd]+" "+d+" de "+MESES[m]+(FERIADOS[f]?", feriado":"")+(evs.length?", "+evs.length+" actividad"+(evs.length>1?"es":""):"");
-    const max = 3, chips = evs.slice(0,max).map(e => {
-      const who = (e.inspectores||[]).map(id => primerNombre(nombreInsp(id))).join(", ");
-      return '<span class="ce t-'+esc(e.tipo)+'" title="'+esc(TIPO[e.tipo]?.l+": "+(e.titulo||"")+" · "+who)+'">'+esc(who||TIPO[e.tipo]?.l)+'</span>'; }).join("");
+    /* Un círculo por tipo de actividad: color del tipo + cuántas personas distintas están en ella ese día */
+    const grupos = TIPOS.map(t => {
+      const ids = new Set(); let n = 0;
+      evs.filter(e => e.tipo===t.k).forEach(e => { n++; (e.inspectores||[]).forEach(id => { if(!state.filtro || id===state.filtro) ids.add(id); }); });
+      return n ? {t, ids:[...ids], cant: Math.max(ids.size, 1)} : null;
+    }).filter(Boolean);
+    const chips = grupos.map(g => {
+      const nombres = g.ids.map(id => primerNombre(nombreInsp(id))).join(", ");
+      const txt = g.t.l+": "+g.cant+(g.cant===1?" persona":" personas")+(nombres?" ("+nombres+")":"");
+      return '<span class="cnum t-'+g.t.k+'" title="'+esc(txt)+'">'+g.cant+'</span>'; }).join("");
+    const resumen = grupos.map(g => g.t.l+" "+g.cant).join(", ");
+    const lab = DIAS[wd]+" "+d+" de "+MESES[m]+(FERIADOS[f]?", feriado":"")+(evs.length?". "+resumen:"");
     h += '<button type="button" class="'+cls.join(" ")+'" data-d="'+f+'" aria-pressed="'+(f===state.sel)+'" aria-label="'+esc(lab)+'">'+
       '<span class="dn">'+d+'</span>'+(FERIADOS[f]?'<span class="fer-l">'+esc(FERIADOS[f])+'</span>':'')+
-      '<span class="chips">'+chips+(evs.length>max?'<span class="more">+'+(evs.length-max)+' más</span>':'')+'</span></button>';
+      '<span class="chips">'+chips+'</span></button>';
   }
   const cal = $("#cal"); cal.innerHTML = h;
   cal.querySelectorAll("button.day").forEach(b => b.onclick = () => {
@@ -391,7 +399,7 @@ function renderCal(){
   });
 }
 
-function renderLegend(){ $("#legend").innerHTML = TIPOS.map(t => '<span class="t-'+t.k+'"><i></i>'+esc(t.l)+'</span>').join("") + '<span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Feriado</span>'; }
+function renderLegend(){ $("#legend").innerHTML = '<span style="width:100%">El número de cada círculo es cuántas personas están en esa actividad ese día.</span>' + TIPOS.map(t => '<span class="t-'+t.k+'"><i></i>'+esc(t.l)+'</span>').join("") + '<span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Feriado</span>'; }
 
 /* ===== Panel del día ===== */
 function estadoInsp(id, evs){
