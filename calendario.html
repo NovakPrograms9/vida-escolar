@@ -18,7 +18,7 @@
   --danger:#b3261e; --danger-soft:#fbe3e0; --ok:#2c6a3d; --ok-soft:#dff0e3; --warn:#8f5a00; --warn-soft:#fbeed2;
   --scrim:rgba(10,15,20,.45); --shadow:0 10px 40px rgba(20,30,40,.18);
   --c-salida:#0b7a7e; --s-salida:#d9f1f1; --c-paes:#6a3fb5; --s-paes:#ece4f9; --c-licencia:#b4233c; --s-licencia:#fbe1e5; --c-permiso:#9a5500; --s-permiso:#fcecd4;
-  --c-capacitacion:#1d5fbf; --s-capacitacion:#e1ebfa; --c-acto:#2a7442; --s-acto:#ddf1e3; --c-turno:#4d5b70; --s-turno:#e5e9ef; --c-otro:#a3367a; --s-otro:#f7e1ef;
+  --c-capacitacion:#1d5fbf; --s-capacitacion:#e1ebfa; --c-acto:#2a7442; --s-acto:#ddf1e3; --c-turno:#4d5b70; --s-turno:#e5e9ef; --c-otro:#a3367a; --s-otro:#f7e1ef; --c-hab:#5bc2f0; --hab-ink:#0b2a40;
   --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --f-body:"Public Sans","Segoe UI",system-ui,-apple-system,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
@@ -30,7 +30,7 @@
   --danger:#f08c84; --danger-soft:#3b1d1a; --ok:#81cd96; --ok-soft:#16301f; --warn:#e9b658; --warn-soft:#382b12;
   --scrim:rgba(0,0,0,.6); --shadow:0 10px 40px rgba(0,0,0,.5);
   --c-salida:#6fd6d9; --s-salida:#11343a; --c-paes:#c4a6f5; --s-paes:#2b2143; --c-licencia:#f28da0; --s-licencia:#3d1a23; --c-permiso:#f0b860; --s-permiso:#3a2a10;
-  --c-capacitacion:#8db8f5; --s-capacitacion:#1a2b47; --c-acto:#86d29c; --s-acto:#16321f; --c-turno:#b9c4d4; --s-turno:#262e3a; --c-otro:#f0a3d0; --s-otro:#3a1830;
+  --c-capacitacion:#8db8f5; --s-capacitacion:#1a2b47; --c-acto:#86d29c; --s-acto:#16321f; --c-turno:#b9c4d4; --s-turno:#262e3a; --c-otro:#f0a3d0; --s-otro:#3a1830; --c-hab:#4aa3e0; --hab-ink:#06192b;
   color-scheme:dark; } }
 :root[data-theme="dark"]{
   --bg:#0f1422; --surface:#161d2e; --surface-2:#1f2839; --ink:#e4e9f4; --muted:#98a3ba; --line:#2a3448;
@@ -39,7 +39,7 @@
   --danger:#f08c84; --danger-soft:#3b1d1a; --ok:#81cd96; --ok-soft:#16301f; --warn:#e9b658; --warn-soft:#382b12;
   --scrim:rgba(0,0,0,.6); --shadow:0 10px 40px rgba(0,0,0,.5);
   --c-salida:#6fd6d9; --s-salida:#11343a; --c-paes:#c4a6f5; --s-paes:#2b2143; --c-licencia:#f28da0; --s-licencia:#3d1a23; --c-permiso:#f0b860; --s-permiso:#3a2a10;
-  --c-capacitacion:#8db8f5; --s-capacitacion:#1a2b47; --c-acto:#86d29c; --s-acto:#16321f; --c-turno:#b9c4d4; --s-turno:#262e3a; --c-otro:#f0a3d0; --s-otro:#3a1830;
+  --c-capacitacion:#8db8f5; --s-capacitacion:#1a2b47; --c-acto:#86d29c; --s-acto:#16321f; --c-turno:#b9c4d4; --s-turno:#262e3a; --c-otro:#f0a3d0; --s-otro:#3a1830; --c-hab:#4aa3e0; --hab-ink:#06192b;
   color-scheme:dark; }
 
 *{box-sizing:border-box}
@@ -123,8 +123,8 @@ main{padding-block:20px 28px}
 .legend{display:flex;gap:6px 12px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:5px}
 .legend i{width:11px;height:11px;border-radius:50%;background:var(--tc)}
-.legend i.hab-i{background:var(--surface);box-shadow:inset 0 0 0 2px var(--muted)}
-.cnum.hab{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2px var(--muted)}
+.legend i.hab-i{background:var(--c-hab)}
+.cnum.hab{background:var(--c-hab);color:var(--hab-ink)}
 
 /* Type tokens */
 .t-salida{--tc:var(--c-salida);--ts:var(--s-salida)} .t-paes{--tc:var(--c-paes);--ts:var(--s-paes)} .t-licencia{--tc:var(--c-licencia);--ts:var(--s-licencia)} .t-permiso{--tc:var(--c-permiso);--ts:var(--s-permiso)}
@@ -387,16 +387,16 @@ function renderCal(){
       evs.filter(e => e.tipo===t.k).forEach(e => { n++; (e.inspectores||[]).forEach(id => { if(!state.filtro || id===state.filtro) ids.add(id); }); });
       return n ? {t, ids:[...ids], cant: Math.max(ids.size, 1)} : null;
     }).filter(Boolean);
-    /* Círculo blanco: quienes no tienen ninguna actividad ese día hábil (siguen en funciones habituales) */
+    /* Círculo celeste: quienes no tienen ninguna actividad ese día hábil (siguen en funciones habituales) */
     const habil = wd!==0 && wd!==6 && !FERIADOS[f];
     const ocupados = new Set(evs.flatMap(e => e.inspectores||[]));
     const libres = habil ? (state.filtro ? state.equipo.filter(i => i.id===state.filtro) : state.equipo).filter(i => !ocupados.has(i.id)) : [];
-    const hab = libres.length ? '<span class="cnum hab" title="'+esc("Funciones habituales: "+libres.length+(libres.length===1?" persona":" personas")+" ("+libres.map(i => primerNombre(i.nombre)).join(", ")+")")+'">'+libres.length+'</span>' : '';
+    const hab = libres.length ? '<span class="cnum hab" title="'+esc("Trabajo habitual: "+libres.length+(libres.length===1?" persona":" personas")+" ("+libres.map(i => primerNombre(i.nombre)).join(", ")+")")+'">'+libres.length+'</span>' : '';
     const chips = hab + grupos.map(g => {
       const nombres = g.ids.map(id => primerNombre(nombreInsp(id))).join(", ");
       const txt = g.t.l+": "+g.cant+(g.cant===1?" persona":" personas")+(nombres?" ("+nombres+")":"");
       return '<span class="cnum t-'+g.t.k+'" title="'+esc(txt)+'">'+g.cant+'</span>'; }).join("");
-    const resumen = (libres.length ? ["Funciones habituales "+libres.length] : []).concat(grupos.map(g => g.t.l+" "+g.cant)).join(", ");
+    const resumen = (libres.length ? ["Trabajo habitual "+libres.length] : []).concat(grupos.map(g => g.t.l+" "+g.cant)).join(", ");
     const lab = DIAS[wd]+" "+d+" de "+MESES[m]+(FERIADOS[f]?", feriado":"")+(resumen?". "+resumen:"");
     h += '<button type="button" class="'+cls.join(" ")+'" data-d="'+f+'" aria-pressed="'+(f===state.sel)+'" aria-label="'+esc(lab)+'">'+
       '<span class="dn">'+d+'</span>'+(FERIADOS[f]?'<span class="fer-l">'+esc(FERIADOS[f])+'</span>':'')+
@@ -409,7 +409,7 @@ function renderCal(){
   });
 }
 
-function renderLegend(){ $("#legend").innerHTML = '<span style="width:100%">El número de cada círculo es cuántas personas están en esa actividad ese día. El blanco son las que quedan en funciones habituales.</span><span><i class="hab-i"></i>Funciones habituales</span>' + TIPOS.map(t => '<span class="t-'+t.k+'"><i></i>'+esc(t.l)+'</span>').join("") + '<span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Feriado</span>'; }
+function renderLegend(){ $("#legend").innerHTML = '<span style="width:100%">El número de cada círculo es cuántas personas están en esa actividad ese día. El celeste son las que están en trabajo habitual.</span><span><i class="hab-i"></i>Trabajo habitual</span>' + TIPOS.map(t => '<span class="t-'+t.k+'"><i></i>'+esc(t.l)+'</span>').join("") + '<span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Feriado</span>'; }
 
 /* ===== Panel del día ===== */
 function estadoInsp(id, evs){
@@ -442,7 +442,7 @@ function renderDia(){
   const habil = !(FERIADOS[f] || wd===0 || wd===6);
   if(habil) h += '<div class="sum"><span class="pill ok"><span class="dot"></span>'+nEn+' en el colegio</span>'+(nPar?'<span class="pill warn"><span class="dot"></span>'+nPar+' fuera parte del día</span>':'')+(nFuera?'<span class="pill out"><span class="dot"></span>'+nFuera+' fuera todo el día</span>':'')+'</div>';
   h += '<div class="insp">' + estados.map(s => {
-    const st = s.mis.length ? s.mis.map(e => evBtn(e,false)).join("") : '<span class="stn">'+(habil ? "En el colegio · funciones habituales" : "Sin actividades registradas")+'</span>';
+    const st = s.mis.length ? s.mis.map(e => evBtn(e,false)).join("") : '<span class="stn">'+(habil ? "Trabajo habitual" : "Sin actividades registradas")+'</span>';
     return '<div class="ir '+s.cls+'"><span class="av" aria-hidden="true">'+esc(iniciales(s.i.nombre))+'</span><div><div class="nm">'+esc(s.i.nombre)+'</div><div class="ar">'+esc(s.i.area||"")+'</div></div><div class="st">'+st+'</div></div>';
   }).join("") + '</div>';
   const huerfanos = evs.filter(e => !(e.inspectores||[]).some(id => state.equipo.some(i => i.id===id)));
