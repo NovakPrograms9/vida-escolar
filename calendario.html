@@ -205,6 +205,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .row input{flex:1 1 200px}
 .row select{width:auto;flex:0 0 auto}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:8px 12px;font-size:14px}
+.pacts{display:flex;gap:6px;flex-wrap:wrap}
+.accbox{background:var(--surface-2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.okmsg{background:var(--ok-soft);color:var(--ok);border-radius:9px;padding:9px 12px;font-weight:600;font-size:14px}
 .plist{display:flex;flex-direction:column;gap:8px}
 .pitem{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 14px;cursor:pointer;font-size:15px}
 .pitem:hover{border-color:var(--accent);background:var(--accent-soft)}
@@ -559,10 +563,7 @@ function dibujarEquipo(){
       '<span style="display:flex;gap:4px"><button class="btn sm" type="button" data-up="'+k+'" aria-label="Subir"'+(k===0?" disabled":"")+'>↑</button><button class="btn sm danger" type="button" data-rm="'+k+'" aria-label="Quitar">Quitar</button></span></div>').join("")+'</div>'+
     '<div><button class="btn sm" type="button" id="eAdd">+ Agregar inspector/a</button></div>'+
     '<p class="who-line">Si quita a alguien, sus actividades pasadas se conservan y aparecen como «Otras actividades del día».</p><p class="err" id="eErr" role="alert"></p>'+
-    (MODO==="fb" ? '<div class="acc"><div class="flabel">Acceso</div><p class="who-line">Enlace del calendario: compártalo solo con Mme. Claudia, junto con su clave.</p>'+
-      '<div class="linkbox"><code id="aLink">'+esc(enlaceCal())+'</code><button class="btn sm" type="button" id="aCopy">Copiar</button></div>'+
-      '<div class="row"><select id="aPerfil" aria-label="Perfil">'+PERFILES.map(x => '<option value="'+x.id+'">'+esc(x.nombre)+'</option>').join("")+'</select><input type="password" id="aNueva" autocomplete="new-password" placeholder="Nueva clave (mín. 6)" aria-label="Nueva clave"><button class="btn sm" type="button" id="aCambiar">Guardar clave</button></div>'+
-      '<p class="who-line" id="aMsg" role="status"></p></div>' : '')+
+    (MODO==="fb" ? '<div class="acc" id="accHost"></div>' : '')+
     '<div class="mfoot"><button class="btn" type="button" id="eCancel">Cancelar</button><button class="btn primary" type="button" id="eSave"'+(state.canWrite?'':' disabled')+'>Guardar equipo</button></div></div>';
   mo.hidden = false;
   mo.querySelectorAll("input[data-k]").forEach(inp => inp.oninput = () => { eq[+inp.dataset.k][inp.dataset.c] = inp.value; });
@@ -570,17 +571,7 @@ function dibujarEquipo(){
   mo.querySelectorAll("[data-up]").forEach(b => b.onclick = () => { const k = +b.dataset.up; [eq[k-1],eq[k]] = [eq[k],eq[k-1]]; dibujarEquipo(); });
   $("#eAdd").onclick = () => { eq.push({id:nuevoId(), nombre:"", area:""}); dibujarEquipo(); const ins = mo.querySelectorAll('input[data-c="nombre"]'); ins[ins.length-1].focus(); };
   $("#eX").onclick = $("#eCancel").onclick = cerrarModal;
-  if($("#aCopy")) $("#aCopy").onclick = () => copiar(enlaceCal(), $("#aCopy"));
-  if($("#aCambiar")) $("#aCambiar").onclick = async () => {
-    const v = $("#aNueva").value, id = $("#aPerfil").value, msg = $("#aMsg");
-    if(v.length < 6){ msg.textContent = "La clave debe tener al menos 6 caracteres."; return; }
-    try {
-      const h = await hashAcceso(v, id), nuevo = {perfiles:Object.assign({}, ACC.perfiles||{}, {[id]:h}), creado:ACC.creado||null};
-      if(id!=="admin" && !(ACC.perfiles && ACC.perfiles.admin) && ACC.claveHash) nuevo.claveHash = ACC.claveHash;
-      await dref("cfg/acceso").set(nuevo); ACC = nuevo; if(id===PERFIL) lsSet("cve-ok", h); $("#aNueva").value = "";
-      msg.textContent = "Clave de "+nombrePerfil(id)+" guardada."+(id==="claudia" ? " Avísele la nueva clave a Mme. Claudia." : "");
-    } catch(e) { msg.textContent = errorMsg(e); }
-  };
+  renderAcceso();
   $("#eSave").onclick = async () => {
     const lista = eq.map(i => ({id:i.id, nombre:i.nombre.trim(), area:(i.area||"").trim()})).filter(i => i.nombre);
     if(!MODO){ $("#eErr").textContent = "No hay conexión con la base de datos compartida."; return; }
@@ -619,10 +610,77 @@ async function copiar(txt, btn){
 }
 
 /* Perfiles de acceso (versión GitHub Pages) */
-const PERFILES = [{id:"admin", nombre:"Admin", d:"Vida Escolar · administra equipo y claves"}, {id:"claudia", nombre:"Mme. Claudia", d:"Subdirección"}];
-const nombrePerfil = id => (PERFILES.find(x => x.id===id) || {}).nombre || "";
+const ROLES = {admin:"Administración: equipo, perfiles y claves", editor:"Registra y edita actividades"};
 let PERFIL = null, ACC = {};
-const esAdmin = () => MODO!=="fb" || PERFIL==="admin";
+/* Calendarios creados antes de la lista de perfiles: Admin siempre, Mme. Claudia si ya tenía clave */
+const listaPerfiles = () => (Array.isArray(ACC.lista) && ACC.lista.length) ? ACC.lista
+  : [{id:"admin", nombre:"Admin", rol:"admin"}].concat(ACC.perfiles && ACC.perfiles.claudia ? [{id:"claudia", nombre:"Mme. Claudia", rol:"editor"}] : []);
+const perfilDe = id => listaPerfiles().find(x => x.id===id) || null;
+const nombrePerfil = id => (perfilDe(id) || {}).nombre || "";
+const esAdmin = () => MODO!=="fb" || (perfilDe(PERFIL) || {}).rol==="admin";
+async function guardarAcceso(perfiles, lista){
+  const nuevo = {perfiles, lista, creado:ACC.creado||null};
+  if(ACC.claveHash && !perfiles.admin && lista.some(x => x.id==="admin")) nuevo.claveHash = ACC.claveHash;
+  await FS.doc("espacios/"+CLAVE+"/cfg/acceso").set(nuevo); ACC = nuevo;
+}
+async function claveDeAdmin(v){ for(const x of listaPerfiles()) if(x.rol==="admin" && await claveOk(x.id, v)) return true; return false; }
+const idPerfil = () => "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function validarPerfilNuevo(nombre, c1, c2){
+  if(!nombre) return "Escriba el nombre del perfil.";
+  if(listaPerfiles().some(x => x.nombre.toLowerCase()===nombre.toLowerCase())) return "Ya existe un perfil con ese nombre.";
+  if(c1.length < 6) return "La clave debe tener al menos 6 caracteres.";
+  if(c1 !== c2) return "Las claves no coinciden.";
+  return "";
+}
+async function crearPerfil(nombre, rol, clave){
+  const id = idPerfil(), h = await hashAcceso(clave, id);
+  await guardarAcceso(Object.assign({}, ACC.perfiles||{}, {[id]:h}), listaPerfiles().concat([{id, nombre, rol}]));
+}
+const formPerfilHtml = (pre, conAdmin) =>
+  '<label class="f">Nombre del perfil<input type="text" id="'+pre+'Nom" maxlength="40" placeholder="Ej.: Inspectoría General"></label>'+
+  '<label class="f">Tipo<select id="'+pre+'Rol"><option value="editor">'+esc(ROLES.editor)+'</option><option value="admin">'+esc(ROLES.admin)+'</option></select></label>'+
+  '<label class="f">Clave del perfil <span class="hint">Mínimo 6 caracteres</span><input type="password" id="'+pre+'C1" autocomplete="new-password"></label>'+
+  '<label class="f">Repita la clave<input type="password" id="'+pre+'C2" autocomplete="new-password"></label>'+
+  (conAdmin ? '<label class="f">Clave de Admin <span class="hint">Para autorizar el perfil nuevo</span><input type="password" id="'+pre+'Adm" autocomplete="off"></label>' : '');
+
+/* Equipo → Acceso (solo administración, versión GitHub Pages) */
+function renderAcceso(modo, pid){
+  const host = $("#accHost"); if(!host) return;
+  const ps = listaPerfiles(), nAdm = ps.filter(x => x.rol==="admin").length;
+  let edit = "";
+  if(modo==="clave") edit = '<div class="accbox"><strong>Nueva clave para '+esc(nombrePerfil(pid))+'</strong><div class="row"><input type="password" id="aNueva" autocomplete="new-password" placeholder="Nueva clave (mín. 6)" aria-label="Nueva clave"><button class="btn sm primary" type="button" id="aOk">Guardar clave</button><button class="btn sm" type="button" id="aNo">Cancelar</button></div></div>';
+  if(modo==="borrar") edit = '<div class="confirm"><span>¿Eliminar el perfil «'+esc(nombrePerfil(pid))+'»? Ya no podrá entrar. Sus actividades se conservan.</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="aNo">Cancelar</button><button class="btn sm danger" type="button" id="aOk">Eliminar</button></span></div>';
+  if(modo==="nuevo") edit = '<div class="accbox"><strong>Crear perfil</strong>'+formPerfilHtml("x",false)+'<div class="row"><button class="btn sm primary" type="button" id="aOk">Crear perfil</button><button class="btn sm" type="button" id="aNo">Cancelar</button></div></div>';
+  host.innerHTML = '<div class="flabel">Acceso</div><p class="who-line">Enlace del calendario: compártalo solo con quienes tengan un perfil, junto con su clave.</p>'+
+    '<div class="linkbox"><code id="aLink">'+esc(enlaceCal())+'</code><button class="btn sm" type="button" id="aCopy">Copiar</button></div>'+
+    '<div class="flabel" style="margin-top:6px">Perfiles</div><div class="eq-list">'+ps.map(x => '<div class="prow"><div style="min-width:0"><strong>'+esc(x.nombre)+'</strong><span class="who-line" style="display:block">'+esc(ROLES[x.rol]||"")+(x.id===PERFIL?" · usted":"")+(huellaDe(x.id)?"":" · sin clave")+'</span></div>'+
+      '<span class="pacts"><button class="btn sm" type="button" data-pc="'+esc(x.id)+'">Cambiar clave</button>'+(x.id!==PERFIL && !(x.rol==="admin" && nAdm<=1) ? '<button class="btn sm danger" type="button" data-pd="'+esc(x.id)+'">Eliminar</button>' : '')+'</span></div>').join("")+'</div>'+
+    edit+(modo ? '' : '<div><button class="btn sm" type="button" id="aNuevo">+ Crear perfil</button></div>')+'<p class="err" id="aErr" role="alert"></p><p class="who-line" id="aMsg" role="status"></p>';
+  $("#aCopy").onclick = () => copiar(enlaceCal(), $("#aCopy"));
+  host.querySelectorAll("[data-pc]").forEach(b => b.onclick = () => { renderAcceso("clave", b.dataset.pc); $("#aNueva").focus(); });
+  host.querySelectorAll("[data-pd]").forEach(b => b.onclick = () => renderAcceso("borrar", b.dataset.pd));
+  if($("#aNuevo")) $("#aNuevo").onclick = () => { renderAcceso("nuevo"); $("#xNom").focus(); };
+  if($("#aNo")) $("#aNo").onclick = () => renderAcceso();
+  const fin = t => { renderAcceso(); $("#aMsg").textContent = t; };
+  const err = t => { $("#aErr").textContent = t; };
+  if($("#aOk")) $("#aOk").onclick = async () => {
+    try {
+      if(modo==="clave"){
+        const v = $("#aNueva").value; if(v.length < 6){ err("La clave debe tener al menos 6 caracteres."); return; }
+        const h = await hashAcceso(v, pid); await guardarAcceso(Object.assign({}, ACC.perfiles||{}, {[pid]:h}), listaPerfiles());
+        if(pid===PERFIL) lsSet("cve-ok", h);
+        fin("Clave de "+nombrePerfil(pid)+" guardada."+(pid!==PERFIL ? " Avísele la nueva clave." : ""));
+      } else if(modo==="borrar"){
+        const nom = nombrePerfil(pid), perf = Object.assign({}, ACC.perfiles||{}); delete perf[pid];
+        await guardarAcceso(perf, listaPerfiles().filter(x => x.id!==pid)); fin("Perfil «"+nom+"» eliminado.");
+      } else if(modo==="nuevo"){
+        const nombre = $("#xNom").value.trim(), c1 = $("#xC1").value, m = validarPerfilNuevo(nombre, c1, $("#xC2").value);
+        if(m){ err(m); return; }
+        await crearPerfil(nombre, $("#xRol").value, c1); fin("Perfil «"+nombre+"» creado. Entrégele el enlace y su clave.");
+      }
+    } catch(e) { err(errorMsg(e)); }
+  };
+}
 /* Huella guardada de la clave de un perfil (claveHash = calendarios creados antes de los perfiles: vale para Admin) */
 const huellaDe = id => (ACC.perfiles && ACC.perfiles[id]) || (id==="admin" ? (ACC.claveHash || "") : "");
 async function claveOk(id, v){
@@ -692,29 +750,41 @@ async function iniciarFirebase(){
   }
   if(!acc.exists){ try { localStorage.removeItem("cve-clave"); } catch(e) {} CLAVE = null; setMode("Sin enlace"); gateSinEnlace("Ese enlace no corresponde a ningún calendario. Revise que esté completo."); return; }
   ACC = acc.data() || {};
-  const pid = lsGet("cve-perfil",""), h = huellaDe(pid);
+  const pid = lsGet("cve-perfil",""), h = perfilDe(pid) ? huellaDe(pid) : "";
   if(pid && h && lsGet("cve-ok","") === h){ PERFIL = pid; ME = nombrePerfil(pid); entrar(); return; }
   gatePerfil();
 }
 function entrar(){ $("#gate").hidden = true; $("#gate").innerHTML = ""; MODO = "fb"; aplicarPerfil(); suscribir(); }
 
 let fallos = 0, bloqueo = 0;
-function gatePerfil(){
+function gatePerfil(aviso){
   setMode("Acceso");
   gate("¿Quién ingresa?",
+    (aviso ? '<p class="okmsg" role="status">'+esc(aviso)+'</p>' : '')+
     p("Calendario de Vida Escolar. Elija su perfil y escriba su clave.")+
-    '<div class="plist" id="gList">'+PERFILES.map(x => '<button type="button" class="pitem" data-pid="'+x.id+'"><strong>'+esc(x.nombre)+'</strong><span>'+esc(x.d)+'</span></button>').join("")+'</div>'+
+    '<div class="plist" id="gList">'+listaPerfiles().map(x => '<button type="button" class="pitem" data-pid="'+esc(x.id)+'"><strong>'+esc(x.nombre)+'</strong><span>'+esc(ROLES[x.rol]||"")+'</span></button>').join("")+'</div>'+
+    '<details id="gCrear"><summary>Crear un perfil nuevo</summary><form id="gNP" novalidate style="margin-top:10px">'+formPerfilHtml("g",true)+
+      '<p class="err" id="gNPErr" role="alert"></p><button class="btn" type="submit">Crear perfil</button></form></details>'+
     '<form id="gForm" novalidate hidden><p id="gWho" style="font-weight:700"></p>'+
     '<label class="f">Clave<input type="password" id="gClave" autocomplete="current-password"></label>'+
     '<label class="check"><input type="checkbox" id="gRec" checked> Recordarme en este computador</label>'+
     '<p class="err" id="gErr" role="alert"></p><div class="row" style="justify-content:space-between"><button class="btn" type="button" id="gBack">Volver</button><button class="btn primary" type="submit">Entrar</button></div></form>');
+  $("#gNP").onsubmit = async ev => {
+    ev.preventDefault(); const e2 = $("#gNPErr"), nombre = $("#gNom").value.trim(), c1 = $("#gC1").value;
+    const m = validarPerfilNuevo(nombre, c1, $("#gC2").value); if(m){ e2.textContent = m; return; }
+    if(Date.now() < bloqueo){ e2.textContent = "Demasiados intentos. Espere "+Math.ceil((bloqueo-Date.now())/1000)+" segundos."; return; }
+    let ok = false; try { ok = await claveDeAdmin($("#gAdm").value); } catch(e) {}
+    if(!ok){ fallos++; if(fallos>=5){ bloqueo = Date.now()+30000; fallos = 0; } e2.textContent = "La clave de Admin no es correcta."; $("#gAdm").value = ""; return; }
+    try { await crearPerfil(nombre, $("#gRol").value, c1); gatePerfil("Perfil «"+nombre+"» creado. Ya puede elegirlo para entrar."); }
+    catch(e) { e2.textContent = errorMsg(e); }
+  };
   let sel = null;
   document.querySelectorAll("#gList [data-pid]").forEach(b => b.onclick = () => {
-    sel = b.dataset.pid; $("#gList").hidden = true; $("#gForm").hidden = false; $("#gWho").textContent = nombrePerfil(sel); $("#gErr").textContent = "";
+    sel = b.dataset.pid; $("#gList").hidden = true; $("#gCrear").hidden = true; $("#gForm").hidden = false; $("#gWho").textContent = nombrePerfil(sel); $("#gErr").textContent = "";
     if(!huellaDe(sel)) $("#gErr").textContent = nombrePerfil(sel)+" aún no tiene clave. Admin debe asignarla en Equipo → Acceso.";
     $("#gClave").focus();
   });
-  $("#gBack").onclick = () => { sel = null; $("#gForm").hidden = true; $("#gList").hidden = false; $("#gClave").value = ""; };
+  $("#gBack").onclick = () => { sel = null; $("#gForm").hidden = true; $("#gList").hidden = false; $("#gCrear").hidden = false; $("#gClave").value = ""; };
   $("#gForm").onsubmit = async ev => {
     ev.preventDefault(); const err = $("#gErr"); if(!sel) return;
     if(!huellaDe(sel)){ err.textContent = nombrePerfil(sel)+" aún no tiene clave. Admin debe asignarla en Equipo → Acceso."; return; }
@@ -733,10 +803,9 @@ function gateSinEnlace(aviso){
     '<form id="gLink" novalidate><label class="f">Enlace del calendario<input type="text" id="gLinkIn" autocomplete="off" placeholder="https://…#k=…"></label><button class="btn primary" type="submit">Entrar</button></form>'+
     '<p class="err" id="gErr" role="alert"></p>'+
     '<details><summary>Primera vez: crear el calendario</summary>'+
-      '<form id="gNew" novalidate style="margin-top:10px">'+p("Se hace una sola vez. Se crea el calendario con el equipo de inspectoría, con dos perfiles: Admin y Mme. Claudia. Cada uno tiene su propia clave (mínimo 6 caracteres).")+
-      '<label class="f">Clave de Admin<input type="password" id="nC1" autocomplete="new-password"></label>'+
+      '<form id="gNew" novalidate style="margin-top:10px">'+p("Se hace una sola vez. Se crea el calendario con el equipo de inspectoría y el perfil Admin. Después, desde Equipo → Acceso, puede crear el perfil de Mme. Claudia y otros.")+
+      '<label class="f">Clave de Admin <span class="hint">Mínimo 6 caracteres</span><input type="password" id="nC1" autocomplete="new-password"></label>'+
       '<label class="f">Repita la clave de Admin<input type="password" id="nC2" autocomplete="new-password"></label>'+
-      '<label class="f">Clave de Mme. Claudia<input type="password" id="nC3" autocomplete="new-password"></label>'+
       '<p class="err" id="nErr" role="alert"></p><button class="btn" type="submit">Crear calendario</button></form></details>');
   $("#gLink").onsubmit = ev => {
     ev.preventDefault();
@@ -745,22 +814,20 @@ function gateSinEnlace(aviso){
     CLAVE = m[1]; lsSet("cve-clave", CLAVE); iniciarFirebase();
   };
   $("#gNew").onsubmit = async ev => {
-    ev.preventDefault(); const err = $("#nErr"), c1 = $("#nC1").value, c3 = $("#nC3").value;
+    ev.preventDefault(); const err = $("#nErr"), c1 = $("#nC1").value;
     if(c1.length < 6){ err.textContent = "La clave de Admin debe tener al menos 6 caracteres."; return; }
     if(c1 !== $("#nC2").value){ err.textContent = "Las claves de Admin no coinciden."; return; }
-    if(c3.length < 6){ err.textContent = "La clave de Mme. Claudia debe tener al menos 6 caracteres."; return; }
-    if(c3 === c1){ err.textContent = "Use una clave distinta para cada perfil."; return; }
     if(!await cargarFirebase()) return;
     CLAVE = nuevaClave();
     try {
-      ACC = {perfiles:{admin: await hashAcceso(c1,"admin"), claudia: await hashAcceso(c3,"claudia")}, creado:new Date().toISOString()};
+      ACC = {perfiles:{admin: await hashAcceso(c1,"admin")}, lista:[{id:"admin", nombre:"Admin", rol:"admin"}], creado:new Date().toISOString()};
       await FS.doc("espacios/"+CLAVE+"/cfg/acceso").set(ACC);
       await FS.doc("espacios/"+CLAVE+"/cfg/equipo").set({inspectores:EQUIPO_INICIAL});
       lsSet("cve-clave", CLAVE); lsSet("cve-perfil","admin"); lsSet("cve-ok", ACC.perfiles.admin); PERFIL = "admin"; ME = "Admin";
       gate("Calendario creado",
-        p("Este es el enlace del calendario. Envíelo a Mme. Claudia junto con su clave. Quien no tenga el enlace y una clave no puede entrar.")+
+        p("Este es el enlace del calendario. Quien no tenga el enlace y un perfil con clave no puede entrar.")+
         '<div class="linkbox"><code>'+esc(enlaceCal())+'</code><button class="btn sm" type="button" id="cCopy">Copiar</button></div>'+
-        '<p class="who-line">También queda en Equipo → Acceso.</p><button class="btn primary" type="button" id="cGo">Entrar al calendario</button>');
+        '<p class="who-line">Siguiente paso: entre y vaya a Equipo → Acceso → Crear perfil para crear el perfil de Mme. Claudia. Luego envíele este enlace y su clave.</p><button class="btn primary" type="button" id="cGo">Entrar al calendario</button>');
       $("#cCopy").onclick = () => copiar(enlaceCal(), $("#cCopy"));
       $("#cGo").onclick = entrar;
     } catch(e) { CLAVE = null; err.textContent = e && e.code==="permission-denied" ? "La base de datos rechazó la creación. Revise que las reglas de Firestore permitan la colección «espacios»." : "No se pudo crear el calendario. Revise su conexión e inténtelo de nuevo."; }
