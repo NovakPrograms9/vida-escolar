@@ -245,6 +245,7 @@ footer{text-align:center;font-size:12.5px;color:var(--muted);padding-block:10px 
         <button type="button" data-th="auto">Auto</button><button type="button" data-th="light">Claro</button><button type="button" data-th="dark">Oscuro</button>
       </div>
       <button class="hbtn" id="eqBtn" type="button">Equipo</button>
+      <button class="hbtn" id="miClaveBtn" type="button" hidden>Mi clave</button>
       <button class="hbtn" id="salirBtn" type="button" hidden>Salir</button>
       <span class="mode" id="modeTag">Conectando…</span>
     </div>
@@ -636,10 +637,16 @@ const listaPerfiles = () => (Array.isArray(ACC.lista) && ACC.lista.length) ? ACC
 const perfilDe = id => listaPerfiles().find(x => x.id===id) || null;
 const nombrePerfil = id => (perfilDe(id) || {}).nombre || "";
 const esAdmin = () => MODO!=="fb" || (perfilDe(PERFIL) || {}).rol==="admin";
-async function guardarAcceso(perfiles, lista){
+/* Lee lo último guardado, aplica el cambio y guarda (así no se pisan cambios hechos desde otro computador) */
+async function guardarAcceso(cambio){
+  const ref = FS.doc("espacios/"+CLAVE+"/cfg/acceso"), s = await ref.get();
+  ACC = s.exists ? (s.data() || {}) : {};
+  const perfiles = Object.assign({}, ACC.perfiles || {});
+  let lista = listaPerfiles().map(x => Object.assign({}, x));
+  const r = cambio(perfiles, lista) || {}; if(r.lista) lista = r.lista;
   const nuevo = {perfiles, lista, creado:ACC.creado||null};
   if(ACC.claveHash && !perfiles.admin && lista.some(x => x.id==="admin")) nuevo.claveHash = ACC.claveHash;
-  await FS.doc("espacios/"+CLAVE+"/cfg/acceso").set(nuevo); ACC = nuevo;
+  await ref.set(nuevo); ACC = nuevo;
 }
 async function claveDeAdmin(v){ for(const x of listaPerfiles()) if(x.rol==="admin" && await claveOk(x.id, v)) return true; return false; }
 const idPerfil = () => "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -652,7 +659,7 @@ function validarPerfilNuevo(nombre, c1, c2){
 }
 async function crearPerfil(nombre, rol, clave){
   const id = idPerfil(), h = await hashAcceso(clave, id);
-  await guardarAcceso(Object.assign({}, ACC.perfiles||{}, {[id]:h}), listaPerfiles().concat([{id, nombre, rol}]));
+  await guardarAcceso((perf, lista) => { perf[id] = h; lista.push({id, nombre, rol}); });
 }
 const formPerfilHtml = (pre, conAdmin) =>
   '<label class="f">Nombre del perfil<input type="text" id="'+pre+'Nom" maxlength="40" placeholder="Ej.: Inspectoría General"></label>'+
@@ -685,12 +692,12 @@ function renderAcceso(modo, pid){
     try {
       if(modo==="clave"){
         const v = $("#aNueva").value; if(v.length < 6){ err("La clave debe tener al menos 6 caracteres."); return; }
-        const h = await hashAcceso(v, pid); await guardarAcceso(Object.assign({}, ACC.perfiles||{}, {[pid]:h}), listaPerfiles());
+        const h = await hashAcceso(v, pid); await guardarAcceso(perf => { perf[pid] = h; });
         if(pid===PERFIL) lsSet("cve-ok", h);
         fin("Clave de "+nombrePerfil(pid)+" guardada."+(pid!==PERFIL ? " Avísele la nueva clave." : ""));
       } else if(modo==="borrar"){
-        const nom = nombrePerfil(pid), perf = Object.assign({}, ACC.perfiles||{}); delete perf[pid];
-        await guardarAcceso(perf, listaPerfiles().filter(x => x.id!==pid)); fin("Perfil «"+nom+"» eliminado.");
+        const nom = nombrePerfil(pid);
+        await guardarAcceso((perf, lista) => { delete perf[pid]; return {lista: lista.filter(x => x.id!==pid)}; }); fin("Perfil «"+nom+"» eliminado.");
       } else if(modo==="nuevo"){
         const nombre = $("#xNom").value.trim(), c1 = $("#xC1").value, m = validarPerfilNuevo(nombre, c1, $("#xC2").value);
         if(m){ err(m); return; }
@@ -709,8 +716,37 @@ async function claveOk(id, v){
 function aplicarPerfil(){
   const fb = MODO==="fb";
   $("#eqBtn").hidden = !esAdmin();
+  $("#miClaveBtn").hidden = !fb || !PERFIL;
   const s = $("#salirBtn"); s.hidden = !fb; s.textContent = "Salir"+(PERFIL ? " · "+nombrePerfil(PERFIL) : "");
 }
+/* Cada perfil cambia su propia clave */
+function abrirMiClave(){
+  const mo = $("#modal");
+  mo.innerHTML = '<div class="mcard" role="dialog" aria-modal="true" aria-labelledby="mcTit"><div class="mh"><div><h2 id="mcTit">Cambiar mi clave</h2><p class="who-line" style="margin-top:4px">Perfil: '+esc(nombrePerfil(PERFIL))+'</p></div><button class="btn ghost icon" type="button" id="mcX" aria-label="Cerrar">✕</button></div>'+
+    '<form id="mcForm" class="col" novalidate><label class="f">Clave actual<input type="password" id="mcAct" autocomplete="current-password"></label>'+
+    '<label class="f">Clave nueva <span class="hint">Mínimo 6 caracteres</span><input type="password" id="mcN1" autocomplete="new-password"></label>'+
+    '<label class="f">Repita la clave nueva<input type="password" id="mcN2" autocomplete="new-password"></label>'+
+    '<p class="err" id="mcErr" role="alert"></p><div class="mfoot"><button class="btn" type="button" id="mcNo">Cancelar</button><button class="btn primary" type="submit" id="mcOk">Cambiar clave</button></div></form></div>';
+  mo.hidden = false; $("#mcAct").focus();
+  $("#mcX").onclick = $("#mcNo").onclick = cerrarModal;
+  $("#mcForm").onsubmit = async ev => {
+    ev.preventDefault(); const err = $("#mcErr"), act = $("#mcAct").value, n1 = $("#mcN1").value;
+    if(n1.length < 6){ err.textContent = "La clave nueva debe tener al menos 6 caracteres."; return; }
+    if(n1 !== $("#mcN2").value){ err.textContent = "Las claves nuevas no coinciden."; return; }
+    if(n1 === act){ err.textContent = "La clave nueva debe ser distinta de la actual."; return; }
+    $("#mcOk").disabled = true; err.textContent = "";
+    try {
+      const s = await FS.doc("espacios/"+CLAVE+"/cfg/acceso").get(); ACC = s.exists ? (s.data() || {}) : {};
+      if(!perfilDe(PERFIL)){ err.textContent = "Este perfil ya no existe. Salga y pida a Admin que lo vuelva a crear."; $("#mcOk").disabled = false; return; }
+      if(!(await claveOk(PERFIL, act))){ err.textContent = "La clave actual no es correcta."; $("#mcAct").value = ""; $("#mcAct").focus(); $("#mcOk").disabled = false; return; }
+      const h = await hashAcceso(n1, PERFIL);
+      await guardarAcceso(perf => { perf[PERFIL] = h; });
+      if(lsGet("cve-ok","")) lsSet("cve-ok", h);
+      cerrarModal(); toast("Clave cambiada");
+    } catch(e) { err.textContent = errorMsg(e); $("#mcOk").disabled = false; }
+  };
+}
+$("#miClaveBtn").onclick = abrirMiClave;
 $("#salirBtn").onclick = () => { try { localStorage.removeItem("cve-ok"); localStorage.removeItem("cve-perfil"); } catch(e) {} location.reload(); };
 
 /* Lectura en vivo (igual en Claude y en Firebase) */
