@@ -161,7 +161,7 @@ main{padding-block:20px 28px}
 .ag-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .ag-h h3{font-size:18px}
 .ag{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.ag button{display:grid;grid-template-columns:110px 150px minmax(0,1fr);gap:4px 14px;align-items:center;text-align:left;border:0;border-top:1px solid var(--line);background:var(--surface);padding:10px 14px;cursor:pointer;font-size:14px;width:100%}
+.ag button{display:grid;grid-template-columns:110px 200px minmax(0,1fr);gap:4px 14px;align-items:center;text-align:left;border:0;border-top:1px solid var(--line);background:var(--surface);padding:10px 14px;cursor:pointer;font-size:14px;width:100%}
 .ag button:first-child{border-top:0}
 .ag button:hover{background:var(--accent-soft)}
 .ag .fd{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -214,6 +214,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .pitem:hover{border-color:var(--accent);background:var(--accent-soft)}
 .pitem span{font-size:12.5px;color:var(--muted)}
 .gcard form{display:flex;flex-direction:column;gap:10px}
+.demob{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:14px}
+.demolink{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:13.5px;align-self:flex-start}
 .gcard details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
 .gate{position:fixed;inset:0;z-index:85;background:var(--head-bg);display:flex;align-items:center;overflow-y:auto;justify-content:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
 .gcard{background:var(--surface);color:var(--ink);border-radius:16px;padding:28px 24px;width:min(440px,100%);display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);border-top:4px solid var(--brand-red)}
@@ -248,6 +250,7 @@ footer{text-align:center;font-size:12.5px;color:var(--muted);padding-block:10px 
 </header>
 
 <main class="wrap">
+  <div id="demoBanner" class="demob" hidden><span><strong>Demostración.</strong> Semana inventada con el equipo real para probar el calendario. Puede agregar, editar y borrar: nada se guarda en la base del colegio.</span><button class="btn sm" type="button" id="demoSalir">Salir de la demostración</button></div>
   <div class="layout">
     <div class="col">
       <section class="card" aria-labelledby="mesTitulo">
@@ -540,11 +543,11 @@ async function guardar(){
   if(!f.todoDia && f.horaIni && f.horaFin && f.horaFin <= f.horaIni){ err.textContent = "La hora de término debe ser posterior a la de inicio."; return; }
   if(parse(f.hasta||f.desde) - parse(f.desde) > 1000*60*60*24*120){ err.textContent = "El rango es de más de 4 meses. Revise las fechas."; return; }
   if(!MODO){ err.textContent = "No hay conexión con la base de datos compartida."; return; }
-  const ahora = new Date().toISOString(), yo = MODO==="fb" ? "n:"+(ME||"Sin nombre") : state.uid;
+  const ahora = new Date().toISOString(), yo = MODO!=="db" ? "n:"+(ME||"Sin nombre") : state.uid;
   const data = { tipo:f.tipo, titulo:f.titulo.trim(), desde:f.desde, hasta:f.hasta||f.desde, todoDia:!!f.todoDia, horaIni:f.todoDia?"":(f.horaIni||""), horaFin:f.todoDia?"":(f.horaFin||""),
     fuera:!!f.fuera, lugar:(f.lugar||"").trim(), cubre:(f.cubre||"").trim(), notas:(f.notas||"").trim(), inspectores:f.inspectores.slice(),
-    creadoPor: f._id ? (f.creadoPor||null) : yo, creadoPorNombre: f._id ? (f.creadoPorNombre||"") : (MODO==="fb" ? ME : ""), creadoEn: f._id ? (f.creadoEn||ahora) : ahora,
-    editadoPor: yo, editadoPorNombre: MODO==="fb" ? ME : "", editadoEn: ahora };
+    creadoPor: f._id ? (f.creadoPor||null) : yo, creadoPorNombre: f._id ? (f.creadoPorNombre||"") : (MODO!=="db" ? ME : ""), creadoEn: f._id ? (f.creadoEn||ahora) : ahora,
+    editadoPor: yo, editadoPorNombre: MODO!=="db" ? ME : "", editadoEn: ahora };
   $("#fSave").disabled = true; err.textContent = "";
   try {
     const ref = f._id ? dref("eventos/"+f._id) : cref("eventos").doc();
@@ -706,7 +709,7 @@ $("#salirBtn").onclick = () => { try { localStorage.removeItem("cve-ok"); localS
 /* Lectura en vivo (igual en Claude y en Firebase) */
 function suscribir(){
   const lento = setTimeout(() => setMode("Sin respuesta de la base · puede estar desactualizado"), 10000);
-  const listo = () => { if(state.gotE && state.gotC){ clearTimeout(lento); setMode(MODO==="fb" ? "Base del colegio" : "Datos compartidos"); } };
+  const listo = () => { if(state.gotE && state.gotC){ clearTimeout(lento); setMode(MODO==="fb" ? "Base del colegio" : MODO==="demo" ? "Demostración · nada se guarda" : "Datos compartidos"); } };
   const fallo = (e, txt) => { clearTimeout(lento); if(e && e.code==="permission-denied"){ gate("La base de datos rechazó la conexión", p("Revise que las reglas de Firestore permitan la colección «espacios» (las mismas reglas de Vida Escolar).")); } setMode(txt); renderAll(); };
   dref("cfg/equipo").onSnapshot(s => {
     const d = s.exists ? s.data() : null;
@@ -809,7 +812,7 @@ function gateSinEnlace(aviso){
     (aviso ? '<p class="err">'+esc(aviso)+'</p>' : '')+
     p("Este calendario se abre con su enlace (termina en #k=…). Ábralo en este computador o péguelo aquí.")+
     '<form id="gLink" novalidate><label class="f">Enlace del calendario<input type="text" id="gLinkIn" autocomplete="off" placeholder="https://…#k=…"></label><button class="btn primary" type="submit">Entrar</button></form>'+
-    '<p class="err" id="gErr" role="alert"></p>'+
+    '<p class="err" id="gErr" role="alert"></p>'+linkDemo+
     '<details><summary>Primera vez: crear el calendario</summary>'+
       '<form id="gNew" novalidate style="margin-top:10px">'+p("Se hace una sola vez. Se crea el calendario con el equipo de inspectoría y el perfil Admin. Después, desde Equipo → Acceso, puede crear el perfil de Mme. Claudia y otros.")+
       '<label class="f">Clave de Admin <span class="hint">Mínimo 6 caracteres</span><input type="password" id="nC1" autocomplete="new-password"></label>'+
@@ -842,14 +845,54 @@ function gateSinEnlace(aviso){
   };
 }
 
+/* ===== Demostración: semana inventada, en memoria (abrir con #demo) ===== */
+const DEMO = /(^#|&)demo\b/.test(location.hash);
+function memDB(){
+  const store = {}, subs = [], ping = () => subs.forEach(f => f());
+  const ds = p => ({exists: p in store, id: p.split("/").pop(), data: () => store[p], metadata:{fromCache:false}});
+  const doc = p => ({ get: async () => ds(p), set: async d => { store[p] = JSON.parse(JSON.stringify(d)); ping(); }, delete: async () => { delete store[p]; ping(); },
+    onSnapshot: f => { const r = () => f(ds(p)); subs.push(r); setTimeout(r, 0); return () => {}; } });
+  const collection = p => { const n = p.split("/").length; return { doc: id => doc(p+"/"+(id || "d"+Math.random().toString(36).slice(2,10))),
+    onSnapshot: f => { const r = () => { const docs = Object.keys(store).filter(k => k.startsWith(p+"/") && k.split("/").length===n+1).map(ds); f({docs, size:docs.length, metadata:{fromCache:false}}); }; subs.push(r); setTimeout(r, 0); return () => {}; } }; };
+  return {doc, collection, store};
+}
+function semanaDemo(){
+  const hoy = parse(TODAY), wd = hoy.getDay(), lun = new Date(hoy);
+  lun.setDate(hoy.getDate() + (wd===0 ? 1 : wd===6 ? 2 : 1-wd));
+  const D = n => { const d = new Date(lun); d.setDate(lun.getDate()+n); return iso(d); };
+  const ev = (id, o) => Object.assign({id, desde:o.d, hasta:o.h||o.d, todoDia:!o.i, horaIni:o.i||"", horaFin:o.f||"", lugar:"", cubre:"", notas:"", fuera:TIPO[o.tipo].fuera, creadoPor:"n:Admin", creadoPorNombre:"Admin", creadoEn:new Date().toISOString()}, o);
+  return [
+    ev("d1", {tipo:"salida", titulo:"Granja educativa con 2° Básico A y B", d:D(0), i:"08:30", f:"13:00", lugar:"Granja Los Copihues, Osorno", cubre:"Guillermo Valle", inspectores:["sbavestrello"], notas:"Bus sale de portería a las 08:15. Llevar listas de curso y botiquín."}),
+    ev("d2", {tipo:"capacitacion", titulo:"Jornada comunal de Convivencia Escolar", d:D(0), i:"14:30", f:"17:00", lugar:"Teatro Municipal de Osorno", cubre:"Ximena Velásquez", inspectores:["mburgos"]}),
+    ev("d3", {tipo:"paes", titulo:"Examinadores PAES", d:D(1), h:D(2), lugar:"Sede Universidad de Los Lagos", cubre:"Guillermo Valle cubre patio central", inspectores:["mburgos","rrojas","xvelasquez","nnovakovic"], notas:"Presentarse a las 07:30 con cédula de identidad."}),
+    ev("d4", {tipo:"turno", titulo:"Cubre portería y patio central", d:D(1), h:D(2), lugar:"Portería principal", inspectores:["gvalle"]}),
+    ev("d5", {tipo:"licencia", titulo:"Licencia médica", d:D(2), h:D(4), cubre:"Silvia Bavestrello apoya 4° y 5° Básico", inspectores:["rbarria"]}),
+    ev("d6", {tipo:"acto", titulo:"Acto de aniversario del Lycée", d:D(3), i:"10:00", f:"11:30", lugar:"Gimnasio", inspectores:["sbavestrello","rrojas","mburgos","gvalle","xvelasquez","nnovakovic"], notas:"Cada inspector acompaña a sus cursos y ordena la salida al recreo."}),
+    ev("d7", {tipo:"permiso", titulo:"Permiso administrativo (tarde)", d:D(3), i:"14:00", f:"17:30", cubre:"Nicolás Novakovic", inspectores:["xvelasquez"]}),
+    ev("d8", {tipo:"salida", titulo:"Museo Histórico Municipal con 5° Básico B", d:D(4), i:"09:00", f:"12:30", lugar:"Museo Histórico Municipal de Osorno", cubre:"Guillermo Valle", inspectores:["nnovakovic","rrojas"]}),
+    ev("d9", {tipo:"otro", titulo:"Charla de orientación vocacional IV Medio", d:D(4), i:"11:00", f:"12:30", lugar:"Biblioteca", inspectores:["mburgos"]})
+  ];
+}
+function iniciarDemo(){
+  const db = memDB();
+  db.store["cfg/equipo"] = {inspectores:EQUIPO_INICIAL};
+  semanaDemo().forEach(e => { const id = e.id; delete e.id; db.store["eventos/"+id] = e; });
+  state.db = db; MODO = "demo"; PERFIL = "admin"; ME = "Admin (demostración)";
+  $("#demoBanner").hidden = false; aplicarPerfil(); suscribir();
+}
+const salirDemo = () => { location.hash = ""; location.reload(); };
+$("#demoSalir").onclick = salirDemo;
+const linkDemo = '<button class="demolink" type="button" onclick="location.hash=\'demo\';location.reload()">Ver una demostración con una semana inventada</button>';
+
 async function iniciar(){
   renderLegend(); renderAll();
+  if(DEMO) return iniciarDemo();
   if(IN_CLAUDE) return iniciarClaude();
   if(FIREBASE_CONFIG) return iniciarFirebase();
   setMode("Sin configurar");
   gate("Falta conectar la base de datos", p("Pegue la configuración de Firebase en el bloque FIREBASE_CONFIG al inicio del código (la misma que usa Vida Escolar) y vuelva a subir el archivo."));
 }
-window.addEventListener("hashchange", () => { if(/[#&]k=[a-z0-9]{24,64}/i.test(location.hash)) location.reload(); });
+window.addEventListener("hashchange", () => { if(/[#&]k=[a-z0-9]{24,64}/i.test(location.hash) || /(^#|&)demo\b/.test(location.hash) !== DEMO) location.reload(); });
 iniciar();
 </script>
 
